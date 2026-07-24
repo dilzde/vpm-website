@@ -36,28 +36,37 @@ export default function ContactPage() {
       <section className="py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            {/* Contact info */}
+            {/* Contact info & Service Hours */}
             <div className="space-y-6">
               <div className="bg-cloud border border-line rounded-md p-6">
-                <h2 className="text-lg font-serif font-bold text-slate-800 mb-4">Reach Us</h2>
+                <h2 className="text-lg font-bold text-slate-800 mb-4">Reach Us</h2>
                 <div className="space-y-4">
-                  <a href="tel:+254759265819" className="flex items-center gap-3 text-sm text-slate-600 hover:text-sky-500 transition-colors">
+                  <a href="tel:+254794731831" className="flex items-center gap-3 text-sm text-slate-600 hover:text-sky-500 transition-colors">
                     <div className="p-2 rounded-md bg-sky-50"><Phone size={16} strokeWidth={1.75} className="text-sky-500" /></div>
-                    +254 759 265 819
+                    +254 794 731 831
                   </a>
-                  <a href="mailto:info@vpminternational.org" className="flex items-center gap-3 text-sm text-slate-600 hover:text-sky-500 transition-colors">
-                    <div className="p-2 rounded-md bg-sky-50"><Mail size={16} strokeWidth={1.75} className="text-sky-500" /></div>
-                    info@vpminternational.org
+                  <a href="https://wa.me/254794731831" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-sm text-slate-600 hover:text-sky-500 transition-colors">
+                    <div className="p-2 rounded-md bg-sky-50"><Phone size={16} strokeWidth={1.75} className="text-sky-500" /></div>
+                    Chat on WhatsApp
                   </a>
                   <div className="flex items-center gap-3 text-sm text-slate-600">
                     <div className="p-2 rounded-md bg-sky-50"><MapPin size={16} strokeWidth={1.75} className="text-sky-500" /></div>
-                    Nairobi, Kenya
+                    Mlolongo, Machakos, Kenya
                   </div>
                 </div>
               </div>
 
               <div className="bg-cloud border border-line rounded-md p-6">
-                <h2 className="text-lg font-serif font-bold text-slate-800 mb-4">Follow Us</h2>
+                <h2 className="text-lg font-bold text-slate-800 mb-4">Service Hours</h2>
+                <div className="space-y-2 text-sm text-slate-600">
+                  <p><strong>Sunday:</strong> 9:00 AM - 1:00 PM</p>
+                  <p><strong>Tuesday:</strong> 8:30 PM - 10:30 PM</p>
+                  <p><strong>Friday:</strong> 8:30 PM - 10:00 PM</p>
+                </div>
+              </div>
+
+              <div className="bg-cloud border border-line rounded-md p-6">
+                <h2 className="text-lg font-bold text-slate-800 mb-4">Follow Us</h2>
                 <div className="flex items-center gap-3">
                   {[
                     { label: "YouTube", href: "https://www.youtube.com/@AsrielTV", icon: YouTubeIcon },
@@ -72,45 +81,36 @@ export default function ContactPage() {
                   ))}
                 </div>
               </div>
-
-              <div className="bg-cloud border border-line rounded-md p-6">
-                <h2 className="text-lg font-serif font-bold text-slate-800 mb-4">Quick Links</h2>
-                <div className="grid grid-cols-2 gap-2">
-                  {[
-                    { label: "Our Branches", href: "/branches" },
-                    { label: "Prayer Request", href: "/prayer" },
-                    { label: "Book a Session", href: process.env.NEXT_PUBLIC_BOOKING_FORM_URL || "#" },
-                    { label: "Support Us", href: "/give" },
-                  ].map((link) => (
-                    <Link key={link.label} href={link.href}
-                      className="px-3 py-2 text-sm text-slate-600 hover:text-sky-500 hover:bg-sky-50 rounded-md transition-colors">
-                      {link.label}
-                    </Link>
-                  ))}
-                </div>
-              </div>
             </div>
 
-            {/* Contact form */}
-            <div className="bg-cloud border border-line rounded-md p-6">
-              <h2 className="text-lg font-serif font-bold text-slate-800 mb-6">Send a Message</h2>
-              <form className="space-y-4">
-                <div>
-                  <label htmlFor="contact-name" className="block text-xs font-medium text-slate-800 mb-1.5">Name</label>
-                  <input type="text" id="contact-name" className="w-full px-3 py-2.5 text-sm border border-line rounded-md bg-white text-slate-800 focus:outline-none focus:border-sky-500 transition-colors" />
+            {/* CTAs */}
+            <div className="bg-cloud border border-line rounded-md p-6 md:p-10 flex flex-col items-center justify-center text-center">
+              <div className="w-16 h-16 bg-sky-100 rounded-full flex items-center justify-center mb-6">
+                <Phone size={32} strokeWidth={1.5} className="text-sky-500" />
+              </div>
+              <h2 className="text-2xl font-bold text-slate-800 mb-2">Need Help?</h2>
+              <p className="text-slate-600 mb-8 max-w-sm">
+                Start a conversation with us now. We are here to pray with you and support you.
+              </p>
+              
+              <div className="w-full max-w-xs space-y-4">
+                <a href="https://wa.me/254794731831" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 w-full px-5 py-3 text-sm font-medium bg-[#25D366] text-white rounded-md hover:bg-[#20bd5a] transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#25D366]">
+                  Message Us on WhatsApp
+                </a>
+                
+                <div className="relative">
+                  <div className="absolute inset-0 flex items-center">
+                    <div className="w-full border-t border-line"></div>
+                  </div>
+                  <div className="relative flex justify-center text-xs">
+                    <span className="bg-cloud px-2 text-slate-500">or</span>
+                  </div>
                 </div>
-                <div>
-                  <label htmlFor="contact-email" className="block text-xs font-medium text-slate-800 mb-1.5">Email</label>
-                  <input type="email" id="contact-email" className="w-full px-3 py-2.5 text-sm border border-line rounded-md bg-white text-slate-800 focus:outline-none focus:border-sky-500 transition-colors" />
-                </div>
-                <div>
-                  <label htmlFor="contact-message" className="block text-xs font-medium text-slate-800 mb-1.5">Message</label>
-                  <textarea id="contact-message" rows={5} className="w-full px-3 py-2.5 text-sm border border-line rounded-md bg-white text-slate-800 focus:outline-none focus:border-sky-500 transition-colors resize-none" />
-                </div>
-                <button type="button" className="w-full px-5 py-2.5 text-sm font-medium bg-sky-500 text-white rounded-md hover:bg-sky-400 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500">
-                  Send Message
-                </button>
-              </form>
+
+                <a href="tel:+254794731831" className="flex items-center justify-center gap-2 w-full px-5 py-3 text-sm font-medium bg-sky-500 text-white rounded-md hover:bg-sky-400 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500">
+                  Call Us Now
+                </a>
+              </div>
             </div>
           </div>
         </div>

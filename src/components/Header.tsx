@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Menu, X, Radio } from "lucide-react";
 
 const NAV_ITEMS = [
@@ -45,14 +46,12 @@ export default function Header() {
           className="flex items-center gap-2.5 text-slate-800 hover:text-sky-500 transition-colors"
           id="header-logo"
         >
-          <div className="flex items-center justify-center w-9 h-9 rounded-md bg-sky-500 text-white">
-            <svg viewBox="0 0 24 24" className="w-5 h-5" fill="currentColor" aria-hidden="true">
-              <path d="M12 2C7.03 2 3 5.03 3 8.5c0 2.35 1.48 4.4 3.68 5.47C7.42 16.35 9.49 18 12 18s4.58-1.65 5.32-4.03C19.52 12.9 21 10.85 21 8.5 21 5.03 16.97 2 12 2zm0 14c-1.66 0-3.12-.92-3.87-2.28a8.27 8.27 0 003.87.78 8.27 8.27 0 003.87-.78C15.12 15.08 13.66 16 12 16z" />
-            </svg>
+          <div className="flex items-center justify-center w-10 h-10 overflow-hidden">
+            <Image src="/vpm_logo.png" alt="VPM International Logo" width={40} height={40} className="object-contain" priority />
           </div>
           <span
             className={[
-              "font-serif font-bold transition-all duration-200",
+              "font-bold transition-all duration-200",
               scrolled ? "text-lg" : "text-xl",
             ].join(" ")}
           >
@@ -87,7 +86,7 @@ export default function Header() {
 
         {/* Mobile toggle */}
         <button
-          className="lg:hidden p-2 rounded-md text-slate-600 hover:bg-sky-50 transition-colors
+          className="lg:hidden p-3 relative z-50 rounded-md text-slate-600 hover:bg-sky-50 transition-colors
                      focus-visible:outline-2 focus-visible:outline-sky-500"
           onClick={() => setMobileOpen(!mobileOpen)}
           aria-label={mobileOpen ? "Close menu" : "Open menu"}

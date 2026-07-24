@@ -40,20 +40,24 @@ export default function AboutPage() {
                   beyond through multiple branches, media platforms, and
                   outreach programs.
                 </p>
-                <p className="text-sm text-slate-600 leading-relaxed mb-4">
-                  We believe that the Lord is raising a generation of
-                  worshippers, intercessors, and ministers who will carry the
-                  message of salvation to the nations. Through teaching,
-                  prayer, and prophetic ministry, we equip believers for
-                  the work of service and the building up of the body of
-                  Christ.
-                </p>
-                <p className="text-sm text-slate-600 leading-relaxed">
-                  Our ministry operates through local church gatherings,
-                  radio broadcasts, online streaming, conventions, and
-                  community outreach — all anchored in the Word of God and
-                  the leading of the Holy Spirit.
-                </p>
+                <div className="prose prose-slate prose-lg max-w-prose">
+                  <p className="text-sm text-slate-600 leading-relaxed mb-4">
+                    VPM International was founded with a vision to spread the Prophetic word
+                    and bring spiritual guidance to all who seek it. We have been a beacon of hope,
+                    faith, and spiritual awakening in Kenya and beyond.
+                  </p>
+                  <h3 className="text-lg font-semibold text-slate-800">Our Vision</h3>
+                  <p className="text-sm text-slate-600 leading-relaxed mb-4">
+                    To spread the Prophetic word and bring spiritual guidance, serving as a beacon
+                    of hope, faith, and spiritual awakening across Kenya and beyond.
+                  </p>
+                  <h3 className="text-lg font-semibold text-slate-800">Our Mission</h3>
+                  <p className="text-sm text-slate-600 leading-relaxed mb-4">
+                    Our mission is to deliver accurate prophetic messages, provide spiritual guidance,
+                    and create a supportive community where members can grow in their faith and
+                    understanding of God&apos;s plan for their lives.
+                  </p>
+                </div>
               </div>
 
               {/* Image placeholder */}

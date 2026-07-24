@@ -1,13 +1,10 @@
-"use client";
-
 import React from "react";
 import Link from "next/link";
 import { Clock, Radio } from "lucide-react";
+import { getLiveStatus } from "@/lib/youtube";
 
-export default function LiveNowStrip() {
-  // In production, this reads config/livestream from Firestore
-  // For now, show "next service" state so the slot is never empty
-  const isLive = false;
+export default async function LiveNowStrip() {
+  const liveVideo = await getLiveStatus();
 
   return (
     <section
@@ -15,21 +12,23 @@ export default function LiveNowStrip() {
       id="live-now-strip"
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-4">
-        {isLive ? (
+        {liveVideo ? (
           <div className="flex items-center gap-3">
             <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-live/10 text-live text-xs font-semibold uppercase tracking-wide">
               <span className="w-2 h-2 rounded-full bg-live animate-live-pulse" />
               Live
             </span>
-            <span className="text-sm text-slate-800 font-medium">
-              We are live now — join the service
+            <span className="text-sm text-slate-800 font-medium line-clamp-1 flex-1">
+              {liveVideo.title}
             </span>
-            <Link
-              href="/media"
-              className="ml-auto text-sm font-medium text-sky-500 hover:text-sky-400 transition-colors"
+            <a
+              href={`https://www.youtube.com/watch?v=${liveVideo.videoId}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="ml-auto text-sm font-medium text-sky-500 hover:text-sky-400 transition-colors whitespace-nowrap"
             >
               Watch Now →
-            </Link>
+            </a>
           </div>
         ) : (
           <div className="flex items-center gap-3">
@@ -46,10 +45,11 @@ export default function LiveNowStrip() {
             </div>
             <Link
               href="/radio"
-              className="ml-auto flex items-center gap-1.5 text-sm font-medium text-sky-500 hover:text-sky-400 transition-colors"
+              className="ml-auto flex items-center gap-1.5 text-sm font-medium text-sky-500 hover:text-sky-400 transition-colors whitespace-nowrap"
             >
               <Radio size={14} strokeWidth={1.75} />
-              Listen to Radio
+              <span className="hidden sm:inline">Listen to Radio</span>
+              <span className="sm:hidden">Radio</span>
             </Link>
           </div>
         )}

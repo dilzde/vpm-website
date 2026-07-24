@@ -1,22 +1,8 @@
 "use client";
 
 import React from "react";
-import { Play, Pause, Headphones, Clock } from "lucide-react";
+import { Play, Pause, ExternalLink } from "lucide-react";
 import { useRadioPlayer } from "@/lib/hooks/useRadioPlayer";
-
-const SCHEDULE = [
-  { time: "6:00 AM", program: "Morning Devotion", duration: "1 hour" },
-  { time: "7:00 AM", program: "Praise and Worship", duration: "1 hour" },
-  { time: "8:00 AM", program: "Word of the Day", duration: "1 hour" },
-  { time: "9:00 AM", program: "Main Teaching", duration: "2 hours" },
-  { time: "11:00 AM", program: "Testimonies and Prayer", duration: "1 hour" },
-  { time: "12:00 PM", program: "Midday Intercession", duration: "1 hour" },
-  { time: "1:00 PM", program: "Afternoon Teaching", duration: "2 hours" },
-  { time: "3:00 PM", program: "Healing and Deliverance", duration: "1 hour" },
-  { time: "4:00 PM", program: "Prophetic Hour", duration: "1 hour" },
-  { time: "5:00 PM", program: "Evening Devotion", duration: "1 hour" },
-];
-
 export default function RadioPage() {
   const { stations, currentStation, isPlaying, isBuffering, play, pause } = useRadioPlayer();
 
@@ -36,7 +22,7 @@ export default function RadioPage() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Stations */}
             <div className="lg:col-span-1 space-y-4">
-              <h2 className="text-lg font-serif font-bold text-slate-800 mb-4">Stations</h2>
+              <h2 className="text-lg font-bold text-slate-800 mb-4">Stations</h2>
               {stations.map((station) => {
                 const active = currentStation?.id === station.id;
                 return (
@@ -76,25 +62,24 @@ export default function RadioPage() {
             </div>
 
             {/* Schedule */}
-            <div className="lg:col-span-2">
-              <h2 className="text-lg font-serif font-bold text-slate-800 mb-4">
-                Today&apos;s Schedule — Asriel FM
+            <div className="lg:col-span-2 space-y-4">
+              <h2 className="text-lg font-bold text-slate-800 mb-4">
+                Programme Schedule
               </h2>
-              <div className="bg-cloud border border-line rounded-md overflow-hidden">
-                <div className="divide-y divide-line">
-                  {SCHEDULE.map((item, i) => (
-                    <div key={i} className="flex items-center gap-4 px-5 py-3.5 hover:bg-sky-50/50 transition-colors">
-                      <span className="text-xs font-mono text-slate-600/70 w-20 shrink-0">{item.time}</span>
-                      <div className="flex-1">
-                        <span className="text-sm text-slate-800">{item.program}</span>
-                      </div>
-                      <span className="text-xs text-slate-600/50 flex items-center gap-1">
-                        <Clock size={12} strokeWidth={1.75} />
-                        {item.duration}
-                      </span>
-                    </div>
-                  ))}
-                </div>
+              <div className="bg-cloud border border-line rounded-md p-8 flex flex-col items-center justify-center text-center">
+                <p className="text-slate-600 mb-6 max-w-sm">
+                  View our full daily broadcast schedule and learn more about our 
+                  programs directly on the official Asriel Radio website.
+                </p>
+                <a 
+                  href="https://asrielradio.com" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 px-5 py-2.5 text-sm font-medium bg-white border border-line text-slate-800 rounded-md hover:border-sky-500 hover:text-sky-500 transition-colors"
+                >
+                  <ExternalLink size={16} strokeWidth={2} />
+                  Visit AsrielRadio.com
+                </a>
               </div>
             </div>
           </div>

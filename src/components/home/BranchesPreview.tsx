@@ -5,25 +5,25 @@ import { MapPin, ArrowRight, Phone } from "lucide-react";
 // Sample branch data — in production, loaded from Firestore
 const PREVIEW_BRANCHES = [
   {
+    id: "kisumu-hq",
+    name: "Kisumu Headquarters",
+    region: "Kisumu",
+    address: "Brighlight Kisumu",
+    phone: "+254 757 871 123",
+  },
+  {
     id: "nairobi",
-    name: "Nairobi Main",
+    name: "Nairobi Branch",
     region: "Nairobi",
-    address: "Nairobi, Kenya",
-    phone: "+254 759 265 819",
+    address: "Family bank, Mlolongo",
+    phone: "+254 794 731 831",
   },
   {
-    id: "mombasa",
-    name: "Mombasa Branch",
-    region: "Coast",
-    address: "Mombasa, Kenya",
-    phone: "+254 700 000 000",
-  },
-  {
-    id: "kisumu",
-    name: "Kisumu Branch",
-    region: "Western",
-    address: "Kisumu, Kenya",
-    phone: "+254 700 000 001",
+    id: "siaya",
+    name: "Siaya Branch",
+    region: "Siaya",
+    address: "Siaya",
+    phone: "+254 794 731 831",
   },
 ];
 

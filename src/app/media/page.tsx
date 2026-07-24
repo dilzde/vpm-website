@@ -1,51 +1,76 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Metadata } from "next";
 import { Play, Search, Filter, Video } from "lucide-react";
-
-// Placeholder sermons - in production, fetched from YouTube API via server action
-const SERMONS = [
-  { videoId: "1", title: "The Power of Prayer in Difficult Seasons", publishedAt: "2024-12-15", duration: "45:30" },
-  { videoId: "2", title: "Walking in Faith: A Prophetic Declaration", publishedAt: "2024-12-08", duration: "38:12" },
-  { videoId: "3", title: "Understanding Your Purpose in God's Kingdom", publishedAt: "2024-12-01", duration: "52:18" },
-  { videoId: "4", title: "The Anointing That Breaks Every Yoke", publishedAt: "2024-11-24", duration: "41:05" },
-  { videoId: "5", title: "Revival Fire: A Call to the Nations", publishedAt: "2024-11-17", duration: "49:22" },
-  { videoId: "6", title: "Standing on the Promises of God", publishedAt: "2024-11-10", duration: "36:45" },
-  { videoId: "7", title: "Healing and Deliverance Through the Word", publishedAt: "2024-11-03", duration: "55:10" },
-  { videoId: "8", title: "The Cost of Discipleship", publishedAt: "2024-10-27", duration: "43:30" },
-];
+import { getRecentVideos, getLiveStatus, YouTubeVideo } from "@/lib/youtube";
 
 export default function MediaPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [dateFilter, setDateFilter] = useState<string | null>(null);
+  const [sermons, setSermons] = useState<YouTubeVideo[]>([]);
+  const [liveVideo, setLiveVideo] = useState<YouTubeVideo | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  const filteredSermons = SERMONS.filter((s) =>
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const [recent, live] = await Promise.all([getRecentVideos(), getLiveStatus()]);
+        setSermons(recent);
+        setLiveVideo(live);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
+
+  const filteredSermons = sermons.filter((s) =>
     searchQuery ? s.title.toLowerCase().includes(searchQuery.toLowerCase()) : true
   );
 
   return (
-    <div className="bg-sky-50">
+    <div className="bg-sky-50 min-h-screen">
       {/* Hero */}
       <section className="bg-white border-b border-line">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 md:py-24">
-          <h1 className="text-2xl md:text-3xl text-slate-800">Sermons & Media</h1>
+          <h1 className="text-2xl md:text-3xl font-bold text-slate-800">Sermons & Media</h1>
           <p className="mt-4 text-base text-slate-600 max-w-prose">
             Watch our latest sermons, past teachings, and live services.
           </p>
         </div>
       </section>
 
-      {/* Live embed placeholder */}
+      {/* Live embed */}
       <section className="bg-slate-900 py-12">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="aspect-video max-w-4xl mx-auto bg-slate-800 rounded-md flex items-center justify-center">
-            <div className="text-center text-white/30">
-              <Video size={48} strokeWidth={1.5} className="mx-auto mb-3" />
-              <p className="text-sm font-medium">Livestream player</p>
-              <p className="text-xs mt-1">Appears here when a service is live</p>
+          {liveVideo ? (
+            <div className="max-w-4xl mx-auto">
+              <div className="aspect-video bg-black rounded-md overflow-hidden mb-4">
+                <iframe
+                  width="100%"
+                  height="100%"
+                  src={`https://www.youtube.com/embed/${liveVideo.videoId}?autoplay=1`}
+                  title={liveVideo.title}
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                ></iframe>
+              </div>
+              <h2 className="text-xl font-bold text-white">{liveVideo.title}</h2>
+              <p className="text-slate-400 text-sm mt-1">Live now on {liveVideo.channelTitle}</p>
             </div>
-          </div>
+          ) : (
+            <div className="aspect-video max-w-4xl mx-auto bg-slate-800 rounded-md flex items-center justify-center">
+              <div className="text-center text-white/30">
+                <Video size={48} strokeWidth={1.5} className="mx-auto mb-3" />
+                <p className="text-sm font-medium">Livestream player</p>
+                <p className="text-xs mt-1">Appears here when a service is live</p>
+              </div>
+            </div>
+          )}
         </div>
       </section>
 
@@ -85,26 +110,47 @@ export default function MediaPage() {
       {/* Sermons grid */}
       <section className="py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {filteredSermons.map((sermon) => (
-              <article key={sermon.videoId} className="bg-cloud border border-line rounded-md overflow-hidden hover:border-sky-200 transition-colors group">
-                <div className="relative aspect-video bg-sky-100">
-                  <div className="absolute inset-0 flex items-center justify-center text-slate-600/30 group-hover:text-sky-500/50 transition-colors">
-                    <Play size={32} strokeWidth={1.5} />
+          {loading ? (
+            <div className="flex justify-center py-12">
+              <span className="inline-block w-8 h-8 animate-spin rounded-full border-4 border-slate-200 border-t-sky-500" />
+            </div>
+          ) : filteredSermons.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {filteredSermons.map((sermon) => (
+                <a 
+                  key={sermon.videoId} 
+                  href={`https://www.youtube.com/watch?v=${sermon.videoId}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-cloud border border-line rounded-md overflow-hidden hover:border-sky-200 transition-colors group block"
+                >
+                  <div className="relative aspect-video bg-slate-200">
+                    {sermon.thumbnail ? (
+                      <img src={sermon.thumbnail} alt={sermon.title} className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-slate-400">
+                        <Video size={24} />
+                      </div>
+                    )}
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <Play size={40} strokeWidth={1.5} className="text-white drop-shadow-md" />
+                    </div>
                   </div>
-                  {sermon.duration && (
-                    <span className="absolute bottom-2 right-2 px-1.5 py-0.5 bg-slate-900/80 text-white text-xs rounded-sm">{sermon.duration}</span>
-                  )}
-                </div>
-                <div className="p-4">
-                  <h3 className="text-sm font-medium text-slate-800 leading-snug line-clamp-2 group-hover:text-sky-500 transition-colors">{sermon.title}</h3>
-                  <p className="text-xs text-slate-600/70 mt-2">
-                    {new Date(sermon.publishedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
-                  </p>
-                </div>
-              </article>
-            ))}
-          </div>
+                  <div className="p-4">
+                    <h3 className="text-sm font-bold text-slate-800 leading-snug line-clamp-2 group-hover:text-sky-500 transition-colors">{sermon.title}</h3>
+                    <div className="flex items-center justify-between mt-3 text-xs text-slate-500">
+                      <span>{new Date(sermon.publishedAt).toLocaleDateString()}</span>
+                      <span className="line-clamp-1 text-right ml-2">{sermon.channelTitle}</span>
+                    </div>
+                  </div>
+                </a>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12 text-slate-500">
+              No videos found matching your search.
+            </div>
+          )}
         </div>
       </section>
     </div>

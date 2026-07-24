@@ -11,7 +11,8 @@
   --color-sky-100: #E4F1FB;
   --color-sky-200: #C9E4F7;
   --color-sky-400: #6BB6E8;
-  --color-sky-500: #3E96D6;
+  --color-sky-500: #0284c7; /* richer blue */
+  --color-sky-700: #0369a1; /* high contrast deep blue */
 
   --color-slate-600: #45607A;
   --color-slate-800: #223349;
@@ -32,8 +33,7 @@
   --shadow-float: 0 8px 24px -8px rgba(16,30,45,0.18);
 
   /* ── Font family ───────────────────────────────────────────── */
-  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
-  --font-serif: "Source Serif 4", Georgia, serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Inter", system-ui, sans-serif;
 
   /* ── Type scale (rem) ──────────────────────────────────────── */
   --text-xs:  0.875rem;
@@ -42,8 +42,8 @@
   --text-lg:  1.375rem;
   --text-xl:  1.75rem;
   --text-2xl: 2.25rem;
-  --text-3xl: 3rem;
-  --text-4xl: 3.75rem;
+  --text-3xl: clamp(2rem, 5vw, 3rem);
+  --text-4xl: clamp(2.25rem, 6vw, 3.75rem);
 }
 
 /* ── Base styles ──────────────────────────────────────────────── */
@@ -64,9 +64,8 @@ h1, h2, h3, h4, h5, h6 {
   line-height: 1.2;
 }
 
-/* Editorial headings use serif */
+/* Headings use the same native font stack, differentiated by weight */
 h1, h2 {
-  font-family: var(--font-serif);
   font-weight: 700;
 }
 

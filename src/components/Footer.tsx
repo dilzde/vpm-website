@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { ExternalLink, Mail, Phone, MapPin } from "lucide-react";
 
 const QUICK_LINKS = [
@@ -41,10 +42,8 @@ export default function Footer() {
           {/* About blurb */}
           <div className="lg:col-span-2">
             <div className="flex items-center gap-2.5 mb-4">
-              <div className="flex items-center justify-center w-9 h-9 rounded-md bg-sky-500 text-white">
-                <svg viewBox="0 0 24 24" className="w-5 h-5" fill="currentColor" aria-hidden="true">
-                  <path d="M12 2C7.03 2 3 5.03 3 8.5c0 2.35 1.48 4.4 3.68 5.47C7.42 16.35 9.49 18 12 18s4.58-1.65 5.32-4.03C19.52 12.9 21 10.85 21 8.5 21 5.03 16.97 2 12 2zm0 14c-1.66 0-3.12-.92-3.87-2.28a8.27 8.27 0 003.87.78 8.27 8.27 0 003.87-.78C15.12 15.08 13.66 16 12 16z" />
-                </svg>
+              <div className="flex items-center justify-center w-10 h-10 overflow-hidden bg-white rounded-md">
+                <Image src="/vpm_logo.png" alt="VPM International Logo" width={40} height={40} className="object-contain" />
               </div>
               <span className="font-serif font-bold text-xl">VPM International</span>
             </div>

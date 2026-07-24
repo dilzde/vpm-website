@@ -10,11 +10,11 @@ export const metadata: Metadata = {
 
 // Sample branches — in production, loaded from Firestore
 const BRANCHES = [
-  { id: "1", name: "VPM Nairobi (Headquarters)", region: "Nairobi", address: "Nairobi, Kenya", phone: "+254 759 265 819", email: "nairobi@vpminternational.org", mapsUrl: "#", active: true },
-  { id: "2", name: "VPM Mombasa", region: "Coast", address: "Mombasa, Kenya", phone: "+254 700 000 002", email: "mombasa@vpminternational.org", mapsUrl: "#", active: true },
-  { id: "3", name: "VPM Kisumu", region: "Western", address: "Kisumu, Kenya", phone: "+254 700 000 003", email: "kisumu@vpminternational.org", mapsUrl: "#", active: true },
-  { id: "4", name: "VPM Nakuru", region: "Rift Valley", address: "Nakuru, Kenya", phone: "+254 700 000 004", email: "nakuru@vpminternational.org", mapsUrl: "#", active: true },
-  { id: "5", name: "VPM Eldoret", region: "North Rift", address: "Eldoret, Kenya", phone: "+254 700 000 005", email: "eldoret@vpminternational.org", mapsUrl: "#", active: true },
+  { id: "kisumu-hq", name: "Kisumu Headquarters", region: "Kisumu", address: "Brighlight Kisumu", phone: "+254 757 871 123", email: "vpminternational2@gmail.com", mapsUrl: "https://maps.app.goo.gl/CzAQhusk4crKfLjHA", active: true },
+  { id: "nairobi", name: "Nairobi Branch", region: "Nairobi", address: "Family bank, Mlolongo", phone: "+254 794 731 831", email: "vpminternational2@gmail.com", mapsUrl: "https://maps.app.goo.gl/XyRajWmu3kFt8h5K9", active: true },
+  { id: "kisumu-branch", name: "Kisumu Branch", region: "Kisumu", address: "Nyamasaria", phone: "+254 720 408 630", email: "vpminternational2@gmail.com", mapsUrl: "https://maps.google.com/?q=-0.091702,34.767956", active: true },
+  { id: "siaya", name: "Siaya Branch", region: "Siaya", address: "Siaya", phone: "+254 794 731 831", email: "vpminternational2@gmail.com", mapsUrl: "https://maps.google.com/?q=-0.303099,36.080026", active: true },
+  { id: "machakos", name: "Machakos Branch", region: "Machakos", address: "Machakos", phone: "+254 794 731 831", email: "vpminternational2@gmail.com", mapsUrl: "https://maps.google.com/?q=-1.517683,37.263414", active: true },
 ];
 
 export default function BranchesPage() {
