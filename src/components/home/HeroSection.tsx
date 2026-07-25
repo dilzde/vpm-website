@@ -15,7 +15,7 @@ export default function HeroSection() {
         <div className="w-full lg:w-1/2 flex flex-col items-start text-left space-y-6">
           
           {/* Eyebrow Line (§C) */}
-          <span className="text-xs font-sans font-bold tracking-widest text-[var(--color-slate)] uppercase">
+          <span className="text-sm sm:text-base font-sans font-extrabold tracking-wider text-[var(--color-anchor-olive)] uppercase">
             Welcome to Voice of The Potter&apos;s Messengers Ministry
           </span>
 

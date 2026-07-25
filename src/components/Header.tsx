@@ -4,8 +4,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Menu, X, Play, Pause, Heart, Radio } from "lucide-react";
-import { useRadioPlayer } from "@/lib/hooks/useRadioPlayer";
+import { Menu, X, Heart } from "lucide-react";
 
 const NAV_ITEMS = [
   { label: "Home", href: "/" },
@@ -19,7 +18,6 @@ const NAV_ITEMS = [
 export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = usePathname();
-  const { isPlaying, toggle } = useRadioPlayer();
 
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? "hidden" : "";
@@ -48,12 +46,12 @@ export default function Header() {
               priority
             />
           </div>
-          <span className="font-sans font-bold tracking-tight text-lg sm:text-xl text-[var(--color-ink)] hidden sm:inline-block">
+          <span className="font-sans font-extrabold tracking-tight text-lg sm:text-xl text-[var(--color-ink)] hidden sm:inline-block">
             VPM International
           </span>
         </Link>
 
-        {/* Center-Right: Nav Links & Far-Right CTA Controls (§4 & §7) */}
+        {/* Center-Right: Nav Links & Give CTA */}
         <div className="hidden lg:flex items-center gap-8">
           
           {/* Nav Links with 2px Lime Active Underline */}
@@ -77,44 +75,16 @@ export default function Header() {
             })}
           </nav>
 
-          {/* Far Right Controls (Separated by 24px gap) */}
-          <div className="flex items-center gap-4 pl-6 border-l border-[var(--color-line)]">
-            
-            {/* Docked "Live Radio" Utility Item */}
-            <button
-              type="button"
-              onClick={() => toggle()}
-              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[var(--color-surface-alt)] hover:bg-[var(--color-line)] border border-[var(--color-line)] text-xs font-sans text-[var(--color-ink)] transition-all cursor-pointer"
-              aria-label={isPlaying ? "Pause Live Radio" : "Play Live Radio"}
-            >
-              <Radio size={13} className="text-[var(--color-slate)]" />
-              {isPlaying ? (
-                <>
-                  <span className="flex h-2 w-2 relative">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--color-accent-ink)] opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-[var(--color-accent-ink)]"></span>
-                  </span>
-                  <Pause size={11} className="fill-[var(--color-ink)]" />
-                  <span className="font-bold">Playing Radio</span>
-                </>
-              ) : (
-                <>
-                  <Play size={11} className="fill-[var(--color-ink)] ml-0.5" />
-                  <span className="font-semibold">Live Radio</span>
-                </>
-              )}
-            </button>
-
-            {/* Solid Lime Pill Button (Give) */}
+          {/* Solid Lime Pill Button (Give) */}
+          <div className="pl-6 border-l border-[var(--color-line)]">
             <Link
               href="/give"
-              className="inline-flex items-center gap-1.5 px-5 py-2 text-sm font-sans font-bold text-[var(--color-accent-ink)] bg-[var(--color-accent)] hover:scale-105 rounded-full transition-all shadow-xs"
+              className="inline-flex items-center gap-1.5 px-6 py-2.5 text-sm font-sans font-bold text-[var(--color-accent-ink)] bg-[var(--color-accent)] hover:scale-105 rounded-full transition-all shadow-xs"
               id="give-cta"
             >
               <Heart size={14} className="fill-current" />
               <span>Give</span>
             </Link>
-
           </div>
 
         </div>
@@ -131,35 +101,21 @@ export default function Header() {
 
       </div>
 
-      {/* Mobile Slide-In Panel (§4) */}
+      {/* Mobile Slide-In Panel */}
       {mobileOpen && (
         <div className="fixed inset-0 top-[72px] z-50 bg-[var(--color-surface)] text-[var(--color-ink)] lg:hidden flex flex-col px-6 py-8 overflow-y-auto">
           
-          {/* Top Quick Controls in Mobile Panel */}
-          <div className="flex items-center justify-between gap-4 pb-6 border-b border-[var(--color-line)] mb-6">
-            <button
-              type="button"
-              onClick={() => {
-                toggle();
-                setMobileOpen(false);
-              }}
-              className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-3 rounded-full bg-[var(--color-surface-alt)] border border-[var(--color-line)] text-sm font-sans font-semibold text-[var(--color-ink)]"
-            >
-              {isPlaying ? <Pause size={16} /> : <Play size={16} />}
-              <span>{isPlaying ? "Pause Radio" : "Play Radio Stream"}</span>
-            </button>
-
+          <div className="pb-6 border-b border-[var(--color-line)] mb-6">
             <Link
               href="/give"
               onClick={() => setMobileOpen(false)}
-              className="inline-flex items-center justify-center gap-1.5 px-6 py-3 text-sm font-sans font-bold text-[var(--color-accent-ink)] bg-[var(--color-accent)] rounded-full shrink-0"
+              className="inline-flex items-center justify-center gap-1.5 w-full py-3 text-sm font-sans font-bold text-[var(--color-accent-ink)] bg-[var(--color-accent)] rounded-full"
             >
               <Heart size={16} className="fill-current" />
               <span>Give</span>
             </Link>
           </div>
 
-          {/* Mobile Nav Links (Stacked 20px, 24px gap) */}
           <nav className="flex flex-col gap-6" aria-label="Mobile navigation">
             {NAV_ITEMS.map((item) => {
               const active = pathname === item.href;

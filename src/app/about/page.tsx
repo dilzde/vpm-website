@@ -127,34 +127,28 @@ export default function AboutPage() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div className="bg-white border border-[var(--color-line)] rounded-[var(--radius-eight)] p-6 space-y-4 shadow-[var(--shadow-card)]">
-              <div className="h-48 w-full rounded-[var(--radius-eight)] overflow-hidden bg-[var(--color-surface-alt)] relative border border-[var(--color-line)]">
-                <PlaceholderSermon />
-              </div>
-              <div>
-                <h3 className="font-sans text-lg font-bold text-[var(--color-ink)]">Prophet Dr. Samo Mtishiby</h3>
-                <p className="text-xs text-[var(--color-slate)] font-sans">General Overseer & Founder</p>
-              </div>
+            <div className="bg-white border border-[var(--color-line)] rounded-[var(--radius-eight)] p-6 space-y-3 shadow-[var(--shadow-card)]">
+              <span className="inline-block bg-[var(--color-surface-alt)] text-[var(--color-anchor-olive)] font-bold text-xs px-3 py-1 rounded-full uppercase tracking-wider">
+                Founder & Prophet
+              </span>
+              <h3 className="font-sans text-xl font-extrabold text-[var(--color-ink)]">Prophet Dr. Samo Mtishiby</h3>
+              <p className="text-sm text-[var(--color-slate)] font-sans">General Overseer & Founder of VPM International</p>
             </div>
 
-            <div className="bg-white border border-[var(--color-line)] rounded-[var(--radius-eight)] p-6 space-y-4 shadow-[var(--shadow-card)]">
-              <div className="h-48 w-full rounded-[var(--radius-eight)] overflow-hidden bg-[var(--color-surface-alt)] relative border border-[var(--color-line)]">
-                <PlaceholderSermon />
-              </div>
-              <div>
-                <h3 className="font-sans text-lg font-bold text-[var(--color-ink)]">VPM Pastoral Council</h3>
-                <p className="text-xs text-[var(--color-slate)] font-sans">Nairobi & Kisumu Presbytery</p>
-              </div>
+            <div className="bg-white border border-[var(--color-line)] rounded-[var(--radius-eight)] p-6 space-y-3 shadow-[var(--shadow-card)]">
+              <span className="inline-block bg-[var(--color-surface-alt)] text-[var(--color-anchor-olive)] font-bold text-xs px-3 py-1 rounded-full uppercase tracking-wider">
+                Presbytery
+              </span>
+              <h3 className="font-sans text-xl font-extrabold text-[var(--color-ink)]">VPM Pastoral Council</h3>
+              <p className="text-sm text-[var(--color-slate)] font-sans">Nairobi Mlolongo & Kisumu Sanctuary Pastors</p>
             </div>
 
-            <div className="bg-white border border-[var(--color-line)] rounded-[var(--radius-eight)] p-6 space-y-4 shadow-[var(--shadow-card)]">
-              <div className="h-48 w-full rounded-[var(--radius-eight)] overflow-hidden bg-[var(--color-surface-alt)] relative border border-[var(--color-line)]">
-                <PlaceholderSermon />
-              </div>
-              <div>
-                <h3 className="font-sans text-lg font-bold text-[var(--color-ink)]">Intercessory Board</h3>
-                <p className="text-xs text-[var(--color-slate)] font-sans">National Prayer Directors</p>
-              </div>
+            <div className="bg-white border border-[var(--color-line)] rounded-[var(--radius-eight)] p-6 space-y-3 shadow-[var(--shadow-card)]">
+              <span className="inline-block bg-[var(--color-surface-alt)] text-[var(--color-anchor-olive)] font-bold text-xs px-3 py-1 rounded-full uppercase tracking-wider">
+                Intercession
+              </span>
+              <h3 className="font-sans text-xl font-extrabold text-[var(--color-ink)]">Intercessory Board</h3>
+              <p className="text-sm text-[var(--color-slate)] font-sans">National Territorial Prayer Directors</p>
             </div>
           </div>
         </div>
