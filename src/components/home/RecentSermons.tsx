@@ -1,98 +1,86 @@
 import React from "react";
 import Link from "next/link";
 import { Play, ArrowRight } from "lucide-react";
+import { getRecentVideos } from "@/lib/youtube";
+import PlaceholderSermon from "../placeholders/PlaceholderSermon";
 
-// Placeholder sermon data — in production, fetched from YouTube API
-const PLACEHOLDER_SERMONS = [
-  {
-    videoId: "placeholder-1",
-    title: "The Power of Prayer in Difficult Seasons",
-    thumbnailUrl: "",
-    publishedAt: "2024-12-15",
-    duration: "45:30",
-  },
-  {
-    videoId: "placeholder-2",
-    title: "Walking in Faith: A Prophetic Declaration",
-    thumbnailUrl: "",
-    publishedAt: "2024-12-08",
-    duration: "38:12",
-  },
-  {
-    videoId: "placeholder-3",
-    title: "Understanding Your Purpose in God's Kingdom",
-    thumbnailUrl: "",
-    publishedAt: "2024-12-01",
-    duration: "52:18",
-  },
-  {
-    videoId: "placeholder-4",
-    title: "The Anointing That Breaks Every Yoke",
-    thumbnailUrl: "",
-    publishedAt: "2024-11-24",
-    duration: "41:05",
-  },
-];
-
-export default function RecentSermons() {
-  const sermons = PLACEHOLDER_SERMONS;
+export default async function RecentSermons() {
+  const allSermons = await getRecentVideos();
+  const sermons = allSermons.slice(0, 4); // fetch 4 recent videos
 
   return (
-    <section className="bg-sky-50 py-16" id="recent-sermons">
+    <section className="bg-[var(--color-cloud)] py-16 md:py-24" id="recent-sermons">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between mb-8">
-          <h2 className="text-xl text-slate-800">Recent Sermons</h2>
+        <div className="flex items-end justify-between mb-8">
+          <div>
+            <p className="text-[var(--color-blue-500)] text-sm font-semibold tracking-widest uppercase mb-2">
+              Watch & Listen
+            </p>
+            <h2 className="text-3xl text-[var(--color-ink)]">Recent Sermons</h2>
+          </div>
           <Link
             href="/media"
-            className="flex items-center gap-1.5 text-sm font-medium text-sky-500 hover:text-sky-400 transition-colors"
+            className="hidden sm:flex items-center gap-2 text-sm font-semibold text-[var(--color-blue-500)] hover:text-[var(--color-blue-700)] transition-colors"
           >
             View All
-            <ArrowRight size={14} strokeWidth={1.75} />
+            <ArrowRight size={16} strokeWidth={2} />
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
           {sermons.map((sermon) => (
-            <article
+            <Link
               key={sermon.videoId}
-              className="bg-cloud border border-line rounded-md overflow-hidden hover:border-sky-200 transition-colors group"
+              href={`https://www.youtube.com/watch?v=${sermon.videoId}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-white border border-[var(--color-line)] rounded-[var(--radius-md)] overflow-hidden hover:border-[var(--color-blue-300)] transition-colors group flex flex-col shadow-sm h-full"
             >
               {/* Thumbnail */}
-              <div className="relative aspect-video bg-sky-100">
-                {sermon.thumbnailUrl ? (
+              <div className="relative aspect-video w-full overflow-hidden bg-[var(--color-mist)] shrink-0">
+                {sermon.thumbnail ? (
                   <img
-                    src={sermon.thumbnailUrl}
+                    src={sermon.thumbnail}
                     alt={sermon.title}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     loading="lazy"
                   />
                 ) : (
-                  <div className="absolute inset-0 flex flex-col items-center justify-center text-slate-600/30">
-                    <Play size={32} strokeWidth={1.5} />
+                  <PlaceholderSermon className="group-hover:scale-105 transition-transform duration-500" />
+                )}
+                <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors" />
+                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="w-12 h-12 rounded-full bg-white/90 flex items-center justify-center text-[var(--color-blue-500)] shadow-sm">
+                    <Play size={20} strokeWidth={2} className="ml-1" />
                   </div>
-                )}
-                {sermon.duration && (
-                  <span className="absolute bottom-2 right-2 px-1.5 py-0.5 bg-slate-900/80 text-white text-xs rounded-sm">
-                    {sermon.duration}
-                  </span>
-                )}
+                </div>
               </div>
 
               {/* Info */}
-              <div className="p-4">
-                <h3 className="text-sm font-medium text-slate-800 leading-snug line-clamp-2 group-hover:text-sky-500 transition-colors">
+              <div className="p-4 md:p-5 flex flex-col flex-1">
+                <h3 className="text-sm md:text-base font-bold text-[var(--color-ink)] leading-snug line-clamp-2 group-hover:text-[var(--color-blue-500)] transition-colors mb-2">
                   {sermon.title}
                 </h3>
-                <p className="text-xs text-slate-600/70 mt-2">
+                <p className="text-xs text-[var(--color-slate)] mt-auto">
                   {new Date(sermon.publishedAt).toLocaleDateString("en-US", {
-                    month: "short",
+                    month: "long",
                     day: "numeric",
                     year: "numeric",
                   })}
                 </p>
               </div>
-            </article>
+            </Link>
           ))}
+        </div>
+
+        <div className="mt-8 sm:hidden">
+          <Link
+            href="/media"
+            className="flex items-center justify-center gap-2 w-full py-3 text-sm font-semibold text-[var(--color-blue-700)] border border-[var(--color-blue-300)] rounded-[var(--radius-sm)] hover:bg-[var(--color-blue-100)] transition-colors"
+          >
+            View All Sermons
+            <ArrowRight size={16} strokeWidth={2} />
+          </Link>
         </div>
       </div>
     </section>

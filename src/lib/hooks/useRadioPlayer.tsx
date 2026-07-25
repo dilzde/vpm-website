@@ -78,66 +78,36 @@ export function useRadioPlayer(): RadioPlayerContextValue {
   return ctx;
 }
 
-/* ── Provider ───────────────────────────────────────────────────── */
 export function RadioPlayerProvider({ children }: { children: ReactNode }) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const [currentStation, setCurrentStation] = useState<RadioStationInfo | null>(
-    null
-  );
+  const [currentStation, setCurrentStation] = useState<RadioStationInfo | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isBuffering, setIsBuffering] = useState(false);
   const [visible, setVisible] = useState(false);
 
-  // Create audio element once
-  useEffect(() => {
-    const audio = new Audio();
-    audio.preload = "none";
+  const play = useCallback((station?: RadioStationInfo) => {
+    const target = station || currentStation || STATIONS[0];
+    if (!target || !audioRef.current) return;
 
-    audio.addEventListener("playing", () => {
-      setIsPlaying(true);
-      setIsBuffering(false);
-    });
-    audio.addEventListener("pause", () => setIsPlaying(false));
-    audio.addEventListener("waiting", () => setIsBuffering(true));
-    audio.addEventListener("canplay", () => setIsBuffering(false));
-    audio.addEventListener("error", () => {
-      setIsPlaying(false);
-      setIsBuffering(false);
-    });
-
-    audioRef.current = audio;
-
-    return () => {
-      audio.pause();
-      audio.src = "";
-      audio.load();
-    };
-  }, []);
-
-  const play = useCallback(
-    (station?: RadioStationInfo) => {
-      const target = station || currentStation || STATIONS[0];
-      if (!target || !audioRef.current) return;
-
-      const audio = audioRef.current;
-
-      // If switching station, update source
-      if (!currentStation || currentStation.id !== target.id) {
-        setCurrentStation(target);
-        audio.src = target.streamUrl;
-      }
-
-      setVisible(true);
+    if (!currentStation || currentStation.id !== target.id) {
+      setCurrentStation(target);
+      // We will let the audio tag src update via state before calling play
+      setTimeout(() => {
+        setIsBuffering(true);
+        audioRef.current?.play().catch(console.error);
+        setVisible(true);
+      }, 50);
+    } else {
       setIsBuffering(true);
-      audio.play().catch(() => {
-        setIsBuffering(false);
-      });
-    },
-    [currentStation]
-  );
+      audioRef.current.play().catch(console.error);
+      setVisible(true);
+    }
+  }, [currentStation]);
 
   const pause = useCallback(() => {
-    audioRef.current?.pause();
+    if (audioRef.current) {
+      audioRef.current.pause();
+    }
   }, []);
 
   const toggle = useCallback(() => {
@@ -149,11 +119,9 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
   }, [isPlaying, pause, play]);
 
   const stop = useCallback(() => {
-    const audio = audioRef.current;
-    if (audio) {
-      audio.pause();
-      audio.src = "";
-      audio.load();
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
     }
     setCurrentStation(null);
     setIsPlaying(false);
@@ -161,15 +129,12 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
     setVisible(false);
   }, []);
 
-  const setStation = useCallback(
-    (station: RadioStationInfo) => {
-      setCurrentStation(station);
-      if (isPlaying) {
-        play(station);
-      }
-    },
-    [isPlaying, play]
-  );
+  const setStation = useCallback((station: RadioStationInfo) => {
+    setCurrentStation(station);
+    if (isPlaying) {
+      play(station);
+    }
+  }, [isPlaying, play]);
 
   return (
     <RadioPlayerContext.Provider
@@ -186,6 +151,22 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
         setStation,
       }}
     >
+      {/* Hidden audio element bound to state */}
+      <audio
+        ref={audioRef}
+        src={currentStation?.streamUrl || ""}
+        onPlaying={() => {
+          setIsPlaying(true);
+          setIsBuffering(false);
+        }}
+        onPause={() => setIsPlaying(false)}
+        onWaiting={() => setIsBuffering(true)}
+        onCanPlay={() => setIsBuffering(false)}
+        onError={() => {
+          setIsPlaying(false);
+          setIsBuffering(false);
+        }}
+      />
       {children}
     </RadioPlayerContext.Provider>
   );

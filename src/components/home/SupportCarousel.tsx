@@ -1,48 +1,66 @@
-"use client";
-
 import React from "react";
-import Carousel from "@/components/Carousel";
-import { Heart, HandCoins } from "lucide-react";
+import Link from "next/link";
+import { Heart, HandCoins, ShieldCheck } from "lucide-react";
 
 export default function SupportCarousel() {
   const mpesaNumber = process.env.NEXT_PUBLIC_MPESA_NUMBER || "0759265819";
 
   const slides = [
     {
-      title: "Support the Mission",
-      body: `Give via M-Pesa to ${mpesaNumber}. Your generosity enables us to preach the Gospel, equip believers, and support communities across Kenya and beyond.`,
+      title: "Give via M-Pesa",
+      body: `Use Till Number ${mpesaNumber}. Your generosity enables us to preach the Gospel and equip believers.`,
       icon: HandCoins,
+      link: "/give",
     },
     {
-      title: "Why It Matters",
-      body: "Every contribution funds outreach programs, radio broadcasts, convention events, and the training of new ministers in the Word.",
+      title: "Outreach & Missions",
+      body: "Every contribution funds our outreach programs, radio broadcasts, and the training of new ministers.",
       icon: Heart,
+      link: "/give",
     },
     {
-      title: "Thank You",
-      body: "Your faithful giving makes this ministry possible. May the Lord multiply your seed and bless every sacrifice you make for His kingdom.",
-      icon: Heart,
+      title: "Kingdom Integrity",
+      body: "We manage resources faithfully, ensuring every seed sown goes directly into spreading the Word.",
+      icon: ShieldCheck,
+      link: "/give",
     },
   ];
 
   return (
-    <section className="bg-white py-16" id="support-section">
+    <section className="bg-[var(--color-cloud)] py-16 md:py-24" id="support-section">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <Carousel ariaLabel="Support the Mission" autoPlay={7000}>
+        <div className="mb-8">
+          <p className="text-[var(--color-blue-500)] text-sm font-semibold tracking-widest uppercase mb-2">
+            Support the Mission
+          </p>
+          <h2 className="text-3xl text-[var(--color-ink)]">Partner with VPM</h2>
+        </div>
+
+        {/* Scroll-snap container */}
+        <div className="flex overflow-x-auto snap-x snap-mandatory gap-4 md:gap-6 pb-6 -mx-4 px-4 sm:mx-0 sm:px-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
           {slides.map((slide, i) => (
-            <div key={i} className="bg-cloud p-8 md:p-12 min-h-48 flex flex-col justify-center">
-              <div className="flex items-center gap-2.5 mb-4">
-                <slide.icon size={20} strokeWidth={1.75} className="text-sky-500" />
-                <h3 className="text-lg md:text-xl font-serif font-bold text-slate-800">
-                  {slide.title}
-                </h3>
+            <div
+              key={i}
+              className="flex-none snap-start snap-always w-[85vw] sm:w-[45vw] md:w-[31.333%] bg-white p-6 md:p-8 rounded-[var(--radius-lg)] border border-[var(--color-line)] flex flex-col"
+            >
+              <div className="w-12 h-12 rounded-full bg-[var(--color-mist)] text-[var(--color-blue-500)] flex items-center justify-center mb-6">
+                <slide.icon size={24} strokeWidth={2} />
               </div>
-              <p className="text-sm md:text-base text-slate-600 max-w-prose">
+              <h3 className="text-xl font-bold text-[var(--color-ink)] mb-3">
+                {slide.title}
+              </h3>
+              <p className="text-sm md:text-base text-[var(--color-slate)] mb-6 flex-1">
                 {slide.body}
               </p>
+              <Link
+                href={slide.link}
+                className="inline-flex items-center text-sm font-semibold text-[var(--color-blue-500)] hover:text-[var(--color-blue-700)] transition-colors mt-auto"
+              >
+                Learn how →
+              </Link>
             </div>
           ))}
-        </Carousel>
+        </div>
       </div>
     </section>
   );

@@ -1,0 +1,34 @@
+[
+  {
+    "id": "1",
+    "title": "Sunday Worship Service",
+    "date": "2026-07-26T09:00:00",
+    "time": "9:00 AM",
+    "location": "VPM Nairobi",
+    "isOnline": true
+  },
+  {
+    "id": "2",
+    "title": "Mid-Week Prayer Meeting",
+    "date": "2026-07-29T18:00:00",
+    "time": "6:00 PM",
+    "location": "VPM Nairobi",
+    "isOnline": false
+  },
+  {
+    "id": "3",
+    "title": "Annual Convention 2026",
+    "date": "2026-08-14T08:00:00",
+    "time": "8:00 AM – 5:00 PM",
+    "location": "Nairobi Conference Center",
+    "isOnline": true
+  },
+  {
+    "id": "4",
+    "title": "Youth Revival Night",
+    "date": "2026-08-18T19:00:00",
+    "time": "7:00 PM",
+    "location": "VPM Mombasa",
+    "isOnline": false
+  }
+]

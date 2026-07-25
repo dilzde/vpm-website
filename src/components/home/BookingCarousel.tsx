@@ -1,8 +1,5 @@
-"use client";
-
 import React from "react";
 import Link from "next/link";
-import Carousel from "@/components/Carousel";
 import { Calendar, MessageCircle, Users } from "lucide-react";
 
 export default function BookingCarousel() {
@@ -36,50 +33,58 @@ export default function BookingCarousel() {
   ];
 
   return (
-    <section className="bg-sky-50 py-16" id="booking-section">
+    <section className="bg-white py-16 md:py-24" id="booking-section">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <h2 className="text-xl text-slate-800 mb-8">Get Involved</h2>
+        <div className="mb-8">
+          <p className="text-[var(--color-blue-500)] text-sm font-semibold tracking-widest uppercase mb-2">
+            Get Involved
+          </p>
+          <h2 className="text-3xl text-[var(--color-ink)]">Next Steps</h2>
+        </div>
 
-        <Carousel ariaLabel="Get Involved" autoPlay={0}>
+        {/* Mobile: scroll-snap, Desktop: 3-col grid */}
+        <div className="flex md:grid md:grid-cols-3 overflow-x-auto snap-x snap-mandatory gap-4 md:gap-8 pb-6 -mx-4 px-4 sm:mx-0 sm:px-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
           {cards.map((card, i) => (
-            <div key={i} className="bg-cloud p-8 md:p-10 min-h-48 flex flex-col justify-between">
+            <div
+              key={i}
+              className="flex-none snap-start snap-always w-[85vw] sm:w-[50vw] md:w-auto bg-[var(--color-mist)] p-6 md:p-8 rounded-[var(--radius-lg)] flex flex-col justify-between"
+            >
               <div>
-                <div className="flex items-center gap-2.5 mb-4">
-                  <div className="p-2 rounded-md bg-sky-50">
-                    <card.icon size={20} strokeWidth={1.75} className="text-sky-500" />
-                  </div>
-                  <h3 className="text-lg font-serif font-bold text-slate-800">
-                    {card.title}
-                  </h3>
+                <div className="w-12 h-12 rounded-full bg-[var(--color-blue-100)] text-[var(--color-blue-500)] flex items-center justify-center mb-5 shadow-sm">
+                  <card.icon size={24} strokeWidth={2} />
                 </div>
-                <p className="text-sm text-slate-600 max-w-prose mb-6">
+                <h3 className="text-xl font-bold text-[var(--color-ink)] mb-2">
+                  {card.title}
+                </h3>
+                <p className="text-sm md:text-base text-[var(--color-slate)] mb-8">
                   {card.body}
                 </p>
               </div>
+              
               {card.external ? (
                 <a
                   href={card.ctaUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center px-5 py-2.5 text-sm font-medium
-                             bg-sky-500 text-white rounded-md hover:bg-sky-400 transition-colors w-fit
-                             focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500"
+                  className="flex items-center justify-center px-5 py-3 text-sm font-semibold
+                             bg-[var(--color-blue-500)] text-white rounded-[var(--radius-sm)] hover:bg-[var(--color-blue-700)] transition-colors w-full
+                             focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-blue-500)]"
                 >
                   {card.ctaLabel}
                 </a>
               ) : (
                 <Link
                   href={card.ctaUrl}
-                  className="inline-flex items-center justify-center px-5 py-2.5 text-sm font-medium
-                             bg-sky-500 text-white rounded-md hover:bg-sky-400 transition-colors w-fit
-                             focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500"
+                  className="flex items-center justify-center px-5 py-3 text-sm font-semibold
+                             bg-[var(--color-blue-500)] text-white rounded-[var(--radius-sm)] hover:bg-[var(--color-blue-700)] transition-colors w-full
+                             focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-blue-500)]"
                 >
                   {card.ctaLabel}
                 </Link>
               )}
             </div>
           ))}
-        </Carousel>
+        </div>
       </div>
     </section>
   );
