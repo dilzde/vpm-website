@@ -2,7 +2,6 @@ import React from "react";
 import { Metadata } from "next";
 import Link from "next/link";
 import { Phone, ArrowUpRight, Globe, Search } from "lucide-react";
-import PlaceholderSermon from "@/components/placeholders/PlaceholderSermon";
 import { FOUR_BRANCHES } from "@/components/home/BranchesPreview";
 
 export const metadata: Metadata = {
@@ -42,48 +41,37 @@ export default function BranchesPage() {
           </div>
         </div>
 
-        {/* Featured Main Church Hero Card (§F) */}
-        <div className="bg-white border border-[var(--color-accent)] rounded-[var(--radius-image)] p-6 sm:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center shadow-[var(--shadow-card)] ring-1 ring-[var(--color-accent)]">
-          <div className="lg:col-span-7 h-[240px] sm:h-[300px] rounded-[var(--radius-eight)] overflow-hidden bg-[var(--color-surface-alt)] relative border border-[var(--color-line)]">
-            <PlaceholderSermon />
-            <div className="absolute top-4 left-4 bg-[var(--color-accent)] text-[var(--color-accent-ink)] font-bold text-xs px-3 py-1 rounded-full uppercase tracking-wider">
-              Main Sanctuary & Church
-            </div>
+        {/* Featured Main Church Hero Card (No image placeholder box) */}
+        <div className="bg-white border border-[var(--color-accent)] rounded-[var(--radius-image)] p-8 sm:p-10 shadow-[var(--shadow-card)] ring-1 ring-[var(--color-accent)] space-y-4">
+          <span className="inline-block bg-[var(--color-accent)] text-[var(--color-accent-ink)] font-bold text-xs px-3 py-1 rounded-full uppercase tracking-wider">
+            Main Sanctuary & Church
+          </span>
+          <h2 className="font-sans text-3xl sm:text-4xl font-extrabold text-[var(--color-ink)]">
+            {featuredBranch.name}
+          </h2>
+          <p className="text-base font-semibold text-[var(--color-slate)] font-sans">
+            {featuredBranch.location}
+          </p>
+          <div className="flex items-center gap-3 text-base text-[var(--color-ink)] font-sans pt-2">
+            <Phone size={18} className="text-[var(--color-slate)] shrink-0" />
+            <a href={`tel:${featuredBranch.phone.replace(/\s+/g, '')}`} className="font-bold hover:underline">
+              {featuredBranch.phone}
+            </a>
           </div>
-
-          <div className="lg:col-span-5 space-y-4">
-            <span className="text-xs font-sans font-bold text-[var(--color-terracotta)] uppercase tracking-wider block">
-              {featuredBranch.location}
-            </span>
-            <h2 className="font-sans text-2xl sm:text-3xl font-extrabold text-[var(--color-ink)]">
-              {featuredBranch.name}
-            </h2>
-            <p className="text-sm text-[var(--color-slate)] leading-relaxed font-sans">
-              Our main sanctuary located at Family Bank, Mlolongo, hosting regular prophetic worship, teaching services, and continuous prayer vigils.
-            </p>
-
-            <div className="flex items-center gap-2.5 text-sm text-[var(--color-ink)] font-sans pt-2">
-              <Phone size={16} className="text-[var(--color-slate)] shrink-0" />
-              <a href={`tel:${featuredBranch.phone.replace(/\s+/g, '')}`} className="font-bold hover:underline">
-                {featuredBranch.phone}
-              </a>
-            </div>
-
-            <div className="pt-4 flex items-center gap-4">
-              <a
-                href={featuredBranch.mapsUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[var(--color-navy-900)] text-white text-sm font-sans font-bold hover:scale-105 transition-all shadow-xs"
-              >
-                <span>See Location</span>
-                <ArrowUpRight size={16} />
-              </a>
-            </div>
+          <div className="pt-4">
+            <a
+              href={featuredBranch.mapsUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-[var(--color-navy-900)] text-white text-sm font-sans font-bold hover:scale-105 transition-all shadow-xs"
+            >
+              <span>See Location</span>
+              <ArrowUpRight size={18} />
+            </a>
           </div>
         </div>
 
-        {/* 4 Branch Grid (§F Card Spec) */}
+        {/* 4 Clean Branch Cards Grid — No Image Placeholders */}
         <div>
           <h3 className="text-xs font-sans font-bold tracking-widest text-[var(--color-slate)] uppercase mb-6">
             ALL REGIONAL SANCTUARIES
@@ -93,38 +81,42 @@ export default function BranchesPage() {
             {FOUR_BRANCHES.map((branch) => (
               <div
                 key={branch.id}
-                className="bg-white border border-[var(--color-line)] rounded-[var(--radius-eight)] p-6 flex flex-col justify-between h-full shadow-[var(--shadow-card)]"
+                className={`bg-white border rounded-[var(--radius-eight)] p-6 flex flex-col justify-between h-full shadow-[var(--shadow-card)] transition-all ${
+                  branch.isFeatured ? "border-[var(--color-accent)] ring-1 ring-[var(--color-accent)]" : "border-[var(--color-line)]"
+                }`}
               >
                 <div>
-                  <div className="h-[130px] w-full rounded-[var(--radius-eight)] overflow-hidden bg-[var(--color-surface-alt)] border border-[var(--color-line)] relative mb-4">
-                    <PlaceholderSermon />
-                  </div>
+                  {branch.isFeatured && (
+                    <span className="inline-block bg-[var(--color-accent)] text-[var(--color-accent-ink)] font-bold text-[10px] uppercase px-2.5 py-0.5 rounded-full mb-3 tracking-wider">
+                      Main Sanctuary
+                    </span>
+                  )}
 
-                  <h3 className="font-sans text-lg font-bold text-[var(--color-ink)] mb-1 leading-snug">
+                  <h3 className="font-sans text-xl font-extrabold text-[var(--color-ink)] mb-1 leading-snug">
                     {branch.name}
                   </h3>
                   
-                  <p className="text-xs font-sans text-[var(--color-slate)] mb-4">
+                  <p className="text-sm font-sans text-[var(--color-slate)] mb-6 font-medium">
                     {branch.location}
                   </p>
 
-                  <div className="flex items-center gap-2 text-xs font-sans text-[var(--color-ink)] mb-4">
-                    <Phone size={14} className="text-[var(--color-slate)] shrink-0" />
-                    <a href={`tel:${branch.phone.replace(/\s+/g, '')}`} className="font-semibold hover:underline">
+                  <div className="flex items-center gap-2.5 text-sm text-[var(--color-ink)] font-sans mb-6 bg-[var(--color-surface-alt)] p-3 rounded-[var(--radius-eight)] border border-[var(--color-line)]">
+                    <Phone size={16} className="text-[var(--color-ink)] shrink-0" />
+                    <a href={`tel:${branch.phone.replace(/\s+/g, '')}`} className="font-bold hover:underline">
                       {branch.phone}
                     </a>
                   </div>
                 </div>
 
-                <div className="pt-4 border-t border-[var(--color-line)] mt-2">
+                <div className="pt-4 border-t border-[var(--color-line)]">
                   <a
                     href={branch.mapsUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 text-xs font-sans font-bold text-[var(--color-ink)] hover:underline"
+                    className="inline-flex items-center justify-between w-full text-xs font-sans font-bold text-[var(--color-ink)] hover:underline"
                   >
                     <span>See Location</span>
-                    <ArrowUpRight size={14} />
+                    <ArrowUpRight size={16} />
                   </a>
                 </div>
               </div>

@@ -1,12 +1,11 @@
 import React from "react";
 import HeroSection from "@/components/home/HeroSection";
 import QuickActionsRow from "@/components/home/QuickActionsRow";
-import NextServiceBanner from "@/components/home/NextServiceBanner";
+import GatheringsAnnouncementsCarousel from "@/components/home/GatheringsAnnouncementsCarousel";
 import LiveRadioBand from "@/components/home/LiveRadioBand";
 import HeartbeatBand from "@/components/home/HeartbeatBand";
 import NumberedValues from "@/components/home/NumberedValues";
 import AboutSection from "@/components/home/AboutSection";
-import AnnouncementsSection from "@/components/home/AnnouncementsSection";
 import RecentSermons from "@/components/home/RecentSermons";
 import SupportMissionBand from "@/components/home/SupportMissionBand";
 import BranchesPreview from "@/components/home/BranchesPreview";
@@ -20,11 +19,11 @@ export default function HomePage() {
       {/* 1. Hero Section (§C) */}
       <HeroSection />
 
-      {/* 2. Quick Actions Row (§D — Net-New directly below Hero) */}
+      {/* 2. Quick Actions Row (§D — Directly below Hero) */}
       <QuickActionsRow />
 
-      {/* 3. Real-Time Next Service Banner (§J — Directly below Quick Actions) */}
-      <NextServiceBanner />
+      {/* 3. Gatherings & Announcements Carousel + Real-Time Next Service Banner (Directly below Quick Actions) */}
+      <GatheringsAnnouncementsCarousel />
 
       {/* 4. Live & Radio Band */}
       <LiveRadioBand />
@@ -38,19 +37,16 @@ export default function HomePage() {
       {/* 7. About / Who We Are Band (§G Copy) */}
       <AboutSection />
 
-      {/* 8. Announcements Strip */}
-      <AnnouncementsSection />
-
-      {/* 9. Recent Sermons / Watch Strip */}
+      {/* 8. Recent Sermons / Watch Strip */}
       <RecentSermons />
 
-      {/* 10. Support the Mission Band (§E Copy) */}
+      {/* 9. Support the Mission Band (§E Copy) */}
       <SupportMissionBand />
 
-      {/* 11. Branches Preview (§F — 4 Real Branches Only) */}
+      {/* 10. Branches Preview (§F — 4 Clean Real Branches Cards Only) */}
       <BranchesPreview />
 
-      {/* 12. Interactive Above-Footer Gallery */}
+      {/* 11. Interactive Above-Footer Gallery */}
       <ImageGallery />
     </main>
   );

@@ -1,7 +1,6 @@
 import React from "react";
 import Link from "next/link";
 import { Phone, ArrowUpRight } from "lucide-react";
-import PlaceholderSermon from "../placeholders/PlaceholderSermon";
 
 export interface BranchRecord {
   id: string;
@@ -73,7 +72,7 @@ export default function BranchesPreview() {
           </Link>
         </div>
 
-        {/* 4 Branch Cards Grid (§F Card Spec) */}
+        {/* 4 Clean Branch Cards Grid — No Image Placeholders, ONLY Name, Location, Phone & See Location */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {FOUR_BRANCHES.map((branch) => (
             <div
@@ -83,44 +82,41 @@ export default function BranchesPreview() {
               }`}
             >
               <div>
-                {/* Building Illustration Container */}
-                <div className="h-[130px] w-full rounded-[var(--radius-eight)] overflow-hidden bg-[var(--color-surface-alt)] border border-[var(--color-line)] relative mb-4">
-                  <PlaceholderSermon />
-                  {branch.isFeatured && (
-                    <span className="absolute top-2 left-2 bg-[var(--color-accent)] text-[var(--color-accent-ink)] font-bold text-[10px] uppercase px-2 py-0.5 rounded">
-                      Featured Main Sanctuary
-                    </span>
-                  )}
-                </div>
+                {/* Featured Badge Pill */}
+                {branch.isFeatured && (
+                  <span className="inline-block bg-[var(--color-accent)] text-[var(--color-accent-ink)] font-bold text-[10px] uppercase px-2.5 py-0.5 rounded-full mb-3 tracking-wider">
+                    Main Sanctuary
+                  </span>
+                )}
 
                 {/* Branch Name & Location */}
-                <h3 className="font-sans text-lg font-bold text-[var(--color-ink)] mb-1 leading-snug">
+                <h3 className="font-sans text-xl font-extrabold text-[var(--color-ink)] mb-1 leading-snug">
                   {branch.name}
                 </h3>
 
-                <p className="text-xs font-sans text-[var(--color-slate)] mb-4">
+                <p className="text-sm font-sans text-[var(--color-slate)] mb-6 font-medium">
                   {branch.location}
                 </p>
 
-                {/* Phone Number (Tap to Call §F) */}
-                <div className="flex items-center gap-2 text-xs font-sans text-[var(--color-ink)] mb-4">
-                  <Phone size={14} className="text-[var(--color-slate)] shrink-0" />
-                  <a href={`tel:${branch.phone.replace(/\s+/g, '')}`} className="font-semibold hover:underline">
+                {/* Phone Number (Tap to Call) */}
+                <div className="flex items-center gap-2.5 text-sm font-sans text-[var(--color-ink)] mb-6 bg-[var(--color-surface-alt)] p-3 rounded-[var(--radius-eight)] border border-[var(--color-line)]">
+                  <Phone size={16} className="text-[var(--color-ink)] shrink-0" />
+                  <a href={`tel:${branch.phone.replace(/\s+/g, '')}`} className="font-bold hover:underline">
                     {branch.phone}
                   </a>
                 </div>
               </div>
 
-              {/* See Location Map Link (§F) */}
-              <div className="pt-4 border-t border-[var(--color-line)] mt-2">
+              {/* See Location Map Link */}
+              <div className="pt-4 border-t border-[var(--color-line)]">
                 <a
                   href={branch.mapsUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 text-xs font-sans font-bold text-[var(--color-ink)] hover:underline"
+                  className="inline-flex items-center justify-between w-full text-xs font-sans font-bold text-[var(--color-ink)] hover:underline"
                 >
                   <span>See Location</span>
-                  <ArrowUpRight size={14} />
+                  <ArrowUpRight size={16} />
                 </a>
               </div>
             </div>
