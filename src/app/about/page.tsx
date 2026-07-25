@@ -115,43 +115,7 @@ export default function AboutPage() {
           </div>
         </div>
 
-        {/* 3. Context: Leadership Grid */}
-        <div>
-          <div className="max-w-2xl mb-10">
-            <span className="text-xs font-sans font-bold tracking-widest text-[var(--color-slate)] uppercase block mb-2">
-              PASTORAL LEADERSHIP
-            </span>
-            <h2 className="font-sans text-3xl font-extrabold text-[var(--color-ink)]">
-              Ministry Presbytery & Founder
-            </h2>
-          </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div className="bg-white border border-[var(--color-line)] rounded-[var(--radius-eight)] p-6 space-y-3 shadow-[var(--shadow-card)]">
-              <span className="inline-block bg-[var(--color-surface-alt)] text-[var(--color-anchor-olive)] font-bold text-xs px-3 py-1 rounded-full uppercase tracking-wider">
-                Founder & Prophet
-              </span>
-              <h3 className="font-sans text-xl font-extrabold text-[var(--color-ink)]">Prophet Dr. Samo Mtishiby</h3>
-              <p className="text-sm text-[var(--color-slate)] font-sans">General Overseer & Founder of VPM International</p>
-            </div>
-
-            <div className="bg-white border border-[var(--color-line)] rounded-[var(--radius-eight)] p-6 space-y-3 shadow-[var(--shadow-card)]">
-              <span className="inline-block bg-[var(--color-surface-alt)] text-[var(--color-anchor-olive)] font-bold text-xs px-3 py-1 rounded-full uppercase tracking-wider">
-                Presbytery
-              </span>
-              <h3 className="font-sans text-xl font-extrabold text-[var(--color-ink)]">VPM Pastoral Council</h3>
-              <p className="text-sm text-[var(--color-slate)] font-sans">Nairobi Mlolongo & Kisumu Sanctuary Pastors</p>
-            </div>
-
-            <div className="bg-white border border-[var(--color-line)] rounded-[var(--radius-eight)] p-6 space-y-3 shadow-[var(--shadow-card)]">
-              <span className="inline-block bg-[var(--color-surface-alt)] text-[var(--color-anchor-olive)] font-bold text-xs px-3 py-1 rounded-full uppercase tracking-wider">
-                Intercession
-              </span>
-              <h3 className="font-sans text-xl font-extrabold text-[var(--color-ink)]">Intercessory Board</h3>
-              <p className="text-sm text-[var(--color-slate)] font-sans">National Territorial Prayer Directors</p>
-            </div>
-          </div>
-        </div>
 
         {/* 4. Anchor Band: Global Presence */}
         <div className="bg-[var(--color-anchor-olive)] text-white rounded-[var(--radius-block)] p-8 sm:p-12 text-center flex flex-col items-center shadow-[var(--shadow-xl)]">
