@@ -1,63 +1,84 @@
-"use client";
-
 import React from "react";
-import Carousel from "@/components/Carousel";
-import PlaceholderAnnouncement from "../placeholders/PlaceholderAnnouncement";
+import Link from "next/link";
+import { Calendar } from "lucide-react";
 
-const FALLBACK_SLIDES = [
+const ANNOUNCEMENTS = [
   {
-    headline: "Welcome to Voice of the Potter's Messengers",
-    body: "An apostolic and evangelistic ministry dedicated to prayer, prophecy, and releasing the uncompromised power of the Gospel.",
+    id: "1",
+    date: "THIS SUNDAY",
+    title: "Prophetic Service & Deliverance",
+    subtitle: "Join us for morning worship, foundational teaching, and powerful intercession.",
+    time: "9:00 AM – 1:00 PM",
   },
   {
-    headline: "Join Our Intercessory Prayer Shield",
-    body: "Submit your urgent prayer needs online; our dedicated ministers stand with you in constant intercession.",
+    id: "2",
+    date: "MIDWEEK",
+    title: "Wednesday Teaching & Prayer",
+    subtitle: "Deep dive into scripture and territorial prayer at our Githurai sanctuary.",
+    time: "5:30 PM – 7:30 PM",
   },
   {
-    headline: "Asriel TV & FM Broadcasting 24/7",
-    body: "Stream high-definition sermons and live spiritual encouragement directly from anywhere across the globe.",
+    id: "3",
+    date: "MONTHLY",
+    title: "Night of Deliverance & Healing",
+    subtitle: "Overnight prayer vigil seeking God's supernatural breakthrough.",
+    time: "9:00 PM – 4:00 AM",
   },
 ];
 
 export default function AnnouncementsSection() {
-  const announcements = FALLBACK_SLIDES;
-
   return (
-    <section className="band-white py-16 md:py-24" id="announcements-section">
+    <section
+      className="bg-[var(--color-cream)] text-[var(--color-ink)] py-16 md:py-24 border-b border-[var(--color-line)]"
+      id="announcements-section"
+    >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="mb-10 text-center sm:text-left">
-          <p className="text-[var(--color-accent)] text-xs font-display font-bold tracking-widest uppercase mb-2">
-            Kingdom Updates & News
-          </p>
-          <h2 className="text-3xl md:text-4xl font-display font-extrabold text-[var(--color-ink)] tracking-tight">
-            Ministry <span className="highlight-block">Announcements</span>
-          </h2>
+        
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-10">
+          <div>
+            <span className="text-xs font-sans font-bold tracking-widest text-[var(--color-terracotta)] uppercase block mb-2">
+              Ministry Updates
+            </span>
+            <h2 className="font-serif text-3xl sm:text-4xl text-[var(--color-navy-900)] font-semibold">
+              Gatherings & Announcements
+            </h2>
+          </div>
+          <Link
+            href="/events"
+            className="text-sm font-sans font-semibold text-[var(--color-terracotta)] hover:underline mt-4 md:mt-0 transition-colors"
+          >
+            View all events →
+          </Link>
         </div>
 
-        <Carousel ariaLabel="Announcements" autoPlay={6000}>
-          {announcements.map((slide, i) => (
+        {/* Compact Info-Cards Row (Reference 5 Pattern + Terracotta Blended Badges) */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 overflow-x-auto pb-2">
+          {ANNOUNCEMENTS.map((item) => (
             <div
-              key={i}
-              className="relative w-full aspect-[16/9] md:aspect-[21/8] rounded-[var(--radius-lg)] overflow-hidden group border border-[var(--color-line)] shadow-md"
+              key={item.id}
+              className="p-6 rounded-lg bg-white border border-[var(--color-line)] flex flex-col justify-between shadow-xs"
             >
-              <PlaceholderAnnouncement />
-              
-              {/* Deep navy scrim gradient */}
-              <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-navy-950)] via-[var(--color-navy-900)]/70 to-transparent opacity-90" />
-              
-              {/* Editorial content overlaid at bottom */}
-              <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-10 md:p-12 flex flex-col justify-end">
-                <span className="w-12 h-1 bg-[var(--color-accent)] mb-4 rounded-full" />
-                <h3 className="text-2xl sm:text-3xl md:text-4xl font-display font-extrabold text-white mb-3 leading-tight tracking-tight">
-                  {slide.headline}
+              <div>
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-[var(--color-cream)] border border-[var(--color-terracotta)]/30 mb-4">
+                  <Calendar size={13} className="text-[var(--color-terracotta)]" />
+                  <span className="text-xs font-sans font-bold text-[var(--color-terracotta)] tracking-wider">
+                    {item.date}
+                  </span>
+                </div>
+                <h3 className="font-sans text-lg font-bold text-[var(--color-navy-900)] mb-2">
+                  {item.title}
                 </h3>
-                <p className="text-sm md:text-lg text-slate-200 max-w-3xl line-clamp-2 md:line-clamp-1 font-sans">
-                  {slide.body}
+                <p className="text-sm text-[var(--color-slate)] leading-relaxed font-sans mb-4">
+                  {item.subtitle}
                 </p>
+              </div>
+              <div className="pt-3 border-t border-[var(--color-line)] text-xs font-sans font-semibold text-[var(--color-navy-700)]">
+                {item.time}
               </div>
             </div>
           ))}
-        </Carousel>
+        </div>
+
       </div>
     </section>
   );

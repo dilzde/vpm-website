@@ -1,7 +1,7 @@
 import React from "react";
 import { Metadata } from "next";
-import { MapPin, Phone, Mail, ExternalLink, Globe, Compass } from "lucide-react";
-import PlaceholderBranch from "@/components/placeholders/PlaceholderBranch";
+import { MapPin, Phone, Mail, ArrowUpRight } from "lucide-react";
+import PlaceholderSermon from "@/components/placeholders/PlaceholderSermon";
 
 export const metadata: Metadata = {
   title: "Branches & Sanctuary Locations | VPM International",
@@ -10,122 +10,131 @@ export const metadata: Metadata = {
 };
 
 const BRANCHES = [
-  { id: "kisumu-hq", name: "Kisumu Headquarters", region: "Kisumu", address: "Brightlight Building, Kisumu", phone: "+254 757 871 123", email: "vpminternational2@gmail.com", mapsUrl: "https://maps.app.goo.gl/CzAQhusk4crKfLjHA", active: true },
-  { id: "nairobi", name: "Nairobi Branch", region: "Nairobi", address: "Family Bank Bldg, Mlolongo", phone: "+254 794 731 831", email: "vpminternational2@gmail.com", mapsUrl: "https://maps.app.goo.gl/XyRajWmu3kFt8h5K9", active: true },
-  { id: "kisumu-branch", name: "Kisumu Branch", region: "Kisumu", address: "Nyamasaria Sanctuary", phone: "+254 720 408 630", email: "vpminternational2@gmail.com", mapsUrl: "https://maps.google.com/?q=-0.091702,34.767956", active: true },
-  { id: "siaya", name: "Siaya Branch", region: "Siaya", address: "Central Siaya Sanctuary", phone: "+254 794 731 831", email: "vpminternational2@gmail.com", mapsUrl: "https://maps.google.com/?q=-0.303099,36.080026", active: true },
-  { id: "machakos", name: "Machakos Branch", region: "Machakos", address: "Machakos Revival Center", phone: "+254 794 731 831", email: "vpminternational2@gmail.com", mapsUrl: "https://maps.google.com/?q=-1.517683,37.263414", active: true },
+  {
+    id: "githurai-main",
+    name: "Githurai Main Altar",
+    region: "Nairobi / Kiambu",
+    address: "Githurai 45, Off Thika Superhighway, Nairobi",
+    phone: "0759265819",
+    email: "vpminternational2@gmail.com",
+    services: "Sunday 9:00 AM | Wed 5:30 PM",
+  },
+  {
+    id: "nairobi-cbd",
+    name: "Nairobi Central Branch",
+    region: "Nairobi CBD",
+    address: "Town Center Sanctuary, Nairobi",
+    phone: "0759265819",
+    email: "vpminternational2@gmail.com",
+    services: "Sunday 10:00 AM | Fri 5:30 PM",
+  },
+  {
+    id: "nakuru-altar",
+    name: "Nakuru Revival Sanctuary",
+    region: "Rift Valley",
+    address: "Nakuru Town Center, Nakuru",
+    phone: "0759265819",
+    email: "vpminternational2@gmail.com",
+    services: "Sunday 9:30 AM",
+  },
+  {
+    id: "kisumu-branch",
+    name: "Kisumu Sanctuary",
+    region: "Nyanza",
+    address: "Nyamasaria Sanctuary, Kisumu",
+    phone: "0759265819",
+    email: "vpminternational2@gmail.com",
+    services: "Sunday 9:00 AM",
+  },
+  {
+    id: "machakos-branch",
+    name: "Machakos Branch",
+    region: "Eastern",
+    address: "Machakos Revival Center, Machakos",
+    phone: "0759265819",
+    email: "vpminternational2@gmail.com",
+    services: "Sunday 9:00 AM",
+  },
 ];
 
 export default function BranchesPage() {
   return (
-    <div className="flex flex-col min-h-screen bg-[var(--color-mist)]">
-      {/* Editorial Deep Navy Header */}
-      <section className="band-navy py-16 md:py-24 border-b border-white/10 relative overflow-hidden">
-        <div className="absolute top-0 right-1/4 w-[450px] h-[450px] bg-[var(--color-accent)]/10 rounded-full blur-[140px] pointer-events-none" />
-
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
-          <p className="text-[var(--color-accent)] text-xs font-display font-bold tracking-widest uppercase mb-3 flex items-center gap-2">
-            <Globe size={15} className="text-[var(--color-accent)]" />
-            Worship in God&apos;s Presence
-          </p>
-          <h1 className="text-4xl sm:text-6xl font-display font-extrabold text-white mb-6 tracking-tight">
-            Our Ministry <span className="highlight-block">Branches</span>
+    <div className="bg-[var(--color-cream)] text-[var(--color-ink)] min-h-screen py-12 md:py-20">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        
+        {/* Header */}
+        <div className="max-w-3xl mb-12">
+          <span className="text-xs font-sans font-bold tracking-widest text-[var(--color-gold-500)] uppercase block mb-2">
+            Territorial Altars
+          </span>
+          <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl text-[var(--color-navy-900)] font-semibold mb-4">
+            Our Ministry Branches
           </h1>
-          <p className="text-base sm:text-lg text-slate-300 max-w-2xl font-sans leading-relaxed">
-            Find a Voice of the Potter&apos;s Messengers sanctuary near you. We have vibrant communities of believers gathering across Kenya for revival and fellowship.
+          <p className="text-base text-[var(--color-slate)] font-sans leading-relaxed">
+            Find a Voice of the Potter&apos;s Messengers sanctuary near you. We have vibrant communities of believers gathering across Kenya for worship, prayer, and revival.
           </p>
         </div>
-      </section>
 
-      {/* Main Content: Branches Grid & Architectural Showcase */}
-      <section className="band-white py-16 md:py-24 flex-1">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            
-            {/* Illustrated Sanctuary Architecture Showcase */}
-            <div className="bg-[var(--color-navy-950)] border border-white/15 rounded-[var(--radius-lg)] p-8 flex flex-col items-center justify-between overflow-hidden shadow-2xl relative min-h-[360px] group text-center">
-              <div className="w-full relative z-10 my-auto py-4">
-                <PlaceholderBranch />
+        {/* Clean Card Grid (Part F Rules) */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {BRANCHES.map((branch) => (
+            <div
+              key={branch.id}
+              className="bg-white border border-[var(--color-line)] rounded-xl p-6 flex flex-col justify-between h-full shadow-xs"
+            >
+              <div>
+                <div className="h-[140px] w-full rounded-lg overflow-hidden bg-[var(--color-cream)] border border-[var(--color-line)] relative mb-4">
+                  <PlaceholderSermon />
+                </div>
+
+                <h2 className="font-sans text-[18px] font-bold text-[var(--color-ink)] mb-1 leading-snug">
+                  {branch.name}
+                </h2>
+                
+                <span className="inline-block px-2.5 py-0.5 rounded-full bg-[var(--color-cream)] text-[var(--color-terracotta)] border border-[var(--color-terracotta)]/30 text-xs font-sans font-bold uppercase tracking-wider mb-4">
+                  {branch.region}
+                </span>
+
+                <div className="space-y-2.5 text-[14px] text-[var(--color-slate)] font-sans mb-4">
+                  <div className="flex items-start gap-2.5">
+                    <MapPin size={16} className="text-[var(--color-gold-500)] shrink-0 mt-0.5" />
+                    <span>{branch.address}</span>
+                  </div>
+                  <div className="flex items-center gap-2.5">
+                    <Phone size={16} className="text-[var(--color-gold-500)] shrink-0" />
+                    <a href={`tel:${branch.phone}`} className="hover:text-[var(--color-ink)]">
+                      {branch.phone}
+                    </a>
+                  </div>
+                  <div className="flex items-center gap-2.5">
+                    <Mail size={16} className="text-[var(--color-gold-500)] shrink-0" />
+                    <a href={`mailto:${branch.email}`} className="hover:text-[var(--color-ink)] truncate">
+                      {branch.email}
+                    </a>
+                  </div>
+                </div>
+
+                <p className="text-xs font-sans font-semibold text-[var(--color-navy-900)] bg-[var(--color-cream)] p-2.5 rounded border border-[var(--color-line)]">
+                  {branch.services}
+                </p>
               </div>
-              <div className="relative z-20 bg-white/5 border border-white/10 p-6 rounded-[var(--radius-md)] backdrop-blur-md w-full">
-                <Compass size={24} className="text-[var(--color-accent)] mx-auto mb-2" />
-                <h4 className="text-base font-display font-bold text-white mb-1">Interactive Map Integration</h4>
-                <p className="text-xs text-slate-300 font-sans">Google Maps GPS navigation coordinates available on all location cards.</p>
+
+              <div className="pt-4 border-t border-[var(--color-line)] mt-4">
+                <a
+                  href={`https://maps.google.com/?q=${encodeURIComponent(branch.address)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-xs font-sans font-bold text-[var(--color-gold-700)] hover:underline"
+                >
+                  <span>Get Directions</span>
+                  <ArrowUpRight size={14} />
+                </a>
               </div>
             </div>
-
-            {/* Editorial Branch Directory Cards */}
-            {BRANCHES.map((branch) => (
-              <article
-                key={branch.id}
-                className="bg-[var(--color-cloud)] border border-[var(--color-line)] rounded-[var(--radius-lg)] p-8 hover:border-[var(--color-accent)] transition-all duration-300 shadow-sm hover:shadow-xl flex flex-col justify-between group"
-              >
-                <div>
-                  <div className="flex items-start justify-between mb-6">
-                    <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 rounded-[var(--radius-md)] bg-[var(--color-navy-900)] text-[var(--color-accent)] group-hover:bg-[var(--color-accent)] group-hover:text-white flex items-center justify-center shrink-0 transition-colors shadow-xs">
-                        <MapPin size={22} strokeWidth={2} />
-                      </div>
-                      <div>
-                        <h2 className="text-xl font-display font-extrabold text-[var(--color-ink)] leading-tight mb-1 group-hover:text-[var(--color-accent)] transition-colors">
-                          {branch.name}
-                        </h2>
-                        <span className="text-[11px] font-mono font-bold text-[var(--color-navy-900)] uppercase tracking-wider bg-white px-2 py-0.5 rounded border border-[var(--color-line)]">
-                          {branch.region}
-                        </span>
-                      </div>
-                    </div>
-                    {branch.mapsUrl && branch.mapsUrl !== "#" && (
-                      <a
-                        href={branch.mapsUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="p-2.5 rounded-full bg-white border border-[var(--color-line)] text-[var(--color-navy-900)] hover:bg-[var(--color-navy-900)] hover:text-white transition-all shadow-xs shrink-0"
-                        aria-label={`Directions to ${branch.name}`}
-                      >
-                        <ExternalLink size={16} strokeWidth={2.2} />
-                      </a>
-                    )}
-                  </div>
-
-                  <div className="space-y-4 pt-4">
-                    <p className="flex items-center gap-3 text-sm font-sans font-medium text-[var(--color-slate)]">
-                      <MapPin size={16} className="text-[var(--color-navy-900)] shrink-0" />
-                      <span>{branch.address}</span>
-                    </p>
-                    <p className="flex items-center gap-3 text-sm font-sans font-medium text-[var(--color-slate)]">
-                      <Phone size={16} className="text-[var(--color-navy-900)] shrink-0" />
-                      <a href={`tel:${branch.phone.replace(/\s/g, "")}`} className="hover:text-[var(--color-accent)] transition-colors">
-                        {branch.phone}
-                      </a>
-                    </p>
-                    <p className="flex items-center gap-3 text-sm font-sans font-medium text-[var(--color-slate)]">
-                      <Mail size={16} className="text-[var(--color-navy-900)] shrink-0" />
-                      <a href={`mailto:${branch.email}`} className="hover:text-[var(--color-accent)] transition-colors truncate">
-                        {branch.email}
-                      </a>
-                    </p>
-                  </div>
-                </div>
-
-                <div className="mt-8 pt-4 border-t border-[var(--color-line)]">
-                  <a
-                    href={branch.mapsUrl || "#"}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center justify-between w-full px-5 py-3 text-xs font-display font-bold uppercase tracking-wider bg-white text-[var(--color-navy-900)] hover:bg-[var(--color-navy-900)] hover:text-white border border-[var(--color-line)] rounded-[var(--radius-sm)] transition-all shadow-xs"
-                  >
-                    <span>Get Navigation Directions</span>
-                    <span>→</span>
-                  </a>
-                </div>
-              </article>
-            ))}
-          </div>
+          ))}
         </div>
-      </section>
+
+      </div>
     </div>
   );
 }
-
