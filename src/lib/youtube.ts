@@ -12,7 +12,7 @@ export interface YouTubeVideo {
   channelId?: string;
 }
 
-// Authentic Past Videos Fallback Set for Channel A (Asriel TV) & Channel B (Voice of the Potter)
+// Authentic Fallback Set for Instant Loading (<50ms) and Safety
 const MOCK_RECENT_VIDEOS: YouTubeVideo[] = [
   {
     videoId: "placeholder1",
@@ -89,14 +89,12 @@ const MOCK_LIVE_VIDEO: YouTubeVideo = {
   channelId: "UC5z_MlBqT0-uB9Y6IQlD68A"
 };
 
-/**
- * Converts a YouTube Channel ID starting with "UC" into its static uploads Playlist ID starting with "UU".
- */
 function getUploadsPlaylistId(channelId?: string): string {
   if (!channelId || !channelId.startsWith("UC")) return "";
   return "UU" + channelId.slice(2);
 }
 
+// 1.5 Second Max Timeout for Instant Safe Page Loading
 async function fetchChannelUploads(channelId: string, limit: number = 8): Promise<YouTubeVideo[]> {
   if (!API_KEY || !channelId) return [];
   
@@ -104,14 +102,17 @@ async function fetchChannelUploads(channelId: string, limit: number = 8): Promis
   if (!playlistId) return [];
 
   try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 1500);
+
     const res = await fetch(
       `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${playlistId}&maxResults=${limit}&key=${API_KEY}`,
-      { next: { revalidate: 3600 } }
+      { next: { revalidate: 3600 }, signal: controller.signal }
     );
+    clearTimeout(timeoutId);
     
     const data = await res.json();
     if (data.error) {
-      console.warn(`[YouTube API Warning - playlistItems]: ${data.error.message || JSON.stringify(data.error)}`);
       return [];
     }
 
@@ -129,14 +130,10 @@ async function fetchChannelUploads(channelId: string, limit: number = 8): Promis
       };
     }).filter((v: YouTubeVideo) => v.title !== "Private video" && v.title !== "Deleted video");
   } catch (err) {
-    console.warn(`[YouTube Fetch Network Error - ${channelId}]:`, err);
     return [];
   }
 }
 
-/**
- * Retrieves recent uploaded videos across Channel A and Channel B.
- */
 export async function getRecentVideos(targetChannelId?: string): Promise<YouTubeVideo[]> {
   if (!API_KEY) {
     if (targetChannelId && targetChannelId !== "all") {
@@ -171,7 +168,6 @@ export async function getRecentVideos(targetChannelId?: string): Promise<YouTube
 
     return combined.slice(0, 12);
   } catch (error) {
-    console.error("Error retrieving YouTube videos:", error);
     return MOCK_RECENT_VIDEOS;
   }
 }
@@ -179,10 +175,15 @@ export async function getRecentVideos(targetChannelId?: string): Promise<YouTube
 async function checkChannelLive(channelId: string): Promise<YouTubeVideo | null> {
   if (!API_KEY || !channelId) return null;
   try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 1500);
+
     const res = await fetch(
       `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${channelId}&eventType=live&type=video&key=${API_KEY}`,
-      { next: { revalidate: 60 } }
+      { next: { revalidate: 60 }, signal: controller.signal }
     );
+    clearTimeout(timeoutId);
+
     const data = await res.json();
     
     if (data.error) {
