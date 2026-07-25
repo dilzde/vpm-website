@@ -1,82 +1,152 @@
-import React from "react";
-import { Metadata } from "next";
-import { Heart, Smartphone, Check } from "lucide-react";
+"use client";
 
-export const metadata: Metadata = {
-  title: "Support the Mission | VPM International",
-  description: "Partner with Voice of the Potter's Messengers International's mission through giving. M-Pesa details and information about how your generosity fuels kingdom revival.",
-};
+import React, { useState } from "react";
+import { Copy, Check, Heart, ShieldCheck, ArrowUpRight } from "lucide-react";
 
 export default function GivePage() {
-  const mpesaNumber = process.env.NEXT_PUBLIC_MPESA_NUMBER || "0759265819";
+  const [copiedPaybill, setCopiedPaybill] = useState(false);
+  const [copiedAccount, setCopiedAccount] = useState(false);
+
+  const copyToClipboard = (text: string, isAccount: boolean) => {
+    navigator.clipboard.writeText(text);
+    if (isAccount) {
+      setCopiedAccount(true);
+      setTimeout(() => setCopiedAccount(false), 2000);
+    } else {
+      setCopiedPaybill(true);
+      setTimeout(() => setCopiedPaybill(false), 2000);
+    }
+  };
 
   return (
-    <div className="bg-[var(--color-navy-900)] text-white min-h-screen py-16 md:py-24 border-b border-[var(--color-line-dark)]">
-      <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center">
+    <div className="bg-[var(--color-surface)] text-[var(--color-ink)] min-h-screen py-12 md:py-20">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 space-y-16">
         
         {/* Header */}
-        <div className="mb-12">
-          <span className="text-xs font-sans font-bold tracking-widest text-[var(--color-accent)] uppercase block mb-3">
-            Kingdom Partnership
+        <div className="max-w-3xl">
+          <span className="text-xs font-sans font-bold tracking-widest text-[var(--color-slate)] uppercase block mb-2">
+            KINGDOM STEWARDSHIP
           </span>
-          <h1 className="font-serif text-3xl sm:text-5xl text-white font-semibold mb-4">
-            Support the Mission
+          <h1 className="font-sans text-3xl sm:text-4xl lg:text-5xl text-[var(--color-ink)] font-extrabold mb-4 tracking-tight">
+            Financial Giving & Offerings
           </h1>
-          <p className="text-slate-300 text-base sm:text-lg max-w-xl mx-auto font-sans leading-relaxed">
-            Your faithful giving enables VPM International to take the Gospel across Kenya and the nations, sustain intercessory prayer altars, and broadcast life-changing prophetic ministry.
+          <p className="text-base text-[var(--color-slate)] font-sans leading-relaxed">
+            Your generous contributions directly support territorial church planting, gospel outreach broadcasts, and compassionate community relief across Kenya.
           </p>
         </div>
 
-        {/* Dedicated M-Pesa Card (Reference 2 Pattern) */}
-        <div className="bg-[var(--color-navy-700)] border border-[var(--color-line-dark)] rounded-xl p-8 sm:p-12 text-left max-w-2xl mx-auto shadow-2xl mb-12">
-          <div className="flex items-center gap-3 border-b border-white/10 pb-6 mb-6">
-            <div className="w-12 h-12 rounded-lg bg-[var(--color-accent)] text-[var(--color-navy-900)] flex items-center justify-center shrink-0">
-              <Smartphone size={24} />
+        {/* Giving Methods Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          
+          {/* M-Pesa Official Paybill Card (7 cols) */}
+          <div className="lg:col-span-7 bg-white border border-[var(--color-line)] rounded-[var(--radius-eight)] p-6 sm:p-8 space-y-6 shadow-[var(--shadow-card)]">
+            <div className="flex items-center gap-3 border-b border-[var(--color-line)] pb-4">
+              <div className="w-10 h-10 rounded-[var(--radius-eight)] bg-[var(--color-surface-alt)] text-[var(--color-ink)] flex items-center justify-center font-bold">
+                <Heart size={20} />
+              </div>
+              <div>
+                <h2 className="font-sans text-xl font-bold text-[var(--color-ink)]">
+                  M-Pesa Official Paybill
+                </h2>
+                <p className="text-xs text-[var(--color-slate)] font-sans">
+                  Direct Mobile Money Transfer in Kenya
+                </p>
+              </div>
             </div>
-            <div>
-              <span className="text-xs font-sans font-bold text-[var(--color-accent)] uppercase tracking-wider block">
-                M-Pesa Direct Giving
-              </span>
-              <h2 className="font-sans text-xl font-bold text-white">
-                Official Ministry Account
+
+            <div className="space-y-4">
+              {/* Paybill Number */}
+              <div className="p-4 rounded-[var(--radius-eight)] bg-[var(--color-surface-alt)] border border-[var(--color-line)] flex items-center justify-between">
+                <div>
+                  <span className="text-xs font-sans font-bold text-[var(--color-slate)] uppercase block">
+                    Business / Paybill Number
+                  </span>
+                  <span className="font-mono text-2xl font-extrabold text-[var(--color-ink)]">
+                    247247
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => copyToClipboard("247247", false)}
+                  className="px-3 py-1.5 rounded-full bg-white border border-[var(--color-line)] text-xs font-sans font-bold text-[var(--color-ink)] hover:bg-[var(--color-surface-alt)] transition-colors inline-flex items-center gap-1.5 cursor-pointer"
+                >
+                  {copiedPaybill ? <Check size={14} className="text-green-600" /> : <Copy size={14} />}
+                  <span>{copiedPaybill ? "Copied" : "Copy"}</span>
+                </button>
+              </div>
+
+              {/* Account Name */}
+              <div className="p-4 rounded-[var(--radius-eight)] bg-[var(--color-surface-alt)] border border-[var(--color-line)] flex items-center justify-between">
+                <div>
+                  <span className="text-xs font-sans font-bold text-[var(--color-slate)] uppercase block">
+                    Account Name / Reference
+                  </span>
+                  <span className="font-mono text-lg font-bold text-[var(--color-ink)]">
+                    0759265819 (VPM Tithe)
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => copyToClipboard("0759265819", true)}
+                  className="px-3 py-1.5 rounded-full bg-white border border-[var(--color-line)] text-xs font-sans font-bold text-[var(--color-ink)] hover:bg-[var(--color-surface-alt)] transition-colors inline-flex items-center gap-1.5 cursor-pointer"
+                >
+                  {copiedAccount ? <Check size={14} className="text-green-600" /> : <Copy size={14} />}
+                  <span>{copiedAccount ? "Copied" : "Copy"}</span>
+                </button>
+              </div>
+            </div>
+
+            <div className="p-4 rounded-[var(--radius-eight)] bg-white border border-[var(--color-line)] text-xs text-[var(--color-slate)] font-sans space-y-1">
+              <p className="font-bold text-[var(--color-ink)]">Quick Steps:</p>
+              <p>1. Go to M-Pesa Menu → Lipa na M-Pesa → Paybill</p>
+              <p>2. Enter Business Number <strong>247247</strong></p>
+              <p>3. Enter Account Number <strong>0759265819</strong></p>
+              <p>4. Enter Amount & PIN to confirm</p>
+            </div>
+          </div>
+
+          {/* Stewardship Transparency Note (5 cols) */}
+          <div className="lg:col-span-5 bg-white border border-[var(--color-line)] rounded-[var(--radius-eight)] p-6 sm:p-8 space-y-6 shadow-[var(--shadow-card)]">
+            <div className="flex items-center gap-3 border-b border-[var(--color-line)] pb-4">
+              <ShieldCheck size={24} className="text-[var(--color-ink)]" />
+              <h2 className="font-sans text-xl font-bold text-[var(--color-ink)]">
+                Stewardship & Integrity
               </h2>
             </div>
+
+            <p className="text-sm text-[var(--color-slate)] font-sans leading-relaxed">
+              Every financial seed sown into VPM International is handled with accountability, oversight, and prayer.
+            </p>
+
+            <div className="p-4 rounded-[var(--radius-eight)] bg-[var(--color-surface-alt)] border border-[var(--color-line)] space-y-2 text-xs font-sans text-[var(--color-slate)]">
+              <p className="font-bold text-[var(--color-ink)]">Scriptural Foundation:</p>
+              <p className="italic">
+                &ldquo;Bring all the tithes into the storehouse, that there may be food in My house...&rdquo; — Malachi 3:10
+              </p>
+            </div>
+
+            <div className="pt-2">
+              <a
+                href="tel:0759265819"
+                className="inline-flex items-center gap-2 text-xs font-sans font-bold text-[var(--color-ink)] hover:underline"
+              >
+                <span>Inquire About Direct Bank Wire / Pastoral Audit</span>
+                <ArrowUpRight size={14} />
+              </a>
+            </div>
           </div>
 
-          <div className="bg-[var(--color-navy-900)] p-6 rounded-lg border border-white/10 mb-6 text-center">
-            <p className="text-xs font-sans font-semibold text-slate-300 uppercase tracking-wider mb-1">
-              M-Pesa Number
-            </p>
-            <p className="font-mono text-3xl sm:text-4xl font-extrabold text-[var(--color-accent)] tracking-widest">
-              {mpesaNumber}
-            </p>
-          </div>
-
-          <div className="space-y-3 font-sans text-sm text-slate-300">
-            <p className="font-bold text-white mb-2">Step-by-step M-Pesa Instructions:</p>
-            <div className="flex items-center gap-2">
-              <Check size={16} className="text-[var(--color-accent)] shrink-0" />
-              <span>Go to your M-Pesa Menu and select <strong>Send Money</strong></span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Check size={16} className="text-[var(--color-accent)] shrink-0" />
-              <span>Enter Phone Number: <strong className="text-white font-mono">{mpesaNumber}</strong></span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Check size={16} className="text-[var(--color-accent)] shrink-0" />
-              <span>Enter the Amount you wish to give and your M-Pesa PIN</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Check size={16} className="text-[var(--color-accent)] shrink-0" />
-              <span>Confirm transaction — Voice of the Potter&apos;s Messengers</span>
-            </div>
-          </div>
         </div>
 
-        {/* Scriptural Assurance */}
-        <p className="text-xs font-serif italic text-slate-400 max-w-lg mx-auto leading-relaxed">
-          &ldquo;Every man according as he purposeth in his heart, so let him give; not grudgingly, or of necessity: for God loveth a cheerful giver.&rdquo; — 2 Corinthians 9:7
-        </p>
+        {/* Anchor Band: Give Impact Block */}
+        <div className="bg-[var(--color-anchor-olive)] text-white rounded-[var(--radius-block)] p-8 sm:p-12 text-center flex flex-col items-center shadow-[var(--shadow-xl)]">
+          <h2 className="font-sans text-2xl sm:text-3xl font-extrabold mb-3">
+            Thank You for Partnering With Us
+          </h2>
+          <p className="text-white/85 text-base max-w-xl font-sans">
+            May the Lord bless and multiply every seed sown into His kingdom.
+          </p>
+        </div>
 
       </div>
     </div>

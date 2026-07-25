@@ -1,17 +1,17 @@
 import type { Metadata } from "next";
-import { Inter, Fraunces } from "next/font/google";
+import { Hanken_Grotesk, Montserrat } from "next/font/google";
 import "./globals.css";
 import { RadioPlayerProvider } from "@/lib/hooks/useRadioPlayer";
 import ClientLayout from "./ClientLayout";
 
-const inter = Inter({
-  variable: "--font-inter",
+const hankenGrotesk = Hanken_Grotesk({
+  variable: "--font-hanken",
   subsets: ["latin"],
   display: "swap",
 });
 
-const fraunces = Fraunces({
-  variable: "--font-fraunces",
+const montserrat = Montserrat({
+  variable: "--font-montserrat",
   subsets: ["latin"],
   display: "swap",
 });
@@ -41,9 +41,9 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${fraunces.variable} h-full`}
+      className={`${hankenGrotesk.variable} ${montserrat.variable} h-full`}
     >
-      <body className="min-h-full flex flex-col font-sans">
+      <body className="min-h-full flex flex-col font-sans bg-[var(--color-surface)] text-[var(--color-ink)]">
         <RadioPlayerProvider>
           <ClientLayout>{children}</ClientLayout>
         </RadioPlayerProvider>

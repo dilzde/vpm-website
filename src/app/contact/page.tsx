@@ -1,121 +1,93 @@
 import React from "react";
 import { Metadata } from "next";
-import { MapPin, Phone, Mail, Clock, MessageSquare } from "lucide-react";
+import { MapPin, Phone, Mail, Clock, MessageCircle } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Contact Us & Prayer Support | VPM International",
-  description: "Get in touch with Voice of the Potter's Messengers International. Contact our pastoral leadership via phone, WhatsApp, email, or visit our Githurai sanctuary.",
+  title: "Contact Us | VPM International",
+  description:
+    "Get in touch with Voice of the Potter's Messengers. Contact our pastoral team, inquiry desk, or visit our main sanctuary in Githurai, Nairobi.",
 };
 
 export default function ContactPage() {
   return (
-    <div className="bg-[var(--color-paper)] text-[var(--color-ink)] min-h-screen py-12 md:py-20">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div className="bg-[var(--color-surface)] text-[var(--color-ink)] min-h-screen py-12 md:py-20">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 space-y-16">
         
         {/* Header */}
-        <div className="max-w-3xl mb-12">
-          <span className="text-xs font-sans font-bold tracking-widest text-[var(--color-accent)] uppercase block mb-2">
-            Get in Touch
+        <div className="max-w-3xl">
+          <span className="text-xs font-sans font-bold tracking-widest text-[var(--color-slate)] uppercase block mb-2">
+            REACH OUT
           </span>
-          <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl text-[var(--color-navy-900)] font-semibold mb-4">
-            Contact VPM Ministry
+          <h1 className="font-sans text-3xl sm:text-4xl lg:text-5xl text-[var(--color-ink)] font-extrabold mb-4 tracking-tight">
+            Contact & Pastoral Desk
           </h1>
           <p className="text-base text-[var(--color-slate)] font-sans leading-relaxed">
-            We are always rejoicing to connect with believers, intercessors, and partners across the nations. Reach out to our pastoral desk through any channel below.
+            Have questions about services, branch locations, or radio broadcasts? Contact our office or visit our main altar in Githurai.
           </p>
         </div>
 
-        {/* Grid layout */}
+        {/* Contact Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           
-          {/* Left Column: Direct Contact Details (7 cols) */}
-          <div className="lg:col-span-7 bg-white border border-[var(--color-line)] rounded-lg p-8 space-y-6">
-            <h2 className="font-serif text-2xl text-[var(--color-navy-900)] font-semibold border-b border-[var(--color-line)] pb-4">
-              Direct Pastoral Lines
+          {/* Main Contact Card (7 cols) */}
+          <div className="lg:col-span-7 bg-white border border-[var(--color-line)] rounded-[var(--radius-eight)] p-6 sm:p-8 space-y-6 shadow-[var(--shadow-card)]">
+            <h2 className="font-sans text-xl font-bold text-[var(--color-ink)] border-b border-[var(--color-line)] pb-3">
+              Githurai Main Sanctuary & Headquarters
             </h2>
 
-            <div className="space-y-5">
-              <a href="tel:0759265819" className="flex items-center gap-4 group">
-                <div className="w-10 h-10 rounded-md bg-[var(--color-paper)] text-[var(--color-accent)] border border-[var(--color-line)] flex items-center justify-center shrink-0">
-                  <Phone size={18} />
-                </div>
+            <div className="space-y-4 font-sans text-sm text-[var(--color-slate)]">
+              <div className="flex items-start gap-3">
+                <MapPin size={18} className="text-[var(--color-ink)] shrink-0 mt-1" />
                 <div>
-                  <p className="text-xs font-sans text-[var(--color-slate)]">General Enquiries & Counselling</p>
-                  <p className="text-base font-sans font-bold text-[var(--color-navy-900)] group-hover:text-[var(--color-accent)] transition-colors">
-                    0759265819
-                  </p>
-                </div>
-              </a>
-
-              <a href="https://wa.me/254759265819" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 group">
-                <div className="w-10 h-10 rounded-md bg-[var(--color-paper)] text-[var(--color-accent)] border border-[var(--color-line)] flex items-center justify-center shrink-0">
-                  <MessageSquare size={18} />
-                </div>
-                <div>
-                  <p className="text-xs font-sans text-[var(--color-slate)]">Instant WhatsApp Desk</p>
-                  <p className="text-base font-sans font-bold text-[var(--color-navy-900)] group-hover:text-[var(--color-accent)] transition-colors">
-                    Chat on WhatsApp
-                  </p>
-                </div>
-              </a>
-
-              <div className="flex items-center gap-4">
-                <div className="w-10 h-10 rounded-md bg-[var(--color-paper)] text-[var(--color-accent)] border border-[var(--color-line)] flex items-center justify-center shrink-0">
-                  <Mail size={18} />
-                </div>
-                <div>
-                  <p className="text-xs font-sans text-[var(--color-slate)]">Email Desk</p>
-                  <p className="text-base font-sans font-bold text-[var(--color-navy-900)]">
-                    vpminternational2@gmail.com
-                  </p>
+                  <p className="font-bold text-[var(--color-ink)]">Physical Address</p>
+                  <p>Githurai 45, Off Thika Superhighway, Nairobi, Kenya</p>
                 </div>
               </div>
 
-              <div className="flex items-center gap-4">
-                <div className="w-10 h-10 rounded-md bg-[var(--color-paper)] text-[var(--color-accent)] border border-[var(--color-line)] flex items-center justify-center shrink-0">
-                  <MapPin size={18} />
-                </div>
+              <div className="flex items-start gap-3">
+                <Phone size={18} className="text-[var(--color-ink)] shrink-0 mt-1" />
                 <div>
-                  <p className="text-xs font-sans text-[var(--color-slate)]">Main Altar Location</p>
-                  <p className="text-base font-sans font-bold text-[var(--color-navy-900)]">
-                    Githurai 45, Off Thika Superhighway, Nairobi
-                  </p>
+                  <p className="font-bold text-[var(--color-ink)]">Telephone & WhatsApp</p>
+                  <p>0759265819</p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3">
+                <Mail size={18} className="text-[var(--color-ink)] shrink-0 mt-1" />
+                <div>
+                  <p className="font-bold text-[var(--color-ink)]">Official Email</p>
+                  <p>vpminternational2@gmail.com</p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3">
+                <Clock size={18} className="text-[var(--color-ink)] shrink-0 mt-1" />
+                <div>
+                  <p className="font-bold text-[var(--color-ink)]">Office Hours</p>
+                  <p>Monday – Friday: 8:30 AM – 5:00 PM</p>
+                  <p>Sunday Worship: 9:00 AM – 1:00 PM</p>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Right Column: Service Timetable (5 cols) */}
-          <div className="lg:col-span-5 bg-white border border-[var(--color-line)] rounded-lg p-8">
-            <h2 className="font-serif text-2xl text-[var(--color-navy-900)] font-semibold border-b border-[var(--color-line)] pb-4 mb-6">
-              Gathering Hours
-            </h2>
-
-            <div className="space-y-4 font-sans text-sm">
-              <div className="flex items-start gap-3 p-3 rounded bg-[var(--color-paper)] border border-[var(--color-line)]">
-                <Clock size={16} className="text-[var(--color-accent)] shrink-0 mt-0.5" />
-                <div>
-                  <p className="font-bold text-[var(--color-navy-900)]">Sunday Worship Service</p>
-                  <p className="text-xs text-[var(--color-slate)]">9:00 AM – 1:00 PM</p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-3 p-3 rounded bg-[var(--color-paper)] border border-[var(--color-line)]">
-                <Clock size={16} className="text-[var(--color-accent)] shrink-0 mt-0.5" />
-                <div>
-                  <p className="font-bold text-[var(--color-navy-900)]">Wednesday Midweek Service</p>
-                  <p className="text-xs text-[var(--color-slate)]">5:30 PM – 7:30 PM</p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-3 p-3 rounded bg-[var(--color-paper)] border border-[var(--color-line)]">
-                <Clock size={16} className="text-[var(--color-accent)] shrink-0 mt-0.5" />
-                <div>
-                  <p className="font-bold text-[var(--color-navy-900)]">Friday Intercessory Vigil</p>
-                  <p className="text-xs text-[var(--color-slate)]">9:00 PM – 4:00 AM</p>
-                </div>
-              </div>
+          {/* Quick WhatsApp Action (5 cols) */}
+          <div className="lg:col-span-5 bg-[var(--color-anchor-olive)] text-white rounded-[var(--radius-eight)] p-6 sm:p-8 space-y-4 shadow-[var(--shadow-xl)]">
+            <div className="w-10 h-10 rounded-[var(--radius-eight)] bg-[var(--color-accent)] text-[var(--color-accent-ink)] flex items-center justify-center font-bold">
+              <MessageCircle size={20} />
             </div>
+            <h3 className="font-sans text-xl font-bold">Direct WhatsApp Counselling</h3>
+            <p className="text-xs text-white/85 font-sans leading-relaxed">
+              Connect directly with our pastoral desk via WhatsApp for instant inquiries or prayer guidance.
+            </p>
+            <a
+              href="https://wa.me/254759265819"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-2 w-full py-3.5 rounded-full bg-[var(--color-accent)] text-[var(--color-accent-ink)] font-sans font-bold text-sm hover:scale-105 transition-all shadow-xs"
+            >
+              <span>Message Pastoral Desk on WhatsApp</span>
+            </a>
           </div>
 
         </div>
