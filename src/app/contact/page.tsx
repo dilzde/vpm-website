@@ -1,9 +1,8 @@
 import React from "react";
 import { Metadata } from "next";
-import { MapPin, Phone, Mail, Clock } from "lucide-react";
+import { MapPin, Phone, Mail, Clock, MessageSquare, Sparkles } from "lucide-react";
 import Link from "next/link";
 
-/* Inline SVG social icons */
 interface IconProps { size?: number; strokeWidth?: number; className?: string; }
 const YouTubeIcon = ({ size = 24, strokeWidth = 2, className = "" }: IconProps) => (
   <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17"/><path d="m10 15 5-3-5-3z"/></svg>
@@ -16,78 +15,95 @@ const InstagramIcon = ({ size = 24, strokeWidth = 2, className = "" }: IconProps
 );
 
 export const metadata: Metadata = {
-  title: "Contact Us | VPM International",
-  description: "Get in touch with VPM International. Contact us via phone, email, or visit one of our branches.",
+  title: "Contact Us & Prayer Support | VPM International",
+  description: "Get in touch with Voice of the Potter's Messengers International. Contact our pastoral leadership via phone, WhatsApp, email, or visit our Mlolongo revival center.",
 };
 
 export default function ContactPage() {
   return (
-    <div className="bg-[var(--color-mist)] min-h-screen">
-      <section className="bg-white border-b border-[var(--color-line)]">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 md:py-24">
-          <p className="text-[var(--color-blue-500)] text-sm font-semibold tracking-widest uppercase mb-2">
-            Get In Touch
+    <div className="flex flex-col min-h-screen bg-[var(--color-mist)]">
+      {/* Editorial Deep Navy Header */}
+      <section className="band-navy py-20 md:py-28 border-b border-white/10 relative overflow-hidden">
+        <div className="absolute top-0 right-1/4 w-[450px] h-[450px] bg-[var(--color-accent)]/10 rounded-full blur-[140px] pointer-events-none" />
+
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
+          <p className="text-[var(--color-accent)] text-xs font-display font-bold tracking-widest uppercase mb-3 flex items-center gap-2">
+            <Sparkles size={16} className="text-[var(--color-accent)]" />
+            Connect & Fellowship With Us
           </p>
-          <h1 className="text-3xl text-[var(--color-ink)] font-bold mb-4">Contact Us</h1>
-          <p className="text-base text-[var(--color-slate)] max-w-prose leading-relaxed">
-            We&apos;d love to hear from you. Reach out through any of the
-            channels below.
+          <h1 className="text-4xl sm:text-6xl font-display font-extrabold text-white mb-6 tracking-tight">
+            Contact <span className="highlight-block">VPM Ministry</span>
+          </h1>
+          <p className="text-base sm:text-lg text-slate-300 max-w-2xl font-sans leading-relaxed">
+            We are always rejoicing to connect with believers, intercessors, and partners across the nations. Reach out to our pastoral desk through any channel below.
           </p>
         </div>
       </section>
 
-      <section className="py-16 md:py-24">
+      {/* Contact Channels & Service Timings */}
+      <section className="band-white py-16 md:py-24 flex-1">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12">
-            {/* Contact info & Service Hours */}
-            <div className="space-y-6">
-              <div className="bg-white border border-[var(--color-line)] rounded-[var(--radius-lg)] p-8 shadow-sm">
-                <h2 className="text-xl font-bold text-[var(--color-ink)] mb-6">Reach Us</h2>
-                <div className="space-y-5">
-                  <a href="tel:+254794731831" className="flex items-center gap-4 text-base font-medium text-[var(--color-slate)] hover:text-[var(--color-blue-500)] transition-colors group">
-                    <div className="w-12 h-12 rounded-full bg-[var(--color-mist)] flex items-center justify-center shrink-0 group-hover:bg-[var(--color-blue-100)] transition-colors">
-                      <Phone size={20} strokeWidth={2} className="text-[var(--color-blue-500)]" />
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+            
+            {/* Left Column: Direct Reach & Service Timetable (7 cols) */}
+            <div className="lg:col-span-7 space-y-8">
+              <div className="bg-[var(--color-cloud)] border border-[var(--color-line)] rounded-[var(--radius-lg)] p-8 shadow-sm">
+                <h2 className="text-2xl font-display font-extrabold text-[var(--color-ink)] mb-6 tracking-tight border-b border-[var(--color-line)] pb-4">
+                  Direct Pastoral Lines
+                </h2>
+                <div className="space-y-6">
+                  <a href="tel:+254794731831" className="flex items-center gap-5 text-base font-sans font-medium text-[var(--color-slate)] hover:text-[var(--color-accent)] transition-colors group">
+                    <div className="w-12 h-12 rounded-[var(--radius-md)] bg-[var(--color-navy-900)] text-[var(--color-accent)] group-hover:bg-[var(--color-accent)] group-hover:text-white flex items-center justify-center shrink-0 transition-colors shadow-xs">
+                      <Phone size={22} strokeWidth={2} />
                     </div>
-                    +254 794 731 831
+                    <div>
+                      <p className="text-xs font-mono text-[var(--color-slate)] uppercase">General Enquiries & Counselling</p>
+                      <p className="text-lg font-display font-bold text-[var(--color-ink)] group-hover:text-[var(--color-accent)] transition-colors">+254 794 731 831</p>
+                    </div>
                   </a>
-                  <a href="https://wa.me/254794731831" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 text-base font-medium text-[var(--color-slate)] hover:text-[var(--color-blue-500)] transition-colors group">
-                    <div className="w-12 h-12 rounded-full bg-[var(--color-mist)] flex items-center justify-center shrink-0 group-hover:bg-[var(--color-blue-100)] transition-colors">
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[var(--color-blue-500)]"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+                  <a href="https://wa.me/254794731831" target="_blank" rel="noopener noreferrer" className="flex items-center gap-5 text-base font-sans font-medium text-[var(--color-slate)] hover:text-[var(--color-accent)] transition-colors group">
+                    <div className="w-12 h-12 rounded-[var(--radius-md)] bg-[var(--color-navy-900)] text-[var(--color-accent)] group-hover:bg-[var(--color-accent)] group-hover:text-white flex items-center justify-center shrink-0 transition-colors shadow-xs">
+                      <MessageSquare size={22} strokeWidth={2} />
                     </div>
-                    Chat on WhatsApp
+                    <div>
+                      <p className="text-xs font-mono text-[var(--color-slate)] uppercase">Instant Messaging & Support</p>
+                      <p className="text-lg font-display font-bold text-[var(--color-ink)] group-hover:text-[var(--color-accent)] transition-colors">Chat directly on WhatsApp</p>
+                    </div>
                   </a>
-                  <div className="flex items-center gap-4 text-base font-medium text-[var(--color-slate)]">
-                    <div className="w-12 h-12 rounded-full bg-[var(--color-mist)] flex items-center justify-center shrink-0">
-                      <MapPin size={20} strokeWidth={2} className="text-[var(--color-blue-500)]" />
+                  <div className="flex items-center gap-5 text-base font-sans font-medium text-[var(--color-slate)]">
+                    <div className="w-12 h-12 rounded-[var(--radius-md)] bg-[var(--color-navy-900)] text-[var(--color-accent)] flex items-center justify-center shrink-0 shadow-xs">
+                      <MapPin size={22} strokeWidth={2} />
                     </div>
-                    Mlolongo, Machakos, Kenya
+                    <div>
+                      <p className="text-xs font-mono text-[var(--color-slate)] uppercase">Sanctuary Headquarters Location</p>
+                      <p className="text-lg font-display font-bold text-[var(--color-ink)]">Mlolongo, Machakos, Kenya</p>
+                    </div>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white border border-[var(--color-line)] rounded-[var(--radius-lg)] p-8 shadow-sm">
-                <h2 className="text-xl font-bold text-[var(--color-ink)] mb-6">Service Hours</h2>
-                <div className="space-y-4">
+              <div className="bg-[var(--color-cloud)] border border-[var(--color-line)] rounded-[var(--radius-lg)] p-8 shadow-sm">
+                <h2 className="text-2xl font-display font-extrabold text-[var(--color-ink)] mb-6 tracking-tight border-b border-[var(--color-line)] pb-4">
+                  Weekly Sanctuary Services
+                </h2>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                   {[
-                    { day: "Sunday", time: "9:00 AM - 1:00 PM" },
-                    { day: "Tuesday", time: "8:30 PM - 10:30 PM" },
-                    { day: "Friday", time: "8:30 PM - 10:00 PM" }
+                    { day: "Sunday Worship", time: "9:00 AM - 1:00 PM", desc: "Main prophetic gathering & testimony service." },
+                    { day: "Tuesday Revival", time: "8:30 PM - 10:30 PM", desc: "Online & on-site midweek doctrinal preaching." },
+                    { day: "Friday Vigil", time: "8:30 PM - 10:00 PM", desc: "Introit to spiritual warfare & intercessory prayers." }
                   ].map((service) => (
-                    <div key={service.day} className="flex items-center gap-4 text-base font-medium text-[var(--color-slate)]">
-                      <div className="w-10 h-10 rounded-full bg-[var(--color-mist)] flex items-center justify-center shrink-0">
-                        <Clock size={18} strokeWidth={2} className="text-[var(--color-blue-500)]" />
-                      </div>
-                      <div>
-                        <span className="font-bold text-[var(--color-ink)] mr-2">{service.day}:</span>
-                        {service.time}
-                      </div>
+                    <div key={service.day} className="bg-white p-5 rounded-[var(--radius-md)] border border-[var(--color-line)] shadow-xs">
+                      <Clock size={20} className="text-[var(--color-accent)] mb-3" />
+                      <h4 className="text-base font-display font-extrabold text-[var(--color-ink)] mb-1">{service.day}</h4>
+                      <span className="text-[11px] font-mono font-bold bg-[var(--color-mist)] text-[var(--color-navy-900)] px-2 py-0.5 rounded block mb-2">{service.time}</span>
+                      <p className="text-xs text-[var(--color-slate)] font-sans leading-relaxed">{service.desc}</p>
                     </div>
                   ))}
                 </div>
               </div>
 
-              <div className="bg-white border border-[var(--color-line)] rounded-[var(--radius-lg)] p-8 shadow-sm">
-                <h2 className="text-xl font-bold text-[var(--color-ink)] mb-6">Follow Us</h2>
+              <div className="bg-[var(--color-cloud)] border border-[var(--color-line)] rounded-[var(--radius-lg)] p-8 shadow-sm">
+                <h2 className="text-xl font-display font-extrabold text-[var(--color-ink)] mb-4 tracking-tight">Follow Ministry Broadcasts</h2>
                 <div className="flex items-center gap-4">
                   {[
                     { label: "YouTube", href: "https://www.youtube.com/@AsrielTV", icon: YouTubeIcon },
@@ -95,7 +111,7 @@ export default function ContactPage() {
                     { label: "Instagram", href: "https://www.instagram.com/vpminternational", icon: InstagramIcon },
                   ].map((s) => (
                     <a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer"
-                      className="w-12 h-12 flex items-center justify-center rounded-full bg-[var(--color-mist)] text-[var(--color-slate)] hover:bg-[var(--color-blue-500)] hover:text-white transition-colors"
+                      className="w-12 h-12 flex items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-navy-900)] text-white hover:bg-[var(--color-accent)] transition-all duration-200 shadow-sm"
                       aria-label={s.label}>
                       <s.icon size={22} strokeWidth={2} />
                     </a>
@@ -104,43 +120,46 @@ export default function ContactPage() {
               </div>
             </div>
 
-            {/* CTAs */}
-            <div className="bg-white border border-[var(--color-line)] rounded-[var(--radius-lg)] p-8 md:p-12 flex flex-col items-center justify-center text-center shadow-sm">
-              <div className="w-20 h-20 bg-[var(--color-blue-100)] rounded-full flex items-center justify-center mb-6">
-                <Phone size={36} strokeWidth={2} className="text-[var(--color-blue-500)]" />
+            {/* Right Column: Direct Help & Prayer Action Box (5 cols) */}
+            <div className="lg:col-span-5 bg-[var(--color-navy-950)] text-white border border-white/15 rounded-[var(--radius-lg)] p-8 sm:p-12 flex flex-col items-center justify-center text-center shadow-2xl relative overflow-hidden sticky top-28">
+              <div className="w-20 h-20 bg-white/10 text-[var(--color-accent)] rounded-[var(--radius-lg)] flex items-center justify-center mb-6 shadow-md">
+                <Phone size={36} strokeWidth={2.2} />
               </div>
-              <h2 className="text-3xl font-bold text-[var(--color-ink)] mb-4">Need Help?</h2>
-              <p className="text-base text-[var(--color-slate)] mb-10 max-w-sm leading-relaxed">
-                Start a conversation with us now. We are here to pray with you and support you.
+              <p className="text-[11px] font-mono text-[var(--color-accent)] uppercase tracking-widest mb-2">Pastoral Care Desk</p>
+              <h2 className="text-3xl font-display font-extrabold text-white mb-4 tracking-tight">Need Urgent Prayer?</h2>
+              <p className="text-sm font-sans text-slate-300 mb-10 max-w-sm leading-relaxed">
+                Do not carry your burdens alone. Start a conversation with our anointed intercessory leads today. We are watching and praying 24/7.
               </p>
               
               <div className="w-full max-w-xs space-y-4">
-                <a href="https://wa.me/254794731831" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-3 w-full px-6 py-4 text-base font-bold bg-[#25D366] text-white rounded-[var(--radius-md)] hover:bg-[#20bd5a] transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#25D366] shadow-sm">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
-                  Message on WhatsApp
+                <a href="https://wa.me/254794731831" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-3 w-full px-6 py-4 text-xs font-display font-bold uppercase tracking-wider bg-[#25D366] hover:bg-[#20bd5a] text-white rounded-[var(--radius-sm)] transition-all shadow-lg transform hover:-translate-y-0.5">
+                  <MessageSquare size={18} />
+                  <span>Message on WhatsApp</span>
                 </a>
                 
-                <Link href="/prayer" className="flex items-center justify-center gap-3 w-full px-6 py-4 text-base font-bold bg-[var(--color-mist)] text-[var(--color-ink)] rounded-[var(--radius-md)] hover:bg-[var(--color-blue-100)] hover:text-[var(--color-blue-700)] transition-colors shadow-sm">
-                  Submit Prayer Request
+                <Link href="/prayer" className="flex items-center justify-center gap-3 w-full px-6 py-4 text-xs font-display font-bold uppercase tracking-wider bg-[var(--color-accent)] hover:bg-[var(--color-accent-hover)] text-white rounded-[var(--radius-sm)] transition-all shadow-[var(--shadow-accent)] transform hover:-translate-y-0.5">
+                  <span>Submit Prayer Request</span>
                 </Link>
 
-                <div className="relative py-2">
+                <div className="relative py-3">
                   <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-[var(--color-line)]"></div>
+                    <div className="w-full border-t border-white/10" />
                   </div>
-                  <div className="relative flex justify-center text-xs">
-                    <span className="bg-white px-3 text-[var(--color-slate)] uppercase tracking-widest font-semibold">or</span>
+                  <div className="relative flex justify-center text-[11px]">
+                    <span className="bg-[var(--color-navy-950)] px-3 text-slate-400 font-mono uppercase tracking-widest">or direct call</span>
                   </div>
                 </div>
 
-                <a href="tel:+254794731831" className="flex items-center justify-center gap-3 w-full px-6 py-4 text-base font-bold bg-[var(--color-blue-500)] text-white rounded-[var(--radius-md)] hover:bg-[var(--color-blue-700)] transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-blue-500)] shadow-sm">
-                  Call Us Now
+                <a href="tel:+254794731831" className="flex items-center justify-center gap-3 w-full px-6 py-4 text-xs font-display font-bold uppercase tracking-wider bg-white/10 hover:bg-white/20 text-white border border-white/20 rounded-[var(--radius-sm)] transition-all">
+                  <span>Call +254 794 731 831</span>
                 </a>
               </div>
             </div>
+
           </div>
         </div>
       </section>
     </div>
   );
 }
+

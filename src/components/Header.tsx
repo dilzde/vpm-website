@@ -3,14 +3,14 @@
 import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Menu, X, Radio } from "lucide-react";
+import { Menu, X, Radio, Heart } from "lucide-react";
 
 const NAV_ITEMS = [
   { label: "About", href: "/about" },
   { label: "Media", href: "/media" },
   { label: "Radio", href: "/radio" },
   { label: "Events", href: "/events" },
-  { label: "Give", href: "/give" },
+  { label: "Branches", href: "/branches" },
   { label: "Contact", href: "/contact" },
 ];
 
@@ -34,24 +34,24 @@ export default function Header() {
     <header
       ref={headerRef}
       className={[
-        "sticky top-0 z-50 w-full transition-all duration-200",
-        "bg-white/95 backdrop-blur-sm border-b border-line",
-        scrolled ? "py-2" : "py-4",
+        "sticky top-0 z-50 w-full transition-all duration-300",
+        "bg-[var(--color-navy-900)]/95 backdrop-blur-md border-b border-white/10 text-white shadow-md",
+        scrolled ? "py-3.5" : "py-5",
       ].join(" ")}
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-        {/* Logo */}
+        {/* Brand Logo */}
         <Link
           href="/"
-          className="flex items-center gap-3 text-[var(--color-ink)] hover:text-[var(--color-blue-500)] transition-colors"
+          className="flex items-center gap-3 group text-white hover:opacity-95 transition-all"
           id="header-logo"
         >
-          <div className="flex items-center justify-center w-10 h-10 overflow-hidden">
-            <Image src="/vpm_logo.png" alt="VPM International Logo" width={40} height={40} className="object-contain" priority />
+          <div className="flex items-center justify-center w-10 h-10 overflow-hidden bg-white/10 p-1 rounded-lg border border-white/15 shadow-inner group-hover:border-[var(--color-accent)] transition-colors">
+            <Image src="/vpm_logo.png" alt="VPM International Logo" width={36} height={36} className="object-contain" priority />
           </div>
           <span
             className={[
-              "font-bold transition-all duration-200",
+              "font-display font-extrabold tracking-tight transition-all duration-200 text-white",
               scrolled ? "text-lg" : "text-xl",
             ].join(" ")}
           >
@@ -59,67 +59,92 @@ export default function Header() {
           </span>
         </Link>
 
-        {/* Desktop Nav */}
-        <nav className="hidden lg:flex items-center gap-1" aria-label="Main navigation" id="main-nav">
+        {/* Desktop Navigation Bar */}
+        <nav className="hidden lg:flex items-center gap-1 xl:gap-2" aria-label="Main navigation" id="main-nav">
           {NAV_ITEMS.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              className="px-4 py-2 text-sm font-medium text-[var(--color-slate)] hover:text-[var(--color-blue-500)] rounded-[var(--radius-sm)] hover:bg-[var(--color-mist)] transition-colors"
+              className="px-3.5 py-2 text-sm font-semibold text-slate-200 hover:text-[var(--color-accent-hover)] rounded-md hover:bg-white/5 transition-all duration-200"
             >
               {item.label}
             </Link>
           ))}
-          <div className="ml-4">
+          <div className="flex items-center gap-3 ml-3 pl-3 border-l border-white/15">
             <Link
               href="/media"
-              className="inline-flex items-center gap-2 px-6 py-2.5 text-sm font-semibold
-                         bg-[var(--color-blue-500)] text-white rounded-[var(--radius-sm)] hover:bg-[var(--color-blue-700)] transition-colors
-                         focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-blue-500)]"
+              className="inline-flex items-center gap-2 px-4 py-2 text-xs font-bold uppercase tracking-wider
+                         bg-white/10 text-slate-100 border border-white/20 rounded-[var(--radius-sm)] hover:bg-white/20 hover:border-white/30 transition-all"
               id="watch-live-cta"
             >
-              <Radio size={14} strokeWidth={1.75} />
+              <span className="flex h-2 w-2 relative">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-[var(--color-live)]"></span>
+              </span>
               Watch Live
+            </Link>
+            <Link
+              href="/give"
+              className="inline-flex items-center gap-2 px-6 py-2.5 text-sm font-bold tracking-wide
+                         bg-[var(--color-accent)] text-white rounded-[var(--radius-sm)] hover:bg-[var(--color-accent-hover)] 
+                         shadow-[var(--shadow-accent)] transform hover:-translate-y-0.5 transition-all duration-200
+                         focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-accent)]"
+              id="give-cta"
+            >
+              <Heart size={15} className="fill-current" />
+              Give
             </Link>
           </div>
         </nav>
 
-        {/* Mobile toggle */}
+        {/* Mobile menu toggle */}
         <button
-          className="lg:hidden p-3 relative z-50 rounded-[var(--radius-sm)] text-[var(--color-slate)] hover:bg-[var(--color-mist)] transition-colors
-                     focus-visible:outline-2 focus-visible:outline-[var(--color-blue-500)]"
+          className="lg:hidden p-2.5 relative z-50 rounded-[var(--radius-sm)] text-slate-200 hover:bg-white/10 hover:text-white transition-colors
+                     focus-visible:outline-2 focus-visible:outline-[var(--color-accent)]"
           onClick={() => setMobileOpen(!mobileOpen)}
           aria-label={mobileOpen ? "Close menu" : "Open menu"}
           aria-expanded={mobileOpen}
           id="mobile-menu-toggle"
         >
-          {mobileOpen ? <X size={22} strokeWidth={1.75} /> : <Menu size={22} strokeWidth={1.75} />}
+          {mobileOpen ? <X size={24} strokeWidth={2} /> : <Menu size={24} strokeWidth={2} />}
         </button>
       </div>
 
-      {/* Mobile Nav */}
+      {/* Mobile Navigation Dropdown */}
       {mobileOpen && (
-        <div className="fixed inset-x-0 top-[72px] bottom-0 z-40 bg-white lg:hidden overflow-y-auto">
-          <nav className="flex flex-col p-6 gap-2" aria-label="Mobile navigation">
+        <div className="fixed inset-x-0 top-[72px] bottom-0 z-40 bg-[var(--color-navy-900)] text-white lg:hidden overflow-y-auto border-t border-white/10 px-6 py-8 shadow-2xl">
+          <nav className="flex flex-col gap-2 max-w-md mx-auto" aria-label="Mobile navigation">
             {NAV_ITEMS.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
                 onClick={() => setMobileOpen(false)}
-                className="px-4 py-3.5 text-base text-[var(--color-ink)] font-semibold rounded-[var(--radius-sm)] hover:bg-[var(--color-mist)] hover:text-[var(--color-blue-500)] transition-colors"
+                className="px-4 py-3.5 text-lg text-slate-100 font-display font-bold rounded-lg hover:bg-white/10 hover:text-[var(--color-accent)] transition-colors"
               >
                 {item.label}
               </Link>
             ))}
-            <div className="mt-4 pt-6 border-t border-[var(--color-line)]">
+            <div className="mt-6 pt-6 border-t border-white/15 flex flex-col gap-4">
+              <Link
+                href="/give"
+                onClick={() => setMobileOpen(false)}
+                className="flex items-center justify-center gap-2 w-full px-6 py-4 text-base font-bold
+                           bg-[var(--color-accent)] text-white rounded-[var(--radius-sm)] hover:bg-[var(--color-accent-hover)] shadow-lg transition-all"
+              >
+                <Heart size={18} className="fill-current" />
+                Give to Support
+              </Link>
               <Link
                 href="/media"
                 onClick={() => setMobileOpen(false)}
-                className="flex items-center justify-center gap-2 w-full px-5 py-4 text-base font-semibold
-                           bg-[var(--color-blue-500)] text-white rounded-[var(--radius-sm)] hover:bg-[var(--color-blue-700)] transition-colors"
+                className="flex items-center justify-center gap-2.5 w-full px-5 py-3.5 text-sm font-bold uppercase tracking-wider
+                           bg-white/10 text-slate-100 border border-white/20 rounded-[var(--radius-sm)] hover:bg-white/20 transition-all"
               >
-                <Radio size={16} strokeWidth={1.75} />
-                Watch Live
+                <span className="flex h-2.5 w-2.5 relative">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[var(--color-live)]"></span>
+                </span>
+                Watch Live Stream
               </Link>
             </div>
           </nav>

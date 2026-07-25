@@ -1,7 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { ExternalLink, Mail, Phone, MapPin } from "lucide-react";
+import { Mail, Phone, MapPin } from "lucide-react";
 
 const QUICK_LINKS = [
   { label: "About Us", href: "/about" },
@@ -9,7 +9,7 @@ const QUICK_LINKS = [
   { label: "Radio", href: "/radio" },
   { label: "Events", href: "/events" },
   { label: "Branches", href: "/branches" },
-  { label: "Support", href: "/give" },
+  { label: "Support & Give", href: "/give" },
   { label: "Prayer Request", href: "/prayer" },
   { label: "Get the App", href: "/app" },
 ];
@@ -36,35 +36,35 @@ export default function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="bg-[var(--color-navy-900)] text-white" role="contentinfo" id="site-footer">
+    <footer className="bg-[var(--color-navy-900)] text-white border-t border-white/10" role="contentinfo" id="site-footer">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 md:py-24">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8">
           {/* About blurb */}
           <div className="lg:col-span-2 pr-0 lg:pr-12">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="flex items-center justify-center w-12 h-12 overflow-hidden bg-white rounded-md shadow-sm">
+            <div className="flex items-center gap-3.5 mb-6">
+              <div className="flex items-center justify-center w-12 h-12 overflow-hidden bg-white/10 p-1 rounded-lg border border-white/15 shadow-sm">
                 <Image src="/vpm_logo.png" alt="VPM International Logo" width={40} height={40} className="object-contain" />
               </div>
-              <span className="font-bold text-xl tracking-tight">VPM International</span>
+              <span className="font-display font-extrabold text-2xl tracking-tight text-white">VPM International</span>
             </div>
-            <p className="text-[var(--color-blue-100)] text-sm leading-relaxed max-w-prose">
-              Voice of the Potter&apos;s Messengers Ministry — a ministry rooted in prayer,
-              the prophetic word, and the transforming power of the Gospel. We are called
-              to equip believers, raise intercessors, and spread the message of salvation
-              across nations.
+            <p className="text-slate-300 text-sm leading-relaxed max-w-prose font-sans">
+              Voice of the Potter&apos;s Messengers Ministry — a prophetic global ministry rooted in fervent prayer,
+              uncompromised truth, and the transforming power of the Gospel. Called
+              to equip believers, raise revivalist intercessors, and broadcast salvation
+              across the nations.
             </p>
-            <div className="flex items-center gap-4 mt-8">
+            <div className="flex items-center gap-3.5 mt-8">
               {SOCIAL_LINKS.map((s) => (
                 <a
                   key={s.label}
                   href={s.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-3 rounded-full bg-white/10 text-[var(--color-blue-100)]
-                             hover:bg-[var(--color-blue-500)] hover:text-white transition-colors"
+                  className="p-3 rounded-lg bg-white/5 border border-white/10 text-slate-300
+                             hover:bg-[var(--color-accent)] hover:border-[var(--color-accent)] hover:text-white transition-all duration-200 transform hover:-translate-y-0.5"
                   aria-label={s.label}
                 >
-                  <s.icon size={20} strokeWidth={2} />
+                  <s.icon size={20} strokeWidth={1.75} />
                 </a>
               ))}
             </div>
@@ -72,7 +72,7 @@ export default function Footer() {
 
           {/* Quick Links */}
           <div>
-            <h3 className="font-bold text-sm tracking-widest text-[var(--color-blue-300)] uppercase mb-6">
+            <h3 className="font-display font-bold text-xs tracking-widest text-[var(--color-accent)] uppercase mb-6">
               Quick Links
             </h3>
             <ul className="space-y-3">
@@ -80,7 +80,7 @@ export default function Footer() {
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm font-medium text-[var(--color-blue-100)] hover:text-white transition-colors"
+                    className="text-sm font-medium text-slate-300 hover:text-white hover:translate-x-1 inline-block transition-all duration-200"
                   >
                     {link.label}
                   </Link>
@@ -89,23 +89,23 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Contact */}
+          {/* Contact Details */}
           <div>
-            <h3 className="font-bold text-sm tracking-widest text-[var(--color-blue-300)] uppercase mb-6">
-              Contact Us
+            <h3 className="font-display font-bold text-xs tracking-widest text-[var(--color-accent)] uppercase mb-6">
+              Connect With Us
             </h3>
             <ul className="space-y-4">
-              <li className="flex items-start gap-3 text-sm font-medium text-[var(--color-blue-100)]">
-                <MapPin size={18} className="mt-0.5 shrink-0 text-[var(--color-blue-300)]" />
+              <li className="flex items-start gap-3 text-sm font-medium text-slate-300">
+                <MapPin size={18} className="mt-0.5 shrink-0 text-[var(--color-accent)]" />
                 <span>Nairobi, Kenya</span>
               </li>
-              <li className="flex items-start gap-3 text-sm font-medium text-[var(--color-blue-100)]">
-                <Phone size={18} className="mt-0.5 shrink-0 text-[var(--color-blue-300)]" />
+              <li className="flex items-start gap-3 text-sm font-medium text-slate-300">
+                <Phone size={18} className="mt-0.5 shrink-0 text-[var(--color-accent)]" />
                 <span>+254 794 731 831</span>
               </li>
-              <li className="flex items-start gap-3 text-sm font-medium text-[var(--color-blue-100)]">
-                <Mail size={18} className="mt-0.5 shrink-0 text-[var(--color-blue-300)]" />
-                <a href="mailto:info@vpminternational.org" className="hover:text-white transition-colors">
+              <li className="flex items-start gap-3 text-sm font-medium text-slate-300">
+                <Mail size={18} className="mt-0.5 shrink-0 text-[var(--color-accent)]" />
+                <a href="mailto:info@vpminternational.org" className="hover:text-[var(--color-accent-hover)] transition-colors">
                   info@vpminternational.org
                 </a>
               </li>
@@ -114,14 +114,14 @@ export default function Footer() {
         </div>
 
         <div className="mt-16 pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-xs text-[var(--color-blue-100)]/70">
+          <p className="text-xs text-slate-400">
             © {year} Voice of the Potter&apos;s Messengers Ministry. All rights reserved.
           </p>
           <div className="flex items-center gap-6">
-            <Link href="/privacy" className="text-xs text-[var(--color-blue-100)]/70 hover:text-white transition-colors">
+            <Link href="/privacy" className="text-xs text-slate-400 hover:text-white transition-colors">
               Privacy Policy
             </Link>
-            <Link href="/terms" className="text-xs text-[var(--color-blue-100)]/70 hover:text-white transition-colors">
+            <Link href="/terms" className="text-xs text-slate-400 hover:text-white transition-colors">
               Terms of Service
             </Link>
           </div>

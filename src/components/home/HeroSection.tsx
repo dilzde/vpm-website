@@ -9,110 +9,123 @@ export default async function HeroSection() {
 
   return (
     <section
-      className="relative min-h-[90vh] md:min-h-[85vh] flex items-center justify-center overflow-hidden bg-[var(--color-mist)]"
+      className="relative min-h-[88vh] md:min-h-[85vh] flex items-center justify-center overflow-hidden band-navy py-16 md:py-24"
       id="hero-section"
     >
-      {/* Dynamic Background Elements */}
-      <div className="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-[var(--color-blue-300)] opacity-20 blur-[120px] pointer-events-none mix-blend-multiply" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[60vw] h-[60vw] rounded-full bg-[var(--color-blue-500)] opacity-10 blur-[150px] pointer-events-none mix-blend-multiply" />
+      {/* Subtle Ambient Glow */}
+      <div className="absolute top-10 left-10 w-[500px] h-[500px] rounded-full bg-[var(--color-accent)]/5 blur-[140px] pointer-events-none" />
+      <div className="absolute bottom-10 right-10 w-[600px] h-[600px] rounded-full bg-[var(--color-navy-700)]/30 blur-[150px] pointer-events-none" />
       
-      {/* Decorative Grid */}
-      <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))] opacity-10 pointer-events-none" />
+      {/* Subtle Architectural Grid Overlay */}
+      <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0.05))] opacity-15 pointer-events-none" />
 
-      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-20 w-full flex flex-col lg:flex-row items-center gap-12 z-10">
+      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 w-full flex flex-col lg:flex-row items-center gap-12 lg:gap-16 z-10">
         
-        {/* Left Content Area */}
-        <div className="w-full lg:w-1/2 flex flex-col items-start text-left space-y-6">
+        {/* Left Content Area - Editorial 2-Line Headline */}
+        <div className="w-full lg:w-12/23 flex flex-col items-start text-left space-y-7">
           {liveVideo ? (
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 backdrop-blur-md border border-[var(--color-live)] shadow-[0_0_15px_rgba(226,76,76,0.3)]">
+            <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-[var(--color-live)]/15 border border-[var(--color-live)] shadow-[0_0_20px_rgba(226,76,76,0.3)]">
               <span className="w-2.5 h-2.5 rounded-full bg-[var(--color-live)] animate-live-pulse" />
-              <span className="text-xs font-bold tracking-wider text-[var(--color-live)] uppercase">
-                Live Now: {liveVideo.title}
+              <span className="text-xs font-display font-bold tracking-wider text-white uppercase">
+                Live Service in Progress
               </span>
             </div>
           ) : (
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/60 backdrop-blur-md border border-[var(--color-line)] shadow-sm">
-              <span className="text-xs font-bold tracking-wider text-[var(--color-blue-700)] uppercase">
-                Welcome to VPM
+            <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-white/5 backdrop-blur-md border border-white/15 shadow-inner">
+              <span className="w-2 h-2 rounded-full bg-[var(--color-accent)]" />
+              <span className="text-xs font-display font-bold tracking-wider text-[var(--color-accent)] uppercase">
+                Voice of the Potter&apos;s Messengers
               </span>
             </div>
           )}
 
-          <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold text-[var(--color-ink)] leading-[1.1] tracking-tight">
-            Equipping <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--color-blue-500)] to-sky-400">Believers</span>,<br />
-            Transforming Nations.
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-6xl font-display font-extrabold text-white leading-[1.15] tracking-tight">
+            Equipping Believers,<br />
+            <span className="highlight-block inline-block mt-1">Transforming Nations.</span>
           </h1>
           
-          <p className="text-lg md:text-xl text-[var(--color-slate)] max-w-lg leading-relaxed">
-            Voice of the Potter&apos;s Messengers Ministry. A community of faith rooted in prayer, the prophetic word, and the undeniable power of the Gospel.
+          <p className="text-base sm:text-lg md:text-xl text-slate-300 max-w-xl leading-relaxed font-sans font-normal">
+            A dynamic prophetic and evangelistic ministry dedicated to intercessory prayer, foundational teachings, and releasing God&apos;s manifest power across the nations.
           </p>
 
-          <div className="flex flex-col sm:flex-row items-center gap-4 pt-4 w-full sm:w-auto">
+          {/* Two Editorial CTA Buttons */}
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-3 w-full sm:w-auto">
             {liveVideo ? (
               <a
                 href={`https://www.youtube.com/watch?v=${liveVideo.videoId}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group relative inline-flex items-center justify-center gap-3 px-8 py-4 text-base font-semibold text-white bg-[var(--color-live)] rounded-full overflow-hidden transition-transform hover:scale-105 hover:shadow-xl hover:shadow-[var(--color-live)]/30 w-full sm:w-auto"
+                className="inline-flex items-center justify-center gap-3 px-9 py-4 text-base font-display font-bold uppercase tracking-wider
+                           bg-[var(--color-live)] text-white rounded-[var(--radius-sm)] hover:bg-red-700 transition-all duration-200 
+                           shadow-[0_4px_25px_rgba(226,76,76,0.4)] hover:-translate-y-0.5 w-full sm:w-auto text-center"
               >
-                <span className="absolute inset-0 w-full h-full -mt-1 rounded-lg opacity-30 bg-gradient-to-b from-transparent via-transparent to-black" />
-                <Play size={20} className="relative z-10 fill-white" />
-                <span className="relative z-10">Join Live Service</span>
+                <Play size={18} className="fill-white" />
+                <span>Join Live Service</span>
               </a>
             ) : (
               <Link
                 href="/media"
-                className="group relative inline-flex items-center justify-center gap-3 px-8 py-4 text-base font-semibold text-white bg-[var(--color-blue-500)] rounded-full overflow-hidden transition-transform hover:scale-105 hover:shadow-xl hover:shadow-blue-500/20 w-full sm:w-auto"
+                className="inline-flex items-center justify-center gap-3 px-9 py-4 text-base font-display font-bold uppercase tracking-wider
+                           bg-[var(--color-accent)] text-white rounded-[var(--radius-sm)] hover:bg-[var(--color-accent-hover)] 
+                           transition-all duration-200 shadow-[var(--shadow-accent)] hover:-translate-y-0.5 w-full sm:w-auto text-center"
               >
-                <span className="absolute inset-0 w-full h-full -mt-1 rounded-lg opacity-30 bg-gradient-to-b from-transparent via-transparent to-black" />
-                <Play size={20} className="relative z-10 fill-white" />
-                <span className="relative z-10">Watch Latest</span>
+                <Play size={18} className="fill-white" />
+                <span>Watch Latest Sermons</span>
               </Link>
             )}
 
             <Link
               href="/branches"
-              className="inline-flex items-center justify-center gap-2 px-8 py-4 text-base font-semibold text-[var(--color-ink)] bg-white/80 backdrop-blur-md border border-[var(--color-line)] rounded-full hover:bg-white hover:border-[var(--color-blue-300)] hover:text-[var(--color-blue-500)] transition-all hover:scale-105 shadow-sm w-full sm:w-auto"
+              className="inline-flex items-center justify-center gap-2.5 px-8 py-4 text-base font-display font-bold uppercase tracking-wider
+                         text-white bg-white/5 hover:bg-white/10 border border-white/20 hover:border-white/40 
+                         rounded-[var(--radius-sm)] transition-all duration-200 w-full sm:w-auto text-center"
             >
-              <MapPin size={20} />
-              Plan a Visit
+              <MapPin size={18} className="text-[var(--color-accent)]" />
+              <span>Plan a Visit</span>
             </Link>
           </div>
         </div>
 
-        {/* Right Visual Area (Glassmorphism Cards) */}
-        <div className="w-full lg:w-1/2 relative h-[500px] md:h-[600px] flex items-center justify-center">
+        {/* Right Visual Area - High-end Editorial Composition */}
+        <div className="w-full lg:w-11/23 relative h-[420px] md:h-[540px] flex items-center justify-center mt-6 lg:mt-0">
           
-          {/* Main Hero Image Frame */}
-          <div className="absolute inset-0 md:inset-8 rounded-[2rem] overflow-hidden border border-white/40 shadow-2xl z-10">
+          {/* Main Hero Media Frame */}
+          <div className="w-full h-full rounded-[var(--radius-lg)] overflow-hidden border border-white/20 shadow-[0_20px_60px_rgba(0,0,0,0.6)] relative group bg-[var(--color-navy-900)]">
             {liveVideo && liveVideo.thumbnail ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={liveVideo.thumbnail} alt="Live Service" className="w-full h-full object-cover" />
+              <img src={liveVideo.thumbnail} alt="Live Service" className="w-full h-full object-cover group-hover:scale-102 transition-transform duration-700" />
             ) : (
-              <PlaceholderCongregation />
+              <div className="w-full h-full">
+                <PlaceholderCongregation />
+              </div>
             )}
-            <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-navy-900)]/60 via-transparent to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-navy-950)]/80 via-transparent to-transparent opacity-90" />
+            
+            {/* Bottom editorial caption inside image card */}
+            <div className="absolute bottom-6 left-6 right-6 z-10 flex items-center justify-between">
+              <div>
+                <p className="text-xs uppercase tracking-widest font-bold text-[var(--color-accent)] mb-1">Ministry Broadcast</p>
+                <h3 className="text-lg font-display font-bold text-white leading-snug">Empowering the Body of Christ</h3>
+              </div>
+            </div>
           </div>
 
-          {/* Floating Glassmorphism Card 1 (Radio) */}
-          <Link href="/radio" className="absolute -left-4 md:-left-12 bottom-12 z-20 w-64 p-4 rounded-2xl bg-white/70 backdrop-blur-xl border border-white shadow-[0_8px_32px_rgba(30,43,58,0.1)] hover:scale-105 transition-transform group">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-full bg-[var(--color-blue-500)] flex items-center justify-center text-white shrink-0 shadow-inner group-hover:bg-[var(--color-blue-700)] transition-colors">
-                <Radio size={20} />
-              </div>
-              <div>
-                <p className="text-xs font-bold text-[var(--color-blue-500)] uppercase tracking-wider group-hover:text-[var(--color-blue-700)]">Asriel FM</p>
-                <p className="text-sm font-semibold text-[var(--color-ink)]">Streaming 24/7</p>
-              </div>
+          {/* Floating High-Contrast Editorial Radio Tag */}
+          <Link href="/radio" className="absolute -bottom-6 left-6 md:-left-6 z-20 px-6 py-4 rounded-[var(--radius-md)] bg-[var(--color-navy-950)]/95 backdrop-blur-xl border border-white/20 shadow-2xl hover:border-[var(--color-accent)] transition-all duration-300 group flex items-center gap-4">
+            <div className="w-11 h-11 rounded-full bg-[var(--color-accent)] flex items-center justify-center text-white shrink-0 shadow-[0_0_15px_rgba(217,119,6,0.4)] group-hover:scale-110 transition-transform">
+              <Radio size={20} />
+            </div>
+            <div>
+              <p className="text-[10px] font-display font-bold text-[var(--color-accent)] uppercase tracking-widest">Asriel Radio</p>
+              <p className="text-sm font-bold font-display text-white">Streaming 24/7 Live</p>
             </div>
           </Link>
 
-          {/* Floating Glassmorphism Card 2 (Service Times) */}
+          {/* Floating Service Times Badge */}
           {!liveVideo && (
-            <div className="absolute -right-4 md:-right-8 top-16 z-20 w-56 p-5 rounded-2xl bg-[var(--color-navy-900)]/90 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.2)]">
-               <p className="text-xs font-bold text-sky-400 uppercase tracking-wider mb-1">Next Service</p>
-               <p className="text-lg font-bold text-white mb-2">Sunday Worship</p>
-               <p className="text-sm text-sky-100/70">9:00 AM EAT</p>
+            <div className="absolute -top-5 right-6 md:-right-6 z-20 px-5 py-3.5 rounded-[var(--radius-md)] bg-[var(--color-navy-950)]/95 backdrop-blur-xl border border-white/20 shadow-2xl">
+               <p className="text-[10px] font-display font-bold text-[var(--color-accent)] uppercase tracking-widest mb-0.5">Next Service</p>
+               <p className="text-base font-display font-bold text-white">Sunday at 9:00 AM</p>
             </div>
           )}
 

@@ -2,9 +2,9 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Camera } from "lucide-react";
 
-// The gallery images can be added here. When empty, the component won't render.
+// The gallery images can be added here by admin/user. When empty, the component won't render.
 const GALLERY_IMAGES: string[] = [
   // Example: "/images/gallery-1.jpg",
 ];
@@ -19,40 +19,43 @@ export default function ImageGallery() {
 
   const scrollLeft = () => {
     if (scrollContainerRef.current) {
-      scrollContainerRef.current.scrollBy({ left: -300, behavior: "smooth" });
+      scrollContainerRef.current.scrollBy({ left: -340, behavior: "smooth" });
     }
   };
 
   const scrollRight = () => {
     if (scrollContainerRef.current) {
-      scrollContainerRef.current.scrollBy({ left: 300, behavior: "smooth" });
+      scrollContainerRef.current.scrollBy({ left: 340, behavior: "smooth" });
     }
   };
 
   return (
-    <section className="bg-[var(--color-mist)] py-16 md:py-24 border-t border-[var(--color-line)]" id="gallery">
+    <section className="band-white py-16 md:py-24 border-t border-[var(--color-line)]" id="gallery">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex items-end justify-between mb-8">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-10 gap-4">
           <div>
-            <p className="text-[var(--color-blue-500)] text-sm font-semibold tracking-widest uppercase mb-2">
-              Our Moments
+            <p className="text-[var(--color-accent)] text-xs font-display font-bold tracking-widest uppercase mb-2 flex items-center gap-2">
+              <Camera size={15} className="text-[var(--color-accent)]" />
+              Kingdom Moments
             </p>
-            <h2 className="text-3xl text-[var(--color-ink)] font-bold">Gallery</h2>
+            <h2 className="text-3xl md:text-4xl font-display font-extrabold text-[var(--color-ink)] tracking-tight">
+              Ministry <span className="highlight-block">Photo Gallery</span>
+            </h2>
           </div>
-          <div className="hidden sm:flex gap-2">
+          <div className="hidden sm:flex gap-3">
             <button 
               onClick={scrollLeft}
-              className="w-10 h-10 rounded-full border border-[var(--color-line)] flex items-center justify-center text-[var(--color-slate)] hover:text-[var(--color-blue-500)] hover:border-[var(--color-blue-500)] transition-colors"
+              className="w-12 h-12 rounded-full border border-[var(--color-line)] bg-white flex items-center justify-center text-[var(--color-navy-900)] hover:bg-[var(--color-navy-900)] hover:text-white transition-all shadow-xs"
               aria-label="Scroll left"
             >
-              <ChevronLeft size={20} strokeWidth={2} />
+              <ChevronLeft size={22} strokeWidth={2} />
             </button>
             <button 
               onClick={scrollRight}
-              className="w-10 h-10 rounded-full border border-[var(--color-line)] flex items-center justify-center text-[var(--color-slate)] hover:text-[var(--color-blue-500)] hover:border-[var(--color-blue-500)] transition-colors"
+              className="w-12 h-12 rounded-full border border-[var(--color-line)] bg-white flex items-center justify-center text-[var(--color-navy-900)] hover:bg-[var(--color-navy-900)] hover:text-white transition-all shadow-xs"
               aria-label="Scroll right"
             >
-              <ChevronRight size={20} strokeWidth={2} />
+              <ChevronRight size={22} strokeWidth={2} />
             </button>
           </div>
         </div>
@@ -60,20 +63,21 @@ export default function ImageGallery() {
         <div className="relative -mx-4 sm:mx-0">
           <div 
             ref={scrollContainerRef}
-            className="flex overflow-x-auto snap-x snap-mandatory gap-4 px-4 sm:px-0 pb-8 scrollbar-hide"
+            className="flex overflow-x-auto snap-x snap-mandatory gap-6 px-4 sm:px-0 pb-8 scrollbar-hide"
             style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
           >
             {GALLERY_IMAGES.map((src, idx) => (
               <div 
                 key={idx} 
-                className="relative w-72 h-72 sm:w-80 sm:h-80 shrink-0 snap-start rounded-[var(--radius-lg)] overflow-hidden shadow-sm"
+                className="relative w-80 h-80 sm:w-96 sm:h-96 shrink-0 snap-start rounded-[var(--radius-lg)] overflow-hidden shadow-md border border-[var(--color-line)] bg-[var(--color-mist)] group"
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img 
                   src={src} 
                   alt={`Gallery image ${idx + 1}`} 
-                  className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
               </div>
             ))}
           </div>

@@ -154,7 +154,7 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
       {/* Hidden audio element bound to state */}
       <audio
         ref={audioRef}
-        src={currentStation?.streamUrl || ""}
+        src={currentStation?.streamUrl || undefined}
         onPlaying={() => {
           setIsPlaying(true);
           setIsBuffering(false);

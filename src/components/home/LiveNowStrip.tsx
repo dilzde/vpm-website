@@ -8,50 +8,53 @@ export default async function LiveNowStrip() {
 
   return (
     <section
-      className={`w-full border-b border-[var(--color-line)] ${
-        liveVideo ? "bg-[var(--color-navy-900)]" : "bg-[var(--color-cloud)]"
+      className={`w-full border-b border-white/10 py-4 ${
+        liveVideo ? "bg-[var(--color-navy-950)] text-white" : "bg-[var(--color-navy-900)] text-white border-t border-white/5"
       }`}
       id="live-now-strip"
     >
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-5">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {liveVideo ? (
-          <div className="flex items-center gap-4">
-            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-[var(--color-live)] text-white text-xs font-bold uppercase tracking-widest shadow-sm">
-              <span className="w-2 h-2 rounded-full bg-white animate-live-pulse" />
-              Live
-            </span>
-            <span className="text-sm md:text-base text-white font-medium line-clamp-1 flex-1">
-              {liveVideo.title}
-            </span>
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <span className="inline-flex items-center gap-2 px-3 py-1 rounded-[var(--radius-sm)] bg-[var(--color-live)] text-white text-xs font-display font-bold uppercase tracking-widest shadow-sm animate-pulse">
+                <span className="w-2 h-2 rounded-full bg-white" />
+                Live Now
+              </span>
+              <span className="text-sm md:text-base text-white font-display font-bold line-clamp-1">
+                {liveVideo.title}
+              </span>
+            </div>
             <a
               href={`https://www.youtube.com/watch?v=${liveVideo.videoId}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="ml-auto text-sm font-semibold text-white underline decoration-[var(--color-blue-300)] underline-offset-4 hover:text-[var(--color-blue-100)] transition-colors whitespace-nowrap"
+              className="px-5 py-2 text-xs font-display font-bold uppercase tracking-wider bg-[var(--color-accent)] text-white rounded-[var(--radius-sm)] hover:bg-[var(--color-accent-hover)] transition-colors"
             >
-              Watch Now →
+              Watch Broadcast →
             </a>
           </div>
         ) : (
-          <div className="flex items-center gap-4">
-            <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-white text-[var(--color-blue-500)] shadow-sm">
-              <Clock size={16} strokeWidth={2} />
-            </span>
-            <div className="flex flex-col sm:flex-row sm:items-center sm:gap-3">
-              <span className="text-sm md:text-base text-[var(--color-ink)] font-semibold">
-                Next Service
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-[var(--color-accent)]/20 text-[var(--color-accent)]">
+                <Clock size={16} strokeWidth={2.2} />
               </span>
-              <span className="text-sm text-[var(--color-slate)] font-medium">
-                Sunday at 9:00 AM EAT
-              </span>
+              <div className="flex flex-col sm:flex-row sm:items-center sm:gap-2.5">
+                <span className="text-sm text-white font-display font-bold tracking-wide uppercase">
+                  Upcoming Worship Service:
+                </span>
+                <span className="text-sm text-slate-300 font-sans">
+                  Sunday at 9:00 AM EAT
+                </span>
+              </div>
             </div>
             <Link
               href="/radio"
-              className="ml-auto flex items-center gap-2 text-sm font-semibold text-[var(--color-blue-500)] hover:text-[var(--color-blue-700)] transition-colors whitespace-nowrap"
+              className="flex items-center gap-2 text-xs font-display font-bold uppercase tracking-wider text-[var(--color-accent)] hover:text-white transition-colors"
             >
-              <Radio size={16} strokeWidth={2} />
-              <span className="hidden sm:inline">Listen to Radio</span>
-              <span className="sm:hidden">Radio</span>
+              <Radio size={16} strokeWidth={2.2} className="animate-pulse" />
+              <span>Listen Live to Asriel FM →</span>
             </Link>
           </div>
         )}

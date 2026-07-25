@@ -61,9 +61,9 @@ export default function Carousel({
       {...pauseHandlers}
       onKeyDown={handleKeyDown}
     >
-      <div className="overflow-hidden rounded-md border border-line">
+      <div className="overflow-hidden rounded-md border border-[var(--color-line)] shadow-sm">
         <div
-          className="flex transition-transform duration-300 ease-out"
+          className="flex transition-transform duration-500 ease-out"
           style={{ transform: `translateX(-${current * 100}%)` }}
         >
           {children.map((child, i) => (
@@ -87,23 +87,23 @@ export default function Carousel({
           <div className="flex items-center gap-2">
             <button
               onClick={() => go(-1)}
-              className="p-2 rounded-md border border-line bg-cloud text-slate-600
-                         hover:bg-sky-50 transition-colors focus-visible:outline-2 focus-visible:outline-sky-500"
+              className="p-2 rounded-md border border-[var(--color-line)] bg-white text-[var(--color-ink)]
+                         hover:bg-[var(--color-mist)] hover:border-[var(--color-accent)] transition-all focus-visible:outline-2 focus-visible:outline-[var(--color-accent)] shadow-xs"
               aria-label="Previous slide"
             >
-              <ChevronLeft size={16} strokeWidth={1.75} />
+              <ChevronLeft size={16} strokeWidth={2} />
             </button>
             <button
               onClick={() => go(1)}
-              className="p-2 rounded-md border border-line bg-cloud text-slate-600
-                         hover:bg-sky-50 transition-colors focus-visible:outline-2 focus-visible:outline-sky-500"
+              className="p-2 rounded-md border border-[var(--color-line)] bg-white text-[var(--color-ink)]
+                         hover:bg-[var(--color-mist)] hover:border-[var(--color-accent)] transition-all focus-visible:outline-2 focus-visible:outline-[var(--color-accent)] shadow-xs"
               aria-label="Next slide"
             >
-              <ChevronRight size={16} strokeWidth={1.75} />
+              <ChevronRight size={16} strokeWidth={2} />
             </button>
           </div>
 
-          <div className="flex items-center gap-1.5" role="tablist">
+          <div className="flex items-center gap-2" role="tablist">
             {children.map((_, i) => (
               <button
                 key={i}
@@ -111,7 +111,7 @@ export default function Carousel({
                 aria-selected={i === current}
                 aria-label={`Go to slide ${i + 1}`}
                 onClick={() => setCurrent(i)}
-                className={`w-2 h-2 rounded-full transition-colors ${i === current ? "bg-sky-500" : "bg-sky-200"}`}
+                className={`h-2 rounded-full transition-all duration-300 ${i === current ? "w-6 bg-[var(--color-accent)]" : "w-2 bg-slate-300 hover:bg-slate-400"}`}
               />
             ))}
           </div>
@@ -119,11 +119,11 @@ export default function Carousel({
           {autoPlay > 0 && (
             <button
               onClick={() => setPaused((p) => !p)}
-              className="p-2 rounded-md border border-line bg-cloud text-slate-600
-                         hover:bg-sky-50 transition-colors focus-visible:outline-2 focus-visible:outline-sky-500"
+              className="p-2 rounded-md border border-[var(--color-line)] bg-white text-[var(--color-ink)]
+                         hover:bg-[var(--color-mist)] hover:border-[var(--color-accent)] transition-all focus-visible:outline-2 focus-visible:outline-[var(--color-accent)] shadow-xs"
               aria-label={paused ? "Play carousel" : "Pause carousel"}
             >
-              {paused ? <Play size={16} strokeWidth={1.75} /> : <Pause size={16} strokeWidth={1.75} />}
+              {paused ? <Play size={16} strokeWidth={2} /> : <Pause size={16} strokeWidth={2} />}
             </button>
           )}
         </div>

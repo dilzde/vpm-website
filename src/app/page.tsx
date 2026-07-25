@@ -1,5 +1,6 @@
 import React from "react";
 import HeroSection from "@/components/home/HeroSection";
+import LiveNowStrip from "@/components/home/LiveNowStrip";
 import AnnouncementsSection from "@/components/home/AnnouncementsSection";
 import SupportCarousel from "@/components/home/SupportCarousel";
 import BookingCarousel from "@/components/home/BookingCarousel";
@@ -12,6 +13,7 @@ export default function HomePage() {
   return (
     <>
       <HeroSection />
+      <LiveNowStrip />
       <AnnouncementsSection />
       <SupportCarousel />
       <BookingCarousel />

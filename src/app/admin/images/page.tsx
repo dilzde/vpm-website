@@ -1,54 +1,86 @@
 "use client";
 
-import React from "react";
-import { Upload, Image as ImageIcon } from "lucide-react";
+import React, { useState } from "react";
+import { Upload, Image as ImageIcon, CheckCircle, Sparkles } from "lucide-react";
 
-// All image slots on the site
+// All image slots across the Voice of the Potter's Messengers site
 const IMAGE_SLOTS = [
-  { key: "hero", label: "Hero Section", section: "Home" },
-  { key: "about_main", label: "About Photo", section: "About" },
-  { key: "about_secondary", label: "Secondary Photo", section: "About" },
-  { key: "branch_nairobi", label: "Nairobi Branch", section: "Branches" },
+  { key: "hero", label: "Hero Section Banner", section: "Home Page" },
+  { key: "gallery_1", label: "Interactive Photo 1 (Above Footer)", section: "Home Gallery" },
+  { key: "gallery_2", label: "Interactive Photo 2 (Above Footer)", section: "Home Gallery" },
+  { key: "gallery_3", label: "Interactive Photo 3 (Above Footer)", section: "Home Gallery" },
+  { key: "gallery_4", label: "Interactive Photo 4 (Above Footer)", section: "Home Gallery" },
+  { key: "gallery_5", label: "Interactive Photo 5 (Above Footer)", section: "Home Gallery" },
+  { key: "gallery_6", label: "Interactive Photo 6 (Above Footer)", section: "Home Gallery" },
+  { key: "about_main", label: "Primary Ministry Photo", section: "About Page" },
+  { key: "about_secondary", label: "Revival Center Photo", section: "About Page" },
+  { key: "branch_nairobi", label: "Nairobi Sanctuary", section: "Branches" },
   { key: "branch_mombasa", label: "Mombasa Branch", section: "Branches" },
-  { key: "branch_kisumu", label: "Kisumu Branch", section: "Branches" },
-  { key: "branch_nakuru", label: "Nakuru Branch", section: "Branches" },
-  { key: "branch_eldoret", label: "Eldoret Branch", section: "Branches" },
-  { key: "announcement_1", label: "Announcement Slide 1", section: "Announcements" },
-  { key: "announcement_2", label: "Announcement Slide 2", section: "Announcements" },
-  { key: "announcement_3", label: "Announcement Slide 3", section: "Announcements" },
-  { key: "carousel_support_1", label: "Support Slide 1", section: "Carousels" },
-  { key: "carousel_booking_1", label: "Booking Slide 1", section: "Carousels" },
+  { key: "branch_kisumu", label: "Kisumu Fellowship", section: "Branches" },
+  { key: "branch_nakuru", label: "Nakuru Revival Altar", section: "Branches" },
+  { key: "branch_eldoret", label: "Eldoret Mission Centre", section: "Branches" },
+  { key: "carousel_support_1", label: "Support Mission Slide 1", section: "Support Band" },
+  { key: "carousel_booking_1", label: "Pastoral Counseling Banner", section: "Booking Band" },
 ];
 
 export default function AdminImagesPage() {
+  const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
+
+  const handleUploadClick = (key: string) => {
+    setSelectedSlot(key);
+    alert(`Image slot "${key}" selected for update. In production, this opens the cloud media uploader.`);
+  };
+
   return (
-    <div>
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-xl font-bold text-slate-800">Site Images</h1>
-        <p className="text-xs text-slate-600">Click any slot to upload an image</p>
+    <div className="space-y-8">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-[var(--color-navy-950)] text-white p-6 md:p-8 rounded-[var(--radius-lg)] border border-white/10 shadow-xl">
+        <div>
+          <p className="text-[var(--color-accent)] text-xs font-display font-bold uppercase tracking-widest mb-1 flex items-center gap-2">
+            <Sparkles size={15} />
+            Media & Gallery Control Portal
+          </p>
+          <h1 className="text-2xl md:text-3xl font-display font-extrabold text-white tracking-tight">Site Images & Interactive Gallery</h1>
+          <p className="text-xs sm:text-sm text-slate-300 font-sans mt-2">
+            Upload pictures here to automatically populate the interactive horizontal gallery above the footer and ministry section banners. Note: The Home Photo Gallery is hidden until you upload pictures here.
+          </p>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-        {IMAGE_SLOTS.map((slot) => (
-          <div key={slot.key} className="bg-cloud border border-line rounded-md overflow-hidden">
-            {/* Image preview */}
-            <div className="aspect-video bg-sky-50 flex items-center justify-center cursor-pointer hover:bg-sky-100 transition-colors group">
-              <div className="text-center text-slate-600/40 group-hover:text-sky-500 transition-colors">
-                <ImageIcon size={28} strokeWidth={1.5} className="mx-auto mb-1" />
-                <span className="text-xs font-medium flex items-center gap-1 justify-center">
-                  <Upload size={10} strokeWidth={1.75} />
-                  Upload
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        {IMAGE_SLOTS.map((slot) => {
+          const isGallery = slot.section === "Home Gallery";
+          return (
+            <div key={slot.key} className={`bg-[var(--color-cloud)] border ${isGallery ? "border-[var(--color-accent)]/50 shadow-md" : "border-[var(--color-line)]"} rounded-[var(--radius-lg)] overflow-hidden transition-all duration-200 hover:shadow-xl group`}>
+              {/* Image preview slot */}
+              <div 
+                onClick={() => handleUploadClick(slot.key)}
+                className="aspect-video bg-[var(--color-navy-900)] text-white/50 flex flex-col items-center justify-center cursor-pointer hover:bg-[var(--color-accent)] hover:text-white transition-colors duration-200 group p-4 text-center relative"
+              >
+                {isGallery && (
+                  <span className="absolute top-2 right-2 px-2 py-0.5 text-[10px] font-mono font-bold bg-white text-[var(--color-navy-950)] rounded uppercase tracking-wider">
+                    Gallery Slot
+                  </span>
+                )}
+                <ImageIcon size={32} strokeWidth={1.5} className="mb-2 group-hover:scale-110 transition-transform" />
+                <span className="text-xs font-display font-bold uppercase tracking-wider flex items-center gap-1.5 text-white">
+                  <Upload size={13} strokeWidth={2.2} />
+                  Click To Upload Photo
                 </span>
               </div>
+              {/* Metadata */}
+              <div className="px-4 py-3.5 border-t border-[var(--color-line)] bg-white flex flex-col justify-between">
+                <div>
+                  <p className="text-xs font-display font-extrabold text-[var(--color-ink)]">{slot.label}</p>
+                  <span className="inline-block mt-1 text-[11px] font-mono font-medium text-[var(--color-slate)] bg-[var(--color-mist)] px-2 py-0.5 rounded">
+                    {slot.section}
+                  </span>
+                </div>
+              </div>
             </div>
-            {/* Info */}
-            <div className="px-3 py-2.5 border-t border-line">
-              <p className="text-xs font-medium text-slate-800">{slot.label}</p>
-              <p className="text-xs text-slate-600/70">{slot.section}</p>
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
 }
+

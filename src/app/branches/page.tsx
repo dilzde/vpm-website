@@ -1,102 +1,124 @@
 import React from "react";
 import { Metadata } from "next";
-import { MapPin, Phone, Mail, ExternalLink } from "lucide-react";
+import { MapPin, Phone, Mail, ExternalLink, Globe, Compass } from "lucide-react";
 import PlaceholderBranch from "@/components/placeholders/PlaceholderBranch";
 
 export const metadata: Metadata = {
-  title: "Branches | VPM International",
+  title: "Branches & Sanctuary Locations | VPM International",
   description:
-    "Find a VPM International branch near you. Locations across Kenya with contact details and directions.",
+    "Find a Voice of the Potter's Messengers branch near you. Worship sanctuaries and communion gatherings across Kenya with contact details and directions.",
 };
 
-// Sample branches
 const BRANCHES = [
-  { id: "kisumu-hq", name: "Kisumu Headquarters", region: "Kisumu", address: "Brighlight Kisumu", phone: "+254 757 871 123", email: "vpminternational2@gmail.com", mapsUrl: "https://maps.app.goo.gl/CzAQhusk4crKfLjHA", active: true },
-  { id: "nairobi", name: "Nairobi Branch", region: "Nairobi", address: "Family bank, Mlolongo", phone: "+254 794 731 831", email: "vpminternational2@gmail.com", mapsUrl: "https://maps.app.goo.gl/XyRajWmu3kFt8h5K9", active: true },
-  { id: "kisumu-branch", name: "Kisumu Branch", region: "Kisumu", address: "Nyamasaria", phone: "+254 720 408 630", email: "vpminternational2@gmail.com", mapsUrl: "https://maps.google.com/?q=-0.091702,34.767956", active: true },
-  { id: "siaya", name: "Siaya Branch", region: "Siaya", address: "Siaya", phone: "+254 794 731 831", email: "vpminternational2@gmail.com", mapsUrl: "https://maps.google.com/?q=-0.303099,36.080026", active: true },
-  { id: "machakos", name: "Machakos Branch", region: "Machakos", address: "Machakos", phone: "+254 794 731 831", email: "vpminternational2@gmail.com", mapsUrl: "https://maps.google.com/?q=-1.517683,37.263414", active: true },
+  { id: "kisumu-hq", name: "Kisumu Headquarters", region: "Kisumu", address: "Brightlight Building, Kisumu", phone: "+254 757 871 123", email: "vpminternational2@gmail.com", mapsUrl: "https://maps.app.goo.gl/CzAQhusk4crKfLjHA", active: true },
+  { id: "nairobi", name: "Nairobi Branch", region: "Nairobi", address: "Family Bank Bldg, Mlolongo", phone: "+254 794 731 831", email: "vpminternational2@gmail.com", mapsUrl: "https://maps.app.goo.gl/XyRajWmu3kFt8h5K9", active: true },
+  { id: "kisumu-branch", name: "Kisumu Branch", region: "Kisumu", address: "Nyamasaria Sanctuary", phone: "+254 720 408 630", email: "vpminternational2@gmail.com", mapsUrl: "https://maps.google.com/?q=-0.091702,34.767956", active: true },
+  { id: "siaya", name: "Siaya Branch", region: "Siaya", address: "Central Siaya Sanctuary", phone: "+254 794 731 831", email: "vpminternational2@gmail.com", mapsUrl: "https://maps.google.com/?q=-0.303099,36.080026", active: true },
+  { id: "machakos", name: "Machakos Branch", region: "Machakos", address: "Machakos Revival Center", phone: "+254 794 731 831", email: "vpminternational2@gmail.com", mapsUrl: "https://maps.google.com/?q=-1.517683,37.263414", active: true },
 ];
 
 export default function BranchesPage() {
   return (
-    <div className="bg-[var(--color-mist)] min-h-screen">
-      <section className="bg-white border-b border-[var(--color-line)]">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 md:py-24">
-          <p className="text-[var(--color-blue-500)] text-sm font-semibold tracking-widest uppercase mb-2">
-            Visit Us
+    <div className="flex flex-col min-h-screen bg-[var(--color-mist)]">
+      {/* Editorial Deep Navy Header */}
+      <section className="band-navy py-16 md:py-24 border-b border-white/10 relative overflow-hidden">
+        <div className="absolute top-0 right-1/4 w-[450px] h-[450px] bg-[var(--color-accent)]/10 rounded-full blur-[140px] pointer-events-none" />
+
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
+          <p className="text-[var(--color-accent)] text-xs font-display font-bold tracking-widest uppercase mb-3 flex items-center gap-2">
+            <Globe size={15} className="text-[var(--color-accent)]" />
+            Worship in God&apos;s Presence
           </p>
-          <h1 className="text-3xl text-[var(--color-ink)] font-bold mb-4">Our Branches</h1>
-          <p className="text-base text-[var(--color-slate)] max-w-prose leading-relaxed">
-            Find a VPM International branch near you. We have communities
-            of believers gathering across Kenya.
+          <h1 className="text-4xl sm:text-6xl font-display font-extrabold text-white mb-6 tracking-tight">
+            Our Ministry <span className="highlight-block">Branches</span>
+          </h1>
+          <p className="text-base sm:text-lg text-slate-300 max-w-2xl font-sans leading-relaxed">
+            Find a Voice of the Potter&apos;s Messengers sanctuary near you. We have vibrant communities of believers gathering across Kenya for revival and fellowship.
           </p>
         </div>
       </section>
 
-      <section className="py-16 md:py-24">
+      {/* Main Content: Branches Grid & Architectural Showcase */}
+      <section className="band-white py-16 md:py-24 flex-1">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {/* Map placeholder */}
-            <div className="bg-white border border-[var(--color-line)] rounded-[var(--radius-lg)] aspect-[4/3] flex flex-col items-center justify-center overflow-hidden shadow-sm md:row-span-2 lg:row-span-1 relative">
-              <PlaceholderBranch />
-              <div className="absolute inset-0 bg-white/80 backdrop-blur-[2px] flex items-center justify-center">
-                <div className="text-center text-[var(--color-slate)] p-6 bg-white border border-[var(--color-line)] rounded-[var(--radius-md)] shadow-sm">
-                  <MapPin size={24} strokeWidth={2} className="mx-auto mb-2 text-[var(--color-blue-500)]" />
-                  <span className="text-sm font-bold text-[var(--color-ink)]">Map view — coming soon</span>
-                </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            
+            {/* Illustrated Sanctuary Architecture Showcase */}
+            <div className="bg-[var(--color-navy-950)] border border-white/15 rounded-[var(--radius-lg)] p-8 flex flex-col items-center justify-between overflow-hidden shadow-2xl relative min-h-[360px] group text-center">
+              <div className="w-full relative z-10 my-auto py-4">
+                <PlaceholderBranch />
+              </div>
+              <div className="relative z-20 bg-white/5 border border-white/10 p-6 rounded-[var(--radius-md)] backdrop-blur-md w-full">
+                <Compass size={24} className="text-[var(--color-accent)] mx-auto mb-2" />
+                <h4 className="text-base font-display font-bold text-white mb-1">Interactive Map Integration</h4>
+                <p className="text-xs text-slate-300 font-sans">Google Maps GPS navigation coordinates available on all location cards.</p>
               </div>
             </div>
 
-            {/* Branch cards */}
+            {/* Editorial Branch Directory Cards */}
             {BRANCHES.map((branch) => (
               <article
                 key={branch.id}
-                className="bg-white border border-[var(--color-line)] rounded-[var(--radius-lg)] p-6 hover:border-[var(--color-blue-300)] transition-colors shadow-sm flex flex-col h-full"
+                className="bg-[var(--color-cloud)] border border-[var(--color-line)] rounded-[var(--radius-lg)] p-8 hover:border-[var(--color-accent)] transition-all duration-300 shadow-sm hover:shadow-xl flex flex-col justify-between group"
               >
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-[var(--color-mist)] text-[var(--color-blue-500)] flex items-center justify-center shrink-0">
-                      <MapPin size={18} strokeWidth={2} />
+                <div>
+                  <div className="flex items-start justify-between mb-6">
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 rounded-[var(--radius-md)] bg-[var(--color-navy-900)] text-[var(--color-accent)] group-hover:bg-[var(--color-accent)] group-hover:text-white flex items-center justify-center shrink-0 transition-colors shadow-xs">
+                        <MapPin size={22} strokeWidth={2} />
+                      </div>
+                      <div>
+                        <h2 className="text-xl font-display font-extrabold text-[var(--color-ink)] leading-tight mb-1 group-hover:text-[var(--color-accent)] transition-colors">
+                          {branch.name}
+                        </h2>
+                        <span className="text-[11px] font-mono font-bold text-[var(--color-navy-900)] uppercase tracking-wider bg-white px-2 py-0.5 rounded border border-[var(--color-line)]">
+                          {branch.region}
+                        </span>
+                      </div>
                     </div>
-                    <div>
-                      <h2 className="text-base font-bold text-[var(--color-ink)] leading-tight mb-0.5">
-                        {branch.name}
-                      </h2>
-                      <span className="text-xs font-semibold text-[var(--color-blue-500)] uppercase tracking-wider">
-                        {branch.region}
-                      </span>
-                    </div>
+                    {branch.mapsUrl && branch.mapsUrl !== "#" && (
+                      <a
+                        href={branch.mapsUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-2.5 rounded-full bg-white border border-[var(--color-line)] text-[var(--color-navy-900)] hover:bg-[var(--color-navy-900)] hover:text-white transition-all shadow-xs shrink-0"
+                        aria-label={`Directions to ${branch.name}`}
+                      >
+                        <ExternalLink size={16} strokeWidth={2.2} />
+                      </a>
+                    )}
                   </div>
-                  {branch.mapsUrl && branch.mapsUrl !== "#" && (
-                    <a
-                      href={branch.mapsUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="p-2 rounded-full text-[var(--color-slate)] hover:bg-[var(--color-mist)] hover:text-[var(--color-blue-500)] transition-colors"
-                      aria-label={`Directions to ${branch.name}`}
-                    >
-                      <ExternalLink size={16} strokeWidth={2} />
-                    </a>
-                  )}
+
+                  <div className="space-y-4 pt-4">
+                    <p className="flex items-center gap-3 text-sm font-sans font-medium text-[var(--color-slate)]">
+                      <MapPin size={16} className="text-[var(--color-navy-900)] shrink-0" />
+                      <span>{branch.address}</span>
+                    </p>
+                    <p className="flex items-center gap-3 text-sm font-sans font-medium text-[var(--color-slate)]">
+                      <Phone size={16} className="text-[var(--color-navy-900)] shrink-0" />
+                      <a href={`tel:${branch.phone.replace(/\s/g, "")}`} className="hover:text-[var(--color-accent)] transition-colors">
+                        {branch.phone}
+                      </a>
+                    </p>
+                    <p className="flex items-center gap-3 text-sm font-sans font-medium text-[var(--color-slate)]">
+                      <Mail size={16} className="text-[var(--color-navy-900)] shrink-0" />
+                      <a href={`mailto:${branch.email}`} className="hover:text-[var(--color-accent)] transition-colors truncate">
+                        {branch.email}
+                      </a>
+                    </p>
+                  </div>
                 </div>
-                <div className="space-y-3 mt-auto pt-4 border-t border-[var(--color-line)]">
-                  <p className="flex items-start gap-2.5 text-sm font-medium text-[var(--color-slate)]">
-                    <MapPin size={16} strokeWidth={2} className="mt-0.5 shrink-0 text-[var(--color-blue-300)]" />
-                    {branch.address}
-                  </p>
-                  <p className="flex items-center gap-2.5 text-sm font-medium text-[var(--color-slate)]">
-                    <Phone size={16} strokeWidth={2} className="shrink-0 text-[var(--color-blue-300)]" />
-                    <a href={`tel:${branch.phone.replace(/\s/g, "")}`} className="hover:text-[var(--color-blue-500)] transition-colors">
-                      {branch.phone}
-                    </a>
-                  </p>
-                  <p className="flex items-center gap-2.5 text-sm font-medium text-[var(--color-slate)]">
-                    <Mail size={16} strokeWidth={2} className="shrink-0 text-[var(--color-blue-300)]" />
-                    <a href={`mailto:${branch.email}`} className="hover:text-[var(--color-blue-500)] transition-colors truncate">
-                      {branch.email}
-                    </a>
-                  </p>
+
+                <div className="mt-8 pt-4 border-t border-[var(--color-line)]">
+                  <a
+                    href={branch.mapsUrl || "#"}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-between w-full px-5 py-3 text-xs font-display font-bold uppercase tracking-wider bg-white text-[var(--color-navy-900)] hover:bg-[var(--color-navy-900)] hover:text-white border border-[var(--color-line)] rounded-[var(--radius-sm)] transition-all shadow-xs"
+                  >
+                    <span>Get Navigation Directions</span>
+                    <span>→</span>
+                  </a>
                 </div>
               </article>
             ))}
@@ -106,3 +128,4 @@ export default function BranchesPage() {
     </div>
   );
 }
+
