@@ -4,7 +4,8 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Menu, X, Heart } from "lucide-react";
+import { Menu, X, Heart, Radio, Play, Pause } from "lucide-react";
+import { useRadioPlayer } from "@/lib/hooks/useRadioPlayer";
 
 const NAV_ITEMS = [
   { label: "Home", href: "/" },
@@ -18,16 +19,30 @@ const NAV_ITEMS = [
 export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = usePathname();
+  const { isPlaying, toggle } = useRadioPlayer();
 
+  // Close mobile drawer on route change
   useEffect(() => {
-    document.body.style.overflow = mobileOpen ? "hidden" : "";
+    setMobileOpen(false);
+  }, [pathname]);
+
+  // Lock body scroll on Android/iOS when mobile menu is open
+  useEffect(() => {
+    if (mobileOpen) {
+      document.body.style.overflow = "hidden";
+      document.body.style.touchAction = "none";
+    } else {
+      document.body.style.overflow = "";
+      document.body.style.touchAction = "";
+    }
     return () => {
       document.body.style.overflow = "";
+      document.body.style.touchAction = "";
     };
   }, [mobileOpen]);
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-[var(--color-surface)]/85 backdrop-blur-md text-[var(--color-ink)] border-b border-[var(--color-line)] h-[72px] flex items-center transition-all">
+    <header className="sticky top-0 z-50 w-full bg-[var(--color-surface)]/95 backdrop-blur-md text-[var(--color-ink)] border-b border-[var(--color-line)] h-[72px] flex items-center transition-all">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 w-full flex items-center justify-between">
         
         {/* Left: Brand Logo & Wordmark */}
@@ -51,10 +66,10 @@ export default function Header() {
           </span>
         </Link>
 
-        {/* Center-Right: Nav Links & Give CTA */}
+        {/* Center-Right: Desktop Nav Links & Give CTA */}
         <div className="hidden lg:flex items-center gap-8">
           
-          {/* Nav Links with 2px Lime Active Underline */}
+          {/* Nav Links */}
           <nav className="flex items-center gap-6" aria-label="Main navigation">
             {NAV_ITEMS.map((item) => {
               const active = pathname === item.href;
@@ -89,34 +104,57 @@ export default function Header() {
 
         </div>
 
-        {/* Mobile Hamburger Toggle Button */}
+        {/* Android & Mobile Ultra-Responsive Hamburger Toggle Button */}
         <button
-          className="lg:hidden p-2 text-[var(--color-ink)] focus:outline-none"
-          onClick={() => setMobileOpen(!mobileOpen)}
+          type="button"
+          onClick={() => setMobileOpen((prev) => !prev)}
           aria-label={mobileOpen ? "Close menu" : "Open menu"}
+          aria-expanded={mobileOpen}
           id="mobile-menu-toggle"
+          className="lg:hidden min-w-[44px] min-h-[44px] p-2.5 rounded-full bg-[var(--color-surface-alt)] border border-[var(--color-line)] text-[var(--color-ink)] flex items-center justify-center active:scale-95 touch-manipulation cursor-pointer shadow-xs"
         >
-          {mobileOpen ? <X size={24} /> : <Menu size={24} />}
+          {mobileOpen ? <X size={22} className="stroke-[2.5]" /> : <Menu size={22} className="stroke-[2.5]" />}
         </button>
 
       </div>
 
-      {/* Mobile Slide-In Panel */}
+      {/* Android & Mobile Slide-In Fullscreen Panel */}
       {mobileOpen && (
-        <div className="fixed inset-0 top-[72px] z-50 bg-[var(--color-surface)] text-[var(--color-ink)] lg:hidden flex flex-col px-6 py-8 overflow-y-auto">
+        <div
+          className="fixed top-[72px] left-0 right-0 bottom-0 z-[100] bg-[var(--color-surface)] text-[var(--color-ink)] lg:hidden flex flex-col px-6 py-8 h-[calc(100dvh-72px)] overflow-y-auto shadow-2xl border-t border-[var(--color-line)]"
+          style={{ WebkitOverflowScrolling: "touch" }}
+        >
           
-          <div className="pb-6 border-b border-[var(--color-line)] mb-6">
+          {/* Action CTAs */}
+          <div className="pb-6 border-b border-[var(--color-line)] mb-6 space-y-3">
             <Link
               href="/give"
               onClick={() => setMobileOpen(false)}
-              className="inline-flex items-center justify-center gap-1.5 w-full py-3 text-sm font-sans font-bold text-[var(--color-accent-ink)] bg-[var(--color-accent)] rounded-full"
+              className="inline-flex items-center justify-center gap-2 w-full py-3.5 text-base font-sans font-bold text-[var(--color-accent-ink)] bg-[var(--color-accent)] rounded-full shadow-md active:scale-98 transition-all"
             >
-              <Heart size={16} className="fill-current" />
-              <span>Give</span>
+              <Heart size={18} className="fill-current" />
+              <span>Give / Support Mission</span>
             </Link>
+
+            {/* Quick Radio Play Toggle inside Mobile Menu */}
+            <button
+              type="button"
+              onClick={() => toggle()}
+              className="inline-flex items-center justify-between w-full px-5 py-3 rounded-full bg-[var(--color-navy-900)] text-white text-xs font-sans font-bold shadow-xs cursor-pointer active:scale-98 transition-all"
+            >
+              <span className="flex items-center gap-2">
+                <Radio size={16} className="text-[var(--color-accent)]" />
+                <span>Asriel Radio 24/7</span>
+              </span>
+              <span className="flex items-center gap-1 text-[var(--color-accent)] font-extrabold">
+                {isPlaying ? <Pause size={14} className="fill-current" /> : <Play size={14} className="fill-current" />}
+                <span>{isPlaying ? "Pause" : "Listen Live"}</span>
+              </span>
+            </button>
           </div>
 
-          <nav className="flex flex-col gap-6" aria-label="Mobile navigation">
+          {/* Navigation Links */}
+          <nav className="flex flex-col gap-5" aria-label="Mobile navigation">
             {NAV_ITEMS.map((item) => {
               const active = pathname === item.href;
               return (
@@ -124,11 +162,14 @@ export default function Header() {
                   key={item.href}
                   href={item.href}
                   onClick={() => setMobileOpen(false)}
-                  className={`text-xl font-sans font-bold tracking-wide uppercase transition-colors ${
-                    active ? "text-[var(--color-ink)] underline decoration-[var(--color-accent)] decoration-4" : "text-[var(--color-slate)] hover:text-[var(--color-ink)]"
+                  className={`text-xl font-sans font-extrabold tracking-wide uppercase py-1 transition-colors flex items-center justify-between ${
+                    active ? "text-[var(--color-ink)] font-black text-2xl" : "text-[var(--color-slate)] hover:text-[var(--color-ink)]"
                   }`}
                 >
-                  {item.label}
+                  <span>{item.label}</span>
+                  {active && (
+                    <span className="w-2.5 h-2.5 rounded-full bg-[var(--color-accent)]" />
+                  )}
                 </Link>
               );
             })}
