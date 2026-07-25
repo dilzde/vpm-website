@@ -1,5 +1,7 @@
 import React from "react";
 import HeroSection from "@/components/home/HeroSection";
+import QuickActionsRow from "@/components/home/QuickActionsRow";
+import NextServiceBanner from "@/components/home/NextServiceBanner";
 import LiveRadioBand from "@/components/home/LiveRadioBand";
 import HeartbeatBand from "@/components/home/HeartbeatBand";
 import NumberedValues from "@/components/home/NumberedValues";
@@ -15,39 +17,41 @@ export const revalidate = 60; // Revalidate every minute for live status / playl
 export default function HomePage() {
   return (
     <main className="w-full">
-      {/* 1. Nav bar in layout */}
-      
-      {/* 2. Hero Section (Part C) */}
+      {/* 1. Hero Section (§C) */}
       <HeroSection />
 
-      {/* 3. Live & Radio Band (Part D §3 — Net-New, directly below Hero) */}
+      {/* 2. Quick Actions Row (§D — Net-New directly below Hero) */}
+      <QuickActionsRow />
+
+      {/* 3. Real-Time Next Service Banner (§J — Directly below Quick Actions) */}
+      <NextServiceBanner />
+
+      {/* 4. Live & Radio Band */}
       <LiveRadioBand />
 
-      {/* 4. "Our Heartbeat" Statement Band (Part D §4) */}
+      {/* 5. "Our Heartbeat" Statement Band (§L Copy) */}
       <HeartbeatBand />
 
-      {/* 5. Numbered Values / Pillars Grid (Part D §5) */}
+      {/* 6. Numbered Values / Core Foundations Grid (§L Copy) */}
       <NumberedValues />
 
-      {/* 6. About / Who We Are Band (Part D §6) */}
+      {/* 7. About / Who We Are Band (§G Copy) */}
       <AboutSection />
 
-      {/* 7. Announcements Strip (Part D §7 — Terracotta Badges) */}
+      {/* 8. Announcements Strip */}
       <AnnouncementsSection />
 
-      {/* 8. Recent Sermons / Watch Strip (Part D §8 — In-Place Video Playback) */}
+      {/* 9. Recent Sermons / Watch Strip */}
       <RecentSermons />
 
-      {/* 9. Support the Mission Band (Part D §9 — Full-Bleed Navy Separation) */}
+      {/* 10. Support the Mission Band (§E Copy) */}
       <SupportMissionBand />
 
-      {/* 10. Branches Preview (Part D §10 & Part F — Clean Cards Grid, No Video) */}
+      {/* 11. Branches Preview (§F — 4 Real Branches Only) */}
       <BranchesPreview />
 
-      {/* 11. Interactive Above-Footer Gallery (Part D §11) */}
+      {/* 12. Interactive Above-Footer Gallery */}
       <ImageGallery />
-
-      {/* 12. Footer in layout */}
     </main>
   );
 }

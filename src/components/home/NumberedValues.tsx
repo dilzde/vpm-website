@@ -1,62 +1,62 @@
 import React from "react";
 
-const VALUES = [
+const CORE_FOUNDATIONS = [
   {
     number: "01",
-    title: "Intercessory Prayer",
-    description: "Sustaining a culture of fervent prayer and spiritual warfare for individuals, churches, and nations.",
+    title: "Jesus Christ",
+    body: "Christ is the center and foundation of everything we do.",
   },
   {
     number: "02",
-    title: "Prophetic Truth",
-    description: "Proclaiming the uncompromised Word of God with clarity, conviction, and divine insight.",
+    title: "Love",
+    body: "We are called to love God and love one another above all else.",
   },
   {
     number: "03",
-    title: "Territorial Evangelism",
-    description: "Establishing strong local church altars and outreach centers across Kenya and beyond.",
+    title: "The Word of God",
+    body: "We stand on the uncompromised truth of Scripture in all teaching and ministry.",
   },
   {
     number: "04",
-    title: "Kingdom Leadership",
-    description: "Raising and equipping believers into mature disciples operating in spiritual authority.",
+    title: "Prophetic Revelation",
+    body: "The Prophet has been graced to know and share the deeper secrets found in God's Word.",
   },
 ];
 
 export default function NumberedValues() {
   return (
     <section
-      className="bg-[var(--color-cream)] text-[var(--color-ink)] py-16 md:py-24 border-b border-[var(--color-line)]"
-      id="pillars-section"
+      className="bg-[var(--color-surface)] text-[var(--color-ink)] section-gap border-b border-[var(--color-line)]"
+      id="core-foundations"
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
-        <div className="text-center max-w-2xl mx-auto mb-12">
-          <span className="text-xs font-sans font-bold tracking-widest text-[var(--color-gold-500)] uppercase block mb-2">
-            Pillars of Ministry
+        <div className="max-w-2xl mb-12">
+          <span className="text-xs font-sans font-bold tracking-widest text-[var(--color-slate)] uppercase block mb-2">
+            CORE FOUNDATIONS
           </span>
-          <h2 className="font-serif text-3xl sm:text-4xl text-[var(--color-navy-900)] font-semibold">
-            Our Core Foundations
+          <h2 className="font-sans text-3xl sm:text-4xl text-[var(--color-ink)] font-extrabold">
+            What Drives Our Ministry
           </h2>
         </div>
 
-        {/* 4-Column Grid (Reference 1 pattern with Gold Digits) */}
+        {/* 4 Cards Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {VALUES.map((item) => (
+          {CORE_FOUNDATIONS.map((pillar) => (
             <div
-              key={item.number}
-              className="p-6 rounded-xl bg-white border border-[var(--color-line)] flex flex-col justify-between shadow-xs"
+              key={pillar.number}
+              className="bg-white border border-[var(--color-line)] rounded-[var(--radius-eight)] p-6 space-y-4 shadow-[var(--shadow-card)] flex flex-col justify-between"
             >
               <div>
-                <span className="font-serif text-3xl font-bold text-[var(--color-gold-500)] block mb-3">
-                  {item.number}
+                <span className="font-mono text-3xl font-extrabold text-[var(--color-accent-ink)] opacity-80 block mb-2">
+                  {pillar.number}
                 </span>
-                <h3 className="font-sans text-lg font-bold text-[var(--color-navy-900)] mb-2">
-                  {item.title}
+                <h3 className="font-sans text-xl font-bold text-[var(--color-ink)] mb-2">
+                  {pillar.title}
                 </h3>
-                <p className="text-sm text-[var(--color-slate)] leading-relaxed font-sans">
-                  {item.description}
+                <p className="text-sm text-[var(--color-slate)] font-sans leading-relaxed">
+                  {pillar.body}
                 </p>
               </div>
             </div>

@@ -6,32 +6,30 @@ import PlaceholderCongregation from "../placeholders/PlaceholderCongregation";
 export default function HeroSection() {
   return (
     <section
-      className="bg-[var(--color-surface)] text-[var(--color-ink)] section-gap border-b border-[var(--color-line)] relative overflow-hidden"
+      className="bg-[var(--color-surface)] text-[var(--color-ink)] pt-12 pb-16 md:pt-16 md:pb-24 border-b border-[var(--color-line)] relative overflow-hidden"
       id="hero-section"
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 w-full flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
         
-        {/* Left Column: Bold Headline & Dual CTAs (§4 & §5 Entry) */}
+        {/* Left Column: Bold Headline & Dual CTAs (§C Overhaul Spec) */}
         <div className="w-full lg:w-1/2 flex flex-col items-start text-left space-y-6">
           
-          {/* Eyebrow Label: All-caps, tracking-widest */}
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-sans font-bold tracking-widest text-[var(--color-slate)] uppercase">
-              GLOBAL NETWORK · SINCE 1994
-            </span>
-          </div>
+          {/* Eyebrow Line (§C) */}
+          <span className="text-xs font-sans font-bold tracking-widest text-[var(--color-slate)] uppercase">
+            Welcome to Voice of The Potter&apos;s Messengers Ministry
+          </span>
 
-          {/* Bold Hanken Grotesk Headline */}
+          {/* Headline (§C) */}
           <h1 className="font-sans text-4xl sm:text-5xl lg:text-6xl text-[var(--color-ink)] font-extrabold leading-[1.08] tracking-tight">
-            A Prophetic Voice to awaken nations.
+            Where Prophecies Come to Life
           </h1>
 
-          {/* Body Copy */}
+          {/* Body Copy (§C) */}
           <p className="text-base sm:text-lg text-[var(--color-slate)] max-w-lg leading-relaxed font-sans font-normal">
-            Voice of the Potter&apos;s Messengers (VPM International) is a kingdom movement dedicated to intercessory prayer, foundational biblical teachings, and territorial evangelism across Kenya and the world.
+            Experience the power of God&apos;s word through prophetic revelations, spiritual guidance, and a loving community.
           </p>
 
-          {/* Dual CTAs (§4 & §7) */}
+          {/* Dual CTAs */}
           <div className="pt-2 flex flex-wrap items-center gap-4">
             <Link
               href="/branches"
@@ -51,22 +49,22 @@ export default function HeroSection() {
 
         </div>
 
-        {/* Right Column: Floating Hero Image (R12 / SHADOW-XL) with Overlapping Floating Badge (§4) */}
+        {/* Right Column: Floating Hero Image (R12 / SHADOW-XL) with Overlapping Floating Badge */}
         <div className="w-full lg:w-1/2 relative pt-6">
           
-          {/* Main Floating Hero Container (R12 / SHADOW-XL) */}
+          {/* Main Floating Hero Container */}
           <div className="w-full h-[380px] sm:h-[460px] rounded-[var(--radius-image)] overflow-hidden border border-[var(--color-line)] bg-white shadow-[var(--shadow-xl)] relative">
             <PlaceholderCongregation />
             <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-navy-900)]/70 via-transparent to-transparent" />
             <div className="absolute bottom-6 left-6 right-6 text-white">
               <span className="text-xs font-sans font-bold uppercase tracking-wider text-[var(--color-accent)] block mb-1">
-                Githurai Main Sanctuary
+                Nairobi Main Sanctuary — Mlolongo
               </span>
-              <h3 className="font-sans text-xl font-bold">Worship & Intercessory Prayer</h3>
+              <h3 className="font-sans text-xl font-bold">Worship & Prophetic Service</h3>
             </div>
           </div>
 
-          {/* Signature Floating Badge Pattern (§4 & §7) — Overlaps Image Top-Left Corner */}
+          {/* Signature Floating Badge Pattern — Overlaps Image Top-Left Corner */}
           <div className="absolute -top-2 -left-2 sm:-left-4 bg-white border border-[var(--color-line)] rounded-[var(--radius-eight)] p-4 shadow-[var(--shadow-xl)] flex items-center gap-3 z-20 max-w-xs">
             <div className="w-10 h-10 rounded-[var(--radius-eight)] bg-[var(--color-accent)] text-[var(--color-accent-ink)] flex items-center justify-center font-bold shrink-0">
               <Radio size={20} />

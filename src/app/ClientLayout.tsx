@@ -4,6 +4,7 @@ import React from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import MiniPlayer from "@/components/MiniPlayer";
+import FloatingRadioWidget from "@/components/FloatingRadioWidget";
 import { useRadioPlayer } from "@/lib/hooks/useRadioPlayer";
 
 export default function ClientLayout({
@@ -17,6 +18,7 @@ export default function ClientLayout({
     <div className={`flex flex-col min-h-screen ${visible ? "pb-[68px] md:pb-0" : ""}`}>
       <Header />
       <main className="flex-1">{children}</main>
+      <FloatingRadioWidget />
       <Footer />
       <MiniPlayer />
     </div>

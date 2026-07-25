@@ -10,15 +10,13 @@ export default function SupportMissionBand() {
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         
-        {/* Anchor Band: Large 48px Rounded Block (R48) Inset Container in Deep Olive (§4 & §7) */}
+        {/* Anchor Band: Inset Container in Deep Olive */}
         <div className="bg-[var(--color-anchor-olive)] text-white rounded-[var(--radius-block)] p-8 sm:p-12 md:p-16 relative overflow-hidden shadow-[var(--shadow-xl)]">
           
-          {/* Subtle Ambient Decorative Accent */}
           <div className="absolute top-0 right-0 w-72 h-72 bg-[var(--color-accent)]/10 rounded-full blur-3xl pointer-events-none" />
 
           <div className="max-w-3xl mx-auto text-center flex flex-col items-center relative z-10">
             
-            {/* Heart Icon Badge */}
             <div className="w-12 h-12 rounded-full bg-[var(--color-accent)] text-[var(--color-accent-ink)] flex items-center justify-center mb-6 shadow-md">
               <Heart size={22} className="fill-current" />
             </div>
@@ -35,21 +33,14 @@ export default function SupportMissionBand() {
               Your faithful tithes and offerings directly fuel territorial church planting, gospel outreach, 24/7 radio broadcasts, and community relief across Kenya.
             </p>
 
-            {/* Dual CTAs (§4 & §7): Solid Lime Primary + Outline Secondary */}
-            <div className="flex flex-wrap items-center justify-center gap-4">
+            {/* Single Button per §E (No secondary link) */}
+            <div className="flex items-center justify-center">
               <Link
                 href="/give"
                 className="inline-flex items-center justify-center gap-2 px-8 py-4 text-base font-sans font-bold text-[var(--color-accent-ink)] bg-[var(--color-accent)] hover:scale-105 rounded-full transition-all shadow-md group"
               >
-                <span>Give to VPM International</span>
+                <span>Share with VPM International</span>
                 <ArrowUpRight size={18} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-              </Link>
-
-              <Link
-                href="/about"
-                className="inline-flex items-center justify-center gap-2 px-6 py-4 text-base font-sans font-semibold text-white border border-white/30 hover:bg-white/10 hover:scale-105 rounded-full transition-all"
-              >
-                <span>Learn How Funds Are Used</span>
               </Link>
             </div>
 
