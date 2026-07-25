@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Search, Tv, Radio, MessageSquare, Play, Pause } from "lucide-react";
+import { Search, Tv, Radio, MessageSquare, Play, Pause, ExternalLink, Video } from "lucide-react";
 import { YouTubeVideo } from "@/lib/youtube";
 import VideoCard from "@/components/home/VideoCard";
 import { useRadioPlayer } from "@/lib/hooks/useRadioPlayer";
@@ -11,33 +11,45 @@ interface MediaContentProps {
   liveVideo: YouTubeVideo | null;
 }
 
+const CHANNEL_A_ID = "UC5z_MlBqT0-uB9Y6IQlD68A";
+const CHANNEL_B_ID = "UCcvFW-VNXVDJBTYYDLTM6qw";
+
 export default function MediaContent({ initialSermons, liveVideo }: MediaContentProps) {
   const [searchQuery, setSearchQuery] = useState("");
-  const [activeTab, setActiveTab] = useState<string>("all");
+  const [activeTab, setActiveTab] = useState<"all" | "channelA" | "channelB">("all");
   const { isPlaying, toggle } = useRadioPlayer();
-
-  const channelAId = process.env.NEXT_PUBLIC_YOUTUBE_CHANNEL_A_ID || "UC5z_MlBqT0-uB9Y6IQlD68A";
-  const channelBId = process.env.NEXT_PUBLIC_YOUTUBE_CHANNEL_B_ID || "UCcvFW-VNXVDJBTYYDLTM6qw";
 
   const tabs = [
     { id: "all", label: "All Sermons" },
-    { id: "channelA", label: "Asriel TV (Channel A)", filter: channelAId },
-    { id: "channelB", label: "Voice of the Potter (Channel B)", filter: channelBId },
+    { id: "channelA", label: "Asriel TV (Channel A)", channelId: CHANNEL_A_ID, url: `https://www.youtube.com/channel/${CHANNEL_A_ID}` },
+    { id: "channelB", label: "Voice of the Potter (Channel B)", channelId: CHANNEL_B_ID, url: `https://www.youtube.com/channel/${CHANNEL_B_ID}` },
   ];
 
+  // Robust filtering across search and channel tabs
   const filteredSermons = initialSermons.filter((video) => {
+    const titleLower = video.title.toLowerCase();
+    const channelLower = video.channelTitle.toLowerCase();
+    const searchLower = searchQuery.toLowerCase();
+
     const matchesSearch = searchQuery
-      ? video.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        video.channelTitle.toLowerCase().includes(searchQuery.toLowerCase())
+      ? titleLower.includes(searchLower) || channelLower.includes(searchLower)
       : true;
 
     if (!matchesSearch) return false;
 
     if (activeTab === "channelA") {
-      return video.channelId === channelAId || video.channelTitle?.toLowerCase().includes("asriel");
+      return (
+        video.channelId === CHANNEL_A_ID ||
+        channelLower.includes("asriel") ||
+        channelLower.includes("channel a")
+      );
     }
     if (activeTab === "channelB") {
-      return video.channelId === channelBId || video.channelTitle?.toLowerCase().includes("voice of the potter");
+      return (
+        video.channelId === CHANNEL_B_ID ||
+        channelLower.includes("voice of the potter") ||
+        channelLower.includes("channel b")
+      );
     }
 
     return true;
@@ -47,14 +59,14 @@ export default function MediaContent({ initialSermons, liveVideo }: MediaContent
     <div className="bg-[var(--color-surface)] text-[var(--color-ink)] min-h-screen py-10 md:py-16">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 space-y-12">
         
-        {/* Entry: Utility Search Entry Header (§5 & §9) */}
+        {/* Entry: Utility Search Entry Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-8 border-b border-[var(--color-line)]">
           <div>
             <span className="text-xs font-sans font-bold tracking-widest text-[var(--color-slate)] uppercase block mb-2">
-              ARCHIVE & RESOURCES
+              ARCHIVE & BROADCASTS
             </span>
             <h1 className="font-sans text-3xl sm:text-4xl lg:text-5xl text-[var(--color-ink)] font-extrabold tracking-tight">
-              Media Vault & Broadcasts
+              Sermons & Media Vault
             </h1>
           </div>
 
@@ -71,17 +83,17 @@ export default function MediaContent({ initialSermons, liveVideo }: MediaContent
           </div>
         </div>
 
-        {/* Transition/Context: Featured Live Card & Compact Radio Widget Side-by-Side (§9) */}
+        {/* Live Broadcast Card & Compact Asriel Radio Widget */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           
-          {/* Left: Live Status / Featured Service Card (7 cols) */}
+          {/* Left: Featured Live Card */}
           <div className="lg:col-span-7 bg-white border border-[var(--color-line)] rounded-[var(--radius-eight)] p-6 space-y-4 shadow-[var(--shadow-card)]">
             <div className="flex items-center justify-between">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--color-surface-alt)] border border-[var(--color-line)] text-xs font-sans font-bold text-[var(--color-ink)] uppercase tracking-wider">
-                <Tv size={14} className="text-[var(--color-slate)]" />
-                <span>{liveVideo ? "Live Broadcast" : "Featured Message"}</span>
+                <Tv size={14} className="text-[var(--color-anchor-olive)]" />
+                <span>{liveVideo ? "Live Broadcast" : "Featured Teaching"}</span>
               </div>
-              <span className="text-xs font-sans text-[var(--color-slate)]">Asriel TV</span>
+              <span className="text-xs font-mono font-bold text-[var(--color-slate)]">Asriel TV & YouTube</span>
             </div>
 
             {liveVideo ? (
@@ -95,39 +107,39 @@ export default function MediaContent({ initialSermons, liveVideo }: MediaContent
                 />
               </div>
             ) : (
-              <div className="space-y-2">
-                <h3 className="font-sans text-xl font-bold text-[var(--color-ink)]">
-                  Sunday Morning Prophetic & Worship Service
+              <div className="space-y-3 py-2">
+                <h3 className="font-sans text-xl sm:text-2xl font-extrabold text-[var(--color-ink)]">
+                  Prophetic Teaching & Worship — Prophet Dr. Samo Mtishiby
                 </h3>
                 <p className="text-sm text-[var(--color-slate)] font-sans leading-relaxed">
-                  Join Apostle Asriel live from Githurai Main Altar every Sunday at 9:00 AM for foundational word and territorial prayer.
+                  Join Prophet Dr. Samo Mtishiby for live teachings streaming every Tuesday through Friday from 8:00 PM to 10:00 PM on YouTube and Asriel Radio.
                 </p>
               </div>
             )}
           </div>
 
-          {/* Right: Compact Live Radio Widget (§9) */}
+          {/* Right: Asriel Radio Widget */}
           <div className="lg:col-span-5 bg-white border border-[var(--color-line)] rounded-[var(--radius-eight)] p-6 space-y-4 flex flex-col justify-between shadow-[var(--shadow-card)]">
             <div>
               <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-[var(--radius-eight)] bg-[var(--color-accent)] text-[var(--color-accent-ink)] flex items-center justify-center font-bold">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-9 h-9 rounded-[var(--radius-eight)] bg-[var(--color-accent)] text-[var(--color-accent-ink)] flex items-center justify-center font-bold">
                     <Radio size={18} />
                   </div>
-                  <span className="font-sans font-bold text-base text-[var(--color-ink)]">Asriel Radio 24/7</span>
+                  <span className="font-sans font-extrabold text-base text-[var(--color-ink)]">Asriel Radio Live</span>
                 </div>
-                <span className="text-xs font-mono text-[var(--color-slate)]">Zeno FM</span>
+                <span className="text-xs font-mono font-bold text-[var(--color-anchor-olive)]">24/7 Stream</span>
               </div>
 
               <p className="text-xs text-[var(--color-slate)] font-sans leading-relaxed">
-                Stream daily anointed preachings and heavenly worship directly in your browser.
+                Stream continuous prophetic teachings and intercessory worship directly in your browser without leaving the page.
               </p>
             </div>
 
             <button
               type="button"
               onClick={() => toggle()}
-              className="inline-flex items-center justify-center gap-2 w-full py-3.5 rounded-full bg-[var(--color-accent)] text-[var(--color-accent-ink)] font-sans font-bold text-sm hover:scale-105 transition-all shadow-xs"
+              className="inline-flex items-center justify-center gap-2 w-full py-3.5 rounded-full bg-[var(--color-navy-900)] text-white font-sans font-bold text-sm hover:scale-105 transition-all shadow-xs cursor-pointer"
             >
               {isPlaying ? <Pause size={16} /> : <Play size={16} />}
               <span>{isPlaying ? "Pause Asriel Radio" : "Listen Live Now"}</span>
@@ -136,36 +148,87 @@ export default function MediaContent({ initialSermons, liveVideo }: MediaContent
 
         </div>
 
-        {/* Tab Sub-Navigation Pills (2.5px Lime Active Underline) */}
-        <div className="flex items-center gap-6 border-b border-[var(--color-line)] pb-2 overflow-x-auto">
-          {tabs.map((tab) => {
-            const active = activeTab === tab.id;
-            return (
-              <button
-                key={tab.id}
-                type="button"
-                onClick={() => setActiveTab(tab.id)}
-                className={`text-sm font-sans font-semibold uppercase tracking-wider relative py-2 transition-colors whitespace-nowrap cursor-pointer ${
-                  active ? "text-[var(--color-ink)] font-bold" : "text-[var(--color-slate)] hover:text-[var(--color-ink)]"
-                }`}
+        {/* Tab Sub-Navigation Pills & Direct YouTube Channel Links */}
+        <div className="space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[var(--color-line)] pb-3">
+            
+            {/* Interactive Tabs */}
+            <div className="flex items-center gap-6 overflow-x-auto">
+              {tabs.map((tab) => {
+                const active = activeTab === tab.id;
+                return (
+                  <button
+                    key={tab.id}
+                    type="button"
+                    onClick={() => setActiveTab(tab.id as any)}
+                    className={`text-sm font-sans font-extrabold uppercase tracking-wider relative py-2 transition-colors whitespace-nowrap cursor-pointer ${
+                      active ? "text-[var(--color-ink)]" : "text-[var(--color-slate)] hover:text-[var(--color-ink)]"
+                    }`}
+                  >
+                    {tab.label}
+                    {active && (
+                      <span className="absolute bottom-0 left-0 right-0 h-[3px] bg-[var(--color-accent)] rounded-full" />
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* External Channel Links */}
+            <div className="flex items-center gap-3 shrink-0">
+              <a
+                href={`https://www.youtube.com/channel/${CHANNEL_A_ID}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-red-50 text-red-700 text-xs font-sans font-bold hover:bg-red-100 transition-colors border border-red-200"
               >
-                {tab.label}
-                {active && (
-                  <span className="absolute bottom-0 left-0 right-0 h-[2.5px] bg-[var(--color-accent)] rounded-full" />
-                )}
-              </button>
-            );
-          })}
+                <Video size={14} />
+                <span>Channel A YouTube</span>
+                <ExternalLink size={12} />
+              </a>
+
+              <a
+                href={`https://www.youtube.com/channel/${CHANNEL_B_ID}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-red-50 text-red-700 text-xs font-sans font-bold hover:bg-red-100 transition-colors border border-red-200"
+              >
+                <Video size={14} />
+                <span>Channel B YouTube</span>
+                <ExternalLink size={12} />
+              </a>
+            </div>
+
+          </div>
         </div>
 
-        {/* Context: Video Cards Bento Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredSermons.map((video) => (
-            <VideoCard key={video.videoId} sermon={video} />
-          ))}
-        </div>
+        {/* Video Cards Bento Grid */}
+        {filteredSermons.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredSermons.map((video) => (
+              <VideoCard key={video.videoId} sermon={video} />
+            ))}
+          </div>
+        ) : (
+          <div className="bg-white border border-[var(--color-line)] rounded-[var(--radius-eight)] p-12 text-center max-w-xl mx-auto space-y-3">
+            <h3 className="font-sans font-bold text-lg text-[var(--color-ink)]">No Sermons Found</h3>
+            <p className="text-sm text-[var(--color-slate)] font-sans">
+              No videos matched your active search or channel tab filter. Try resetting your search or selecting another channel tab.
+            </p>
+            <button
+              type="button"
+              onClick={() => {
+                setActiveTab("all");
+                setSearchQuery("");
+              }}
+              className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-[var(--color-navy-900)] text-white text-xs font-bold font-sans"
+            >
+              Show All Sermons
+            </button>
+          </div>
+        )}
 
-        {/* Context: Community Feed Placeholder Section (Configured for Real Submissions §0) */}
+        {/* Community Testimonies Section */}
         <div className="pt-8 border-t border-[var(--color-line)]">
           <div className="flex items-center justify-between mb-6">
             <div>

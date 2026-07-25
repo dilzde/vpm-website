@@ -133,7 +133,7 @@ export default function BranchesPage() {
             Can&apos;t Find a Sanctuary Near You?
           </h3>
           <p className="text-white/85 text-base max-w-xl mb-6 font-sans">
-            Join our Online Campus! Listen live on Asriel Radio, watch our YouTube broadcasts, or connect with our intercessory prayer network.
+            Listen live on Asriel Radio, watch our YouTube broadcasts, or connect with our intercessory prayer network.
           </p>
           <Link
             href="/radio"

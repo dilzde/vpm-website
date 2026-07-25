@@ -6,11 +6,9 @@ import React, {
   useState,
   useRef,
   useCallback,
-  useEffect,
   ReactNode,
 } from "react";
 
-/* ── Station type (lightweight — no Flutter dep) ────────────────── */
 export interface RadioStationInfo {
   id: string;
   name: string;
@@ -19,29 +17,18 @@ export interface RadioStationInfo {
   schedule: string;
 }
 
-/* ── Build station list from env vars ───────────────────────────── */
+const DEFAULT_STREAM_URL = process.env.NEXT_PUBLIC_RADIO_STATION_1_URL || "https://stream.zeno.fm/iy8v0envboitv";
+
 const STATIONS: RadioStationInfo[] = [
   {
     id: "station_1",
-    name: "Asriel FM",
-    description: "Daily teachings and worship",
-    streamUrl: process.env.NEXT_PUBLIC_RADIO_STATION_1_URL || "",
-    schedule: "Daily · 6:00 AM – 6:00 PM",
+    name: "Asriel Radio Live",
+    description: "24/7 Prophetic Teachings & Worship",
+    streamUrl: DEFAULT_STREAM_URL,
+    schedule: "Daily · 24 Hours",
   },
-  ...(process.env.NEXT_PUBLIC_RADIO_STATION_2_URL
-    ? [
-        {
-          id: "station_2",
-          name: "Asriel Night",
-          description: "Night programs and special broadcasts",
-          streamUrl: process.env.NEXT_PUBLIC_RADIO_STATION_2_URL,
-          schedule: "Daily · 8:00 PM – Late",
-        },
-      ]
-    : []),
 ];
 
-/* ── Context shape ──────────────────────────────────────────────── */
 interface RadioPlayerContextValue {
   stations: RadioStationInfo[];
   currentStation: RadioStationInfo | null;
@@ -57,14 +44,12 @@ interface RadioPlayerContextValue {
 
 const RadioPlayerContext = createContext<RadioPlayerContextValue | null>(null);
 
-/* ── Hook ───────────────────────────────────────────────────────── */
 export function useRadioPlayer(): RadioPlayerContextValue {
   const ctx = useContext(RadioPlayerContext);
   if (!ctx) {
-    // Return a no-op default for SSR / outside provider
     return {
       stations: STATIONS,
-      currentStation: null,
+      currentStation: STATIONS[0],
       isPlaying: false,
       isBuffering: false,
       visible: false,
@@ -80,27 +65,39 @@ export function useRadioPlayer(): RadioPlayerContextValue {
 
 export function RadioPlayerProvider({ children }: { children: ReactNode }) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const [currentStation, setCurrentStation] = useState<RadioStationInfo | null>(null);
+  const [currentStation, setCurrentStation] = useState<RadioStationInfo>(STATIONS[0]);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isBuffering, setIsBuffering] = useState(false);
   const [visible, setVisible] = useState(false);
 
   const play = useCallback((station?: RadioStationInfo) => {
     const target = station || currentStation || STATIONS[0];
-    if (!target || !audioRef.current) return;
+    setCurrentStation(target);
+    setVisible(true);
 
-    if (!currentStation || currentStation.id !== target.id) {
-      setCurrentStation(target);
-      // We will let the audio tag src update via state before calling play
-      setTimeout(() => {
-        setIsBuffering(true);
-        audioRef.current?.play().catch(console.error);
-        setVisible(true);
-      }, 50);
-    } else {
-      setIsBuffering(true);
-      audioRef.current.play().catch(console.error);
-      setVisible(true);
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    const targetUrl = target.streamUrl || DEFAULT_STREAM_URL;
+
+    // Set audio source synchronously for instant browser click-to-play compliance
+    if (audio.src !== targetUrl) {
+      audio.src = targetUrl;
+    }
+
+    setIsBuffering(true);
+    const playPromise = audio.play();
+    if (playPromise !== undefined) {
+      playPromise
+        .then(() => {
+          setIsPlaying(true);
+          setIsBuffering(false);
+        })
+        .catch((err) => {
+          console.error("Audio playback error:", err);
+          setIsPlaying(false);
+          setIsBuffering(false);
+        });
     }
   }, [currentStation]);
 
@@ -108,6 +105,7 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
     if (audioRef.current) {
       audioRef.current.pause();
     }
+    setIsPlaying(false);
   }, []);
 
   const toggle = useCallback(() => {
@@ -123,7 +121,6 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
       audioRef.current.pause();
       audioRef.current.currentTime = 0;
     }
-    setCurrentStation(null);
     setIsPlaying(false);
     setIsBuffering(false);
     setVisible(false);
@@ -151,10 +148,11 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
         setStation,
       }}
     >
-      {/* Hidden audio element bound to state */}
+      {/* HTML5 Audio Stream element */}
       <audio
         ref={audioRef}
-        src={currentStation?.streamUrl || undefined}
+        src={currentStation?.streamUrl || DEFAULT_STREAM_URL}
+        preload="none"
         onPlaying={() => {
           setIsPlaying(true);
           setIsBuffering(false);

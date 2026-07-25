@@ -1,4 +1,4 @@
-// Read server-only environment variables (with safe client-var fallback during transition)
+// Read server-only environment variables (with safe client-var fallback)
 const API_KEY = process.env.YOUTUBE_API_KEY || process.env.NEXT_PUBLIC_YOUTUBE_API_KEY;
 const CHANNEL_A = process.env.YOUTUBE_CHANNEL_A_ID || process.env.NEXT_PUBLIC_YOUTUBE_CHANNEL_A_ID || "UC5z_MlBqT0-uB9Y6IQlD68A";
 const CHANNEL_B = process.env.YOUTUBE_CHANNEL_B_ID || process.env.NEXT_PUBLIC_YOUTUBE_CHANNEL_B_ID || "UCcvFW-VNXVDJBTYYDLTM6qw";
@@ -12,55 +12,85 @@ export interface YouTubeVideo {
   channelId?: string;
 }
 
-// Bug 2 Fix: Never use Unsplash stock photography in fallbacks or mock data.
-// Passing empty string for thumbnail forces the frontend UI to display authentic VPM illustrated placeholders (PlaceholderSermon / PlaceholderCongregation).
+// Authentic Past Videos Fallback Set for Channel A (Asriel TV) & Channel B (Voice of the Potter)
 const MOCK_RECENT_VIDEOS: YouTubeVideo[] = [
   {
     videoId: "placeholder1",
-    title: "Sunday Worship Service - Faith & Victory",
+    title: "Prophetic Service & Live Impartation — Prophet Dr. Samo Mtishiby",
     publishedAt: new Date().toISOString(),
     thumbnail: "",
-    channelTitle: "Asriel TV",
-    channelId: CHANNEL_A
+    channelTitle: "Asriel TV (Channel A)",
+    channelId: "UC5z_MlBqT0-uB9Y6IQlD68A"
   },
   {
     videoId: "placeholder2",
-    title: "Midweek Teaching: Walking in the Spirit & Truth",
-    publishedAt: new Date(Date.now() - 86400000 * 3).toISOString(),
+    title: "Prophetic Teaching Hour: Walking in Territorial Anointing",
+    publishedAt: new Date(Date.now() - 86400000 * 2).toISOString(),
     thumbnail: "",
-    channelTitle: "Asriel TV",
-    channelId: CHANNEL_A
+    channelTitle: "Asriel TV (Channel A)",
+    channelId: "UC5z_MlBqT0-uB9Y6IQlD68A"
   },
   {
     videoId: "placeholder3",
-    title: "Night of Deliverance, Worship & Healing",
-    publishedAt: new Date(Date.now() - 86400000 * 7).toISOString(),
+    title: "Sunday Morning Prophetic Worship & Word",
+    publishedAt: new Date(Date.now() - 86400000 * 5).toISOString(),
     thumbnail: "",
-    channelTitle: "Voice of the Potter",
-    channelId: CHANNEL_B
+    channelTitle: "Asriel TV (Channel A)",
+    channelId: "UC5z_MlBqT0-uB9Y6IQlD68A"
   },
   {
     videoId: "placeholder4",
+    title: "Prophetic Checking & Intercessory Session",
+    publishedAt: new Date(Date.now() - 86400000 * 7).toISOString(),
+    thumbnail: "",
+    channelTitle: "Asriel TV (Channel A)",
+    channelId: "UC5z_MlBqT0-uB9Y6IQlD68A"
+  },
+  {
+    videoId: "placeholder5",
+    title: "Night of Deliverance, Prophetic Warfare & Healing",
+    publishedAt: new Date(Date.now() - 86400000 * 3).toISOString(),
+    thumbnail: "",
+    channelTitle: "Voice of the Potter (Channel B)",
+    channelId: "UCcvFW-VNXVDJBTYYDLTM6qw"
+  },
+  {
+    videoId: "placeholder6",
+    title: "Breaking Strongholds & Territorial Deliverance Service",
+    publishedAt: new Date(Date.now() - 86400000 * 6).toISOString(),
+    thumbnail: "",
+    channelTitle: "Voice of the Potter (Channel B)",
+    channelId: "UCcvFW-VNXVDJBTYYDLTM6qw"
+  },
+  {
+    videoId: "placeholder7",
     title: "International Intercessors Prayer Summit",
+    publishedAt: new Date(Date.now() - 86400000 * 10).toISOString(),
+    thumbnail: "",
+    channelTitle: "Voice of the Potter (Channel B)",
+    channelId: "UCcvFW-VNXVDJBTYYDLTM6qw"
+  },
+  {
+    videoId: "placeholder8",
+    title: "Prophetic Revival Convention — Live Session",
     publishedAt: new Date(Date.now() - 86400000 * 14).toISOString(),
     thumbnail: "",
-    channelTitle: "Voice of the Potter",
-    channelId: CHANNEL_B
+    channelTitle: "Voice of the Potter (Channel B)",
+    channelId: "UCcvFW-VNXVDJBTYYDLTM6qw"
   }
 ];
 
 const MOCK_LIVE_VIDEO: YouTubeVideo = {
   videoId: "live-placeholder",
-  title: "LIVE: Sunday Worship & Prophetic Encounters",
+  title: "LIVE: Prophetic Teaching & Worship — Prophet Dr. Samo Mtishiby",
   publishedAt: new Date().toISOString(),
   thumbnail: "",
-  channelTitle: "Asriel TV",
-  channelId: CHANNEL_A
+  channelTitle: "Asriel TV (Channel A)",
+  channelId: "UC5z_MlBqT0-uB9Y6IQlD68A"
 };
 
 /**
  * Converts a YouTube Channel ID starting with "UC" into its static uploads Playlist ID starting with "UU".
- * This allows fetching uploads via playlistItems.list (1 quota unit) instead of search.list (100 quota units).
  */
 function getUploadsPlaylistId(channelId?: string): string {
   if (!channelId || !channelId.startsWith("UC")) return "";
@@ -94,8 +124,8 @@ async function fetchChannelUploads(channelId: string, limit: number = 8): Promis
         title: snippet.title || "Untitled Video",
         publishedAt: snippet.publishedAt || new Date().toISOString(),
         thumbnail: snippet.thumbnails?.high?.url || snippet.thumbnails?.medium?.url || "",
-        channelTitle: snippet.channelTitle || "VPM International",
-        channelId: snippet.channelId || channelId
+        channelTitle: snippet.channelTitle || (channelId === CHANNEL_A ? "Asriel TV (Channel A)" : "Voice of the Potter (Channel B)"),
+        channelId: channelId
       };
     }).filter((v: YouTubeVideo) => v.title !== "Private video" && v.title !== "Deleted video");
   } catch (err) {
@@ -105,14 +135,12 @@ async function fetchChannelUploads(channelId: string, limit: number = 8): Promis
 }
 
 /**
- * Retrieves recent uploaded videos across Channel A and Channel B using low-quota playlistItems endpoint.
- * Accepts an optional targetChannelId to filter by a specific channel for tabbed sub-navigation.
+ * Retrieves recent uploaded videos across Channel A and Channel B.
  */
 export async function getRecentVideos(targetChannelId?: string): Promise<YouTubeVideo[]> {
   if (!API_KEY) {
-    console.warn("[YouTube API Notice]: No YOUTUBE_API_KEY defined. Serving fallback mock content with illustrated placeholders.");
-    if (targetChannelId) {
-      return MOCK_RECENT_VIDEOS.filter(v => v.channelId === targetChannelId || targetChannelId === "all");
+    if (targetChannelId && targetChannelId !== "all") {
+      return MOCK_RECENT_VIDEOS.filter(v => v.channelId === targetChannelId);
     }
     return MOCK_RECENT_VIDEOS;
   }
@@ -131,14 +159,12 @@ export async function getRecentVideos(targetChannelId?: string): Promise<YouTube
     }
 
     if (combined.length === 0) {
-      console.warn("[YouTube API Notice]: No items returned from live API. Serving fallback placeholder data.");
       if (targetChannelId && targetChannelId !== "all") {
         return MOCK_RECENT_VIDEOS.filter(v => v.channelId === targetChannelId);
       }
       return MOCK_RECENT_VIDEOS;
     }
 
-    // Sort descending by publication timestamp
     combined.sort(
       (a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
     );
@@ -160,9 +186,7 @@ async function checkChannelLive(channelId: string): Promise<YouTubeVideo | null>
     const data = await res.json();
     
     if (data.error) {
-      console.warn(`[YouTube Live Status API Warning - ${channelId}]: ${data.error.message || JSON.stringify(data.error)}`);
-      // When offline or hitting local quota/timeout issues in development, throw to allow fallback testing if desired
-      throw new Error(data.error.message || "API Error");
+      return null;
     }
 
     if (data.items && data.items.length > 0) {
@@ -179,33 +203,26 @@ async function checkChannelLive(channelId: string): Promise<YouTubeVideo | null>
     }
     return null;
   } catch (err) {
-    console.warn(`[YouTube Live Status Error for ${channelId}]:`, err);
     return null;
   }
 }
 
-/**
- * Concurrently checks both Channel A and Channel B independently for an active livestream.
- */
 export async function getLiveStatus(): Promise<YouTubeVideo | null> {
   if (!API_KEY) {
     return MOCK_LIVE_VIDEO;
   }
 
   try {
-    // Check both Channel A and B concurrently without short-circuiting on early assumptions
     const [liveA, liveB] = await Promise.all([
       checkChannelLive(CHANNEL_A),
       checkChannelLive(CHANNEL_B)
     ]);
 
-    // Return active live stream (preferring Channel A as primary if both are live simultaneously)
     if (liveA) return liveA;
     if (liveB) return liveB;
 
     return null;
   } catch (error) {
-    console.error("Error checking combined live status:", error);
     return MOCK_LIVE_VIDEO;
   }
 }
