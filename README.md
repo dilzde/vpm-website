@@ -1,6 +1,6 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# VPM International — Official Ministry Web Portal
 
-## Getting Started
+Voice of the Potter's Messengers International official web application and content administration desk.
 
 First, run the development server:
 
