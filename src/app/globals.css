@@ -6,29 +6,29 @@
    ───────────────────────────────────────────────────────────────── */
 
 @theme inline {
-  /* ── Core Palette (logo-inspired sky-blue) ─────────────────────── */
-  --color-surface:        #F4F8FD;   /* primary page background — cool blue-white */
-  --color-surface-alt:    #EBF3FB;   /* alt section background */
-  --color-cream:          #F4F8FD;   /* alias for surface */
+  /* ── Core Palette: Warm Cream & Sleek Black ─────────────────────── */
+  --color-surface:        #FAF7F2;   /* primary page background — calm warm cream */
+  --color-surface-alt:    #F2ECE4;   /* alt section background — soft natural linen */
+  --color-cream:          #FAF7F2;   /* warm cream */
   --color-white:          #FFFFFF;   /* card surfaces */
-  --color-ink:            #0D1B2A;   /* primary text — deep navy */
-  --color-slate:          #4A6080;   /* body copy — steel-blue grey */
-  --color-line:           #C8DDEF;   /* hairline borders — blue-tinted */
-  --color-line-dark:      rgba(255, 255, 255, 0.14);
-  --color-accent:         #5B9BD5;   /* sky-blue — CTAs, active links, highlights */
-  --color-accent-ink:     #FFFFFF;   /* text ON sky-blue accent */
-  --color-accent-hover:   #3A7FBD;   /* darker blue for hover */
-  --color-anchor-olive:   #1E3A5F;   /* deep navy-blue — full-bleed anchor bands */
-  --color-navy-950:       #0A1628;   /* deepest structural dark */
-  --color-navy-900:       #0F2540;   /* deep structural bands */
-  --color-navy-700:       #1A3A6B;   /* secondary deep surface */
-  --color-gold-500:       #E8A020;   /* warm gold — secondary accent, scripture highlights */
-  --color-gold-700:       #C8861A;   /* darker gold for hover */
+  --color-ink:            #0B0F17;   /* primary text — deep crisp black / ink */
+  --color-slate:          #4B5563;   /* body copy — balanced dark slate / charcoal */
+  --color-line:           #E8E2D6;   /* hairline borders — warm cream stone line */
+  --color-line-dark:      rgba(255, 255, 255, 0.12);
+  --color-accent:         #0B0F17;   /* black accent / buttons */
+  --color-accent-ink:     #FFFFFF;   /* text ON black accent */
+  --color-accent-hover:   #1F2937;   /* charcoal on hover */
+  --color-anchor-olive:   #111827;   /* deep rich charcoal black — anchor bands */
+  --color-navy-950:       #06090E;   /* deepest black */
+  --color-navy-900:       #0B0F17;   /* structural black / footer */
+  --color-navy-700:       #1F2937;   /* secondary deep dark */
+  --color-gold-500:       #C8861A;   /* warm rich gold — scripture highlights */
+  --color-gold-700:       #A36B10;   /* darker gold for hover */
   --color-terracotta:     #C0623A;   /* warm terracotta for small badges */
-  --color-plum:           #2A1D2B;   /* subtle dark accent */
-  --color-live:           #E24C4C;   /* live status badge */
-  --color-mist:           #EBF3FB;   /* subtle bg fill */
-  --color-paper:          #F4F8FD;   /* alias */
+  --color-plum:           #1E1B24;   /* subtle dark accent */
+  --color-live:           #DC2626;   /* live status badge */
+  --color-mist:           #F2ECE4;   /* warm subtle bg fill */
+  --color-paper:          #FAF7F2;   /* alias */
 
   /* ── Radius Tokens ──────────────────────────────────────────────── */
   --radius-eight:         8px;
