@@ -25,7 +25,7 @@ const DEFAULT_LINKS: SocialLink[] = [
   { id: "4", label: "TikTok", url: "https://tiktok.com/@vpminternational", icon: "tiktok", description: "Short prophetic clips & highlights", active: true, order: 3 },
   { id: "5", label: "Instagram", url: "https://instagram.com/vpminternational", icon: "instagram", description: "Ministry moments & announcements", active: true, order: 4 },
   { id: "6", label: "X (Twitter)", url: "https://x.com/vpminternational", icon: "x", description: "", active: true, order: 5 },
-  { id: "7", label: "WhatsApp Community", url: "https://wa.me/254759265819", icon: "whatsapp", description: "Join our prayer & fellowship group", active: true, order: 6 },
+  { id: "7", label: "WhatsApp", url: "https://wa.me/254759265819", icon: "whatsapp", description: "Join our community", active: true, order: 6 },
 ];
 
 export default function LinksPage() {
@@ -33,8 +33,14 @@ export default function LinksPage() {
 
   useEffect(() => {
     const unsub = subscribeSocialLinks((data) => {
-      // Ensure X has no description if populated from Firestore
-      const sanitized = data.map((l) => (l.icon === "x" ? { ...l, description: "" } : l));
+      // Ensure X has no description, and ensure WhatsApp defaults to 'Join our community'
+      const sanitized = data.map((l) => {
+        if (l.icon === "x") return { ...l, description: "" };
+        if (l.icon === "whatsapp" && (!l.description || l.description === "Join our prayer & fellowship group")) {
+          return { ...l, description: "Join our community" };
+        }
+        return l;
+      });
       setLinks(sanitized.filter((l) => l.active));
     });
     return () => unsub();
@@ -65,7 +71,7 @@ export default function LinksPage() {
             VPM International
           </h1>
           <p className="text-sm font-sans font-medium text-[#5A6F8C] mt-1">
-            Voice of the Potter&apos;s Messengers
+            Voice of the Potter&apos;s Messengers Ministry
           </p>
         </div>
 
@@ -127,7 +133,7 @@ export default function LinksPage() {
       {/* ── Footer ── */}
       <div className="text-center mt-10">
         <p className="text-[#94A3B8] text-xs font-sans">
-          © {new Date().getFullYear()} Voice of the Potter&apos;s Messengers International
+          © {new Date().getFullYear()} Voice of the Potter&apos;s Messengers Ministry International
         </p>
       </div>
 

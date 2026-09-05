@@ -31,7 +31,7 @@ const DEFAULT_LINKS: Omit<SocialLink, "id">[] = [
   { label: "TikTok", url: "https://tiktok.com/@vpminternational", icon: "tiktok", description: "Short prophetic clips & highlights", active: true, order: 3 },
   { label: "Instagram", url: "https://instagram.com/vpminternational", icon: "instagram", description: "Ministry moments & announcements", active: true, order: 4 },
   { label: "X (Twitter)", url: "https://x.com/vpminternational", icon: "x", description: "", active: true, order: 5 },
-  { label: "WhatsApp Community", url: "https://wa.me/254759265819", icon: "whatsapp", description: "Join our prayer & fellowship group", active: true, order: 6 },
+  { label: "WhatsApp", url: "https://wa.me/254759265819", icon: "whatsapp", description: "Join our community", active: true, order: 6 },
 ];
 
 const EMPTY: Omit<SocialLink, "id"> = {
