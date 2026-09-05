@@ -56,7 +56,7 @@ export default function QuickActionsRow() {
             className="bg-white border border-[var(--color-line)] hover:border-[var(--color-ink)] rounded-[var(--radius-eight)] p-5 flex items-center gap-4 shadow-xs hover:scale-[1.01] transition-all text-left w-full cursor-pointer group"
           >
             <div className={`w-12 h-12 rounded-[var(--radius-eight)] flex items-center justify-center font-bold shrink-0 transition-colors ${
-              isPlaying ? "bg-[var(--color-accent)] text-[var(--color-accent-ink)]" : "bg-[var(--color-surface-alt)] text-[var(--color-ink)] group-hover:bg-[var(--color-ink)] group-hover:text-white"
+              isPlaying ? "bg-[#29A3E4] text-white shadow-md" : "bg-[var(--color-surface-alt)] text-[var(--color-ink)] group-hover:bg-[#0B0F17] group-hover:text-white"
             }`}>
               {isPlaying ? <Pause size={22} /> : <Radio size={22} />}
             </div>

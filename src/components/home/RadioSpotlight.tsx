@@ -46,7 +46,7 @@ export default function RadioSpotlight() {
               <button
                 onClick={() => station && play(station)}
                 className="inline-flex items-center justify-center gap-3 px-8 py-4 text-sm font-display font-bold uppercase tracking-wider
-                           bg-[var(--color-accent)] text-white rounded-[var(--radius-sm)] hover:bg-[var(--color-accent-hover)] 
+                           bg-[#29A3E4] text-white rounded-[var(--radius-sm)] hover:bg-[#1E87C2] 
                            transition-all duration-200 shadow-[var(--shadow-accent)] transform hover:-translate-y-0.5 w-full sm:w-auto cursor-pointer"
                 id="radio-play-btn"
               >

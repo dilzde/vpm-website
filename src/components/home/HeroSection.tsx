@@ -144,7 +144,7 @@ export default function HeroSection() {
 
           {/* Floating badge */}
           <div className="absolute -top-2 -left-2 sm:-left-4 bg-white border border-[var(--color-line)] rounded-[var(--radius-eight)] p-4 shadow-[var(--shadow-xl)] flex items-center gap-3 z-20 max-w-xs">
-            <div className="w-10 h-10 rounded-[var(--radius-eight)] bg-[var(--color-accent)] text-[var(--color-accent-ink)] flex items-center justify-center font-bold shrink-0">
+            <div className="w-10 h-10 rounded-[var(--radius-eight)] bg-[#29A3E4] text-white flex items-center justify-center font-bold shrink-0 shadow-sm">
               <Radio size={20} />
             </div>
             <div>

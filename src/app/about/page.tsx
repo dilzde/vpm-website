@@ -130,10 +130,10 @@ export default function AboutPage() {
 
         {/* 4. Anchor Band: Global Presence */}
         <div className="bg-[var(--color-anchor-olive)] text-white rounded-[var(--radius-block)] p-8 sm:p-12 text-center flex flex-col items-center shadow-[var(--shadow-xl)]">
-          <div className="w-12 h-12 rounded-full bg-[var(--color-accent)] text-[var(--color-accent-ink)] flex items-center justify-center mb-4 font-bold">
+          <div className="w-12 h-12 rounded-full bg-white text-[#0B0F17] flex items-center justify-center mb-4 font-bold shadow-md">
             <Users size={22} />
           </div>
-          <h2 className="font-sans text-2xl sm:text-3xl font-extrabold mb-3">
+          <h2 className="font-sans text-2xl sm:text-3xl font-extrabold mb-3 text-white">
             Connect With Our Ministry Family
           </h2>
           <p className="text-white/85 text-base max-w-xl mb-6 font-sans">
@@ -142,7 +142,7 @@ export default function AboutPage() {
           <div className="flex flex-wrap items-center justify-center gap-4">
             <Link
               href="/branches"
-              className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-[var(--color-accent)] text-[var(--color-accent-ink)] font-sans font-bold text-sm hover:scale-105 transition-all shadow-md"
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-white text-[#0B0F17] font-sans font-bold text-sm hover:bg-[#FAF7F2] hover:scale-105 transition-all shadow-xl"
             >
               <span>Explore Branch Locations</span>
               <ArrowUpRight size={16} />

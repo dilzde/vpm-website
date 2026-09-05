@@ -90,11 +90,11 @@ export default function Header() {
             })}
           </nav>
 
-          {/* Solid Lime Pill Button (Give) */}
+          {/* Solid Black Pill Button (Give) */}
           <div className="pl-6 border-l border-[var(--color-line)]">
             <Link
               href="/give"
-              className="inline-flex items-center gap-1.5 px-6 py-2.5 text-sm font-sans font-bold text-[var(--color-accent-ink)] bg-[var(--color-accent)] hover:scale-105 rounded-full transition-all shadow-xs"
+              className="inline-flex items-center gap-1.5 px-6 py-2.5 text-sm font-sans font-bold text-white bg-[#0B0F17] hover:bg-[#1F2937] hover:scale-105 rounded-full transition-all shadow-xs"
               id="give-cta"
             >
               <Heart size={14} className="fill-current" />
@@ -130,7 +130,7 @@ export default function Header() {
             <Link
               href="/give"
               onClick={() => setMobileOpen(false)}
-              className="inline-flex items-center justify-center gap-2 w-full py-3.5 text-base font-sans font-bold text-[var(--color-accent-ink)] bg-[var(--color-accent)] rounded-full shadow-md active:scale-98 transition-all"
+              className="inline-flex items-center justify-center gap-2 w-full py-3.5 text-base font-sans font-bold text-white bg-[#0B0F17] hover:bg-[#1F2937] rounded-full shadow-md active:scale-98 transition-all"
             >
               <Heart size={18} className="fill-current" />
               <span>Give / Support Mission</span>
@@ -140,14 +140,14 @@ export default function Header() {
             <button
               type="button"
               onClick={() => toggle()}
-              className="inline-flex items-center justify-between w-full px-5 py-3 rounded-full bg-[var(--color-navy-900)] text-white text-xs font-sans font-bold shadow-xs cursor-pointer active:scale-98 transition-all"
+              className="inline-flex items-center justify-between w-full px-5 py-3 rounded-full bg-[#0B0F17] text-white text-xs font-sans font-bold shadow-xs cursor-pointer active:scale-98 transition-all"
             >
               <span className="flex items-center gap-2">
-                <Radio size={16} className="text-[var(--color-accent)]" />
+                <Radio size={16} className="text-[#29A3E4]" />
                 <span>Asriel Radio 24/7</span>
               </span>
-              <span className="flex items-center gap-1 text-[var(--color-accent)] font-extrabold">
-                {isPlaying ? <Pause size={14} className="fill-current" /> : <Play size={14} className="fill-current" />}
+              <span className="flex items-center gap-1 text-[#29A3E4] font-extrabold">
+                {isPlaying ? <Pause size={14} className="fill-[#29A3E4]" /> : <Play size={14} className="fill-[#29A3E4]" />}
                 <span>{isPlaying ? "Pause" : "Listen Live"}</span>
               </span>
             </button>

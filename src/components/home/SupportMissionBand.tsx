@@ -17,11 +17,11 @@ export default function SupportMissionBand() {
 
           <div className="max-w-3xl mx-auto text-center flex flex-col items-center relative z-10">
             
-            <div className="w-12 h-12 rounded-full bg-[var(--color-accent)] text-[var(--color-accent-ink)] flex items-center justify-center mb-6 shadow-md">
-              <Heart size={22} className="fill-current" />
+            <div className="w-12 h-12 rounded-full bg-white text-[#0B0F17] flex items-center justify-center mb-6 shadow-md">
+              <Heart size={22} className="fill-current text-[#DC2626]" />
             </div>
 
-            <span className="text-xs font-sans font-bold tracking-widest text-[var(--color-accent)] uppercase block mb-3">
+            <span className="text-xs font-sans font-bold tracking-widest text-[#62B4EE] uppercase block mb-3">
               KINGDOM STEWARDSHIP
             </span>
 
@@ -33,14 +33,14 @@ export default function SupportMissionBand() {
               Your faithful tithes and offerings directly fuel territorial church planting, gospel outreach, 24/7 radio broadcasts, and community relief across Kenya.
             </p>
 
-            {/* Single Button per §E (No secondary link) */}
+            {/* High-Contrast Standout CTA Button */}
             <div className="flex items-center justify-center">
               <Link
                 href="/give"
-                className="inline-flex items-center justify-center gap-2 px-8 py-4 text-base font-sans font-bold text-[var(--color-accent-ink)] bg-[var(--color-accent)] hover:scale-105 rounded-full transition-all shadow-md group"
+                className="inline-flex items-center justify-center gap-2 px-8 py-4 text-base font-sans font-bold text-[#0B0F17] bg-white hover:bg-[#FAF7F2] hover:scale-105 rounded-full transition-all shadow-xl group"
               >
                 <span>Share with VPM International</span>
-                <ArrowUpRight size={18} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                <ArrowUpRight size={18} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform text-[#0B0F17]" />
               </Link>
             </div>
 

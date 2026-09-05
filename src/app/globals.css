@@ -15,9 +15,9 @@
   --color-slate:          #4B5563;   /* body copy — balanced dark slate / charcoal */
   --color-line:           #E8E2D6;   /* hairline borders — warm cream stone line */
   --color-line-dark:      rgba(255, 255, 255, 0.12);
-  --color-accent:         #0B0F17;   /* black accent / buttons */
-  --color-accent-ink:     #FFFFFF;   /* text ON black accent */
-  --color-accent-hover:   #1F2937;   /* charcoal on hover */
+  --color-accent:         #29A3E4;   /* vivid logo sky-blue for luminous accents & icons */
+  --color-accent-ink:     #FFFFFF;   /* text ON accent */
+  --color-accent-hover:   #1E87C2;   /* hover state */
   --color-anchor-olive:   #111827;   /* deep rich charcoal black — anchor bands */
   --color-navy-950:       #06090E;   /* deepest black */
   --color-navy-900:       #0B0F17;   /* structural black / footer */

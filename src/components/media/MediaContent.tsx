@@ -131,12 +131,12 @@ export default function MediaContent({ initialSermons, liveVideo }: MediaContent
             <div>
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2.5">
-                  <div className="w-9 h-9 rounded-[var(--radius-eight)] bg-[var(--color-accent)] text-[var(--color-accent-ink)] flex items-center justify-center font-bold">
+                  <div className="w-9 h-9 rounded-[var(--radius-eight)] bg-[#29A3E4] text-white flex items-center justify-center font-bold shadow-xs">
                     <Radio size={18} />
                   </div>
                   <span className="font-sans font-extrabold text-base text-[var(--color-ink)]">Asriel Radio Live</span>
                 </div>
-                <span className="text-xs font-mono font-bold text-[var(--color-anchor-olive)]">24/7 Stream</span>
+                <span className="text-xs font-mono font-bold text-[#1B5299]">24/7 Stream</span>
               </div>
 
               <p className="text-xs text-[var(--color-slate)] font-sans leading-relaxed">
@@ -147,9 +147,9 @@ export default function MediaContent({ initialSermons, liveVideo }: MediaContent
             <button
               type="button"
               onClick={() => toggle()}
-              className="inline-flex items-center justify-center gap-2 w-full py-3.5 rounded-full bg-[var(--color-navy-900)] text-white font-sans font-bold text-sm hover:scale-105 transition-all shadow-xs cursor-pointer"
+              className="inline-flex items-center justify-center gap-2 w-full py-3.5 rounded-full bg-[#0B0F17] hover:bg-[#1F2937] text-white font-sans font-bold text-sm hover:scale-[1.02] active:scale-[0.98] transition-all shadow-md cursor-pointer"
             >
-              {isPlaying ? <Pause size={16} /> : <Play size={16} />}
+              {isPlaying ? <Pause size={16} className="fill-white text-white" /> : <Play size={16} className="fill-white text-white ml-0.5" />}
               <span>{isPlaying ? "Pause Asriel Radio" : "Listen Live Now"}</span>
             </button>
           </div>

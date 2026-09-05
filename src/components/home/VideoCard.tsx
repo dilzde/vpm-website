@@ -44,8 +44,8 @@ export default function VideoCard({ sermon }: VideoCardProps) {
             )}
             <div className="absolute inset-0 bg-black/40 group-hover:bg-black/30 transition-colors" />
             <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-12 h-12 rounded-full bg-[var(--color-accent)] flex items-center justify-center text-[var(--color-navy-900)] shadow-md group-hover:scale-110 transition-transform">
-                <Play size={20} className="ml-0.5 fill-current" />
+              <div className="w-13 h-13 sm:w-14 sm:h-14 rounded-full bg-white text-[#0B0F17] flex items-center justify-center shadow-xl group-hover:scale-110 group-hover:bg-[#29A3E4] group-hover:text-white transition-all">
+                <Play size={22} className="ml-1 fill-current" />
               </div>
             </div>
           </button>

@@ -27,18 +27,18 @@ export default function FloatingRadioWidget() {
         <button
           type="button"
           onClick={() => toggle()}
-          className={`w-14 h-14 rounded-full flex items-center justify-center transition-all cursor-pointer shadow-md ${
+          className={`w-14 h-14 rounded-full flex items-center justify-center transition-all cursor-pointer shadow-lg ${
             isPlaying
-              ? "bg-[var(--color-accent)] text-[var(--color-accent-ink)] ring-4 ring-[var(--color-accent)]/40"
-              : "bg-[var(--color-accent)] text-[var(--color-accent-ink)] hover:scale-110"
+              ? "bg-[#29A3E4] text-white ring-4 ring-[#29A3E4]/50 scale-105"
+              : "bg-[#29A3E4] text-white hover:bg-[#1E87C2] hover:scale-110 active:scale-95"
           }`}
           aria-label={isPlaying ? "Pause Radio Stream" : "Play Radio Stream"}
           title={isPlaying ? "Playing Asriel Radio (Click to Pause)" : "Listen to Asriel Radio Live (Click to Play)"}
         >
           {isPlaying ? (
-            <Pause size={24} className="fill-current" />
+            <Pause size={24} className="fill-white text-white" />
           ) : (
-            <Play size={24} className="ml-1 fill-current" />
+            <Play size={24} className="ml-1 fill-white text-white" />
           )}
         </button>
 
