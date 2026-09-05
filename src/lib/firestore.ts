@@ -82,9 +82,28 @@ export async function getAllEvents() {
   return snap.docs.map((d) => ({ id: d.id, ...d.data() }));
 }
 
-export async function getLivestreamConfig() {
+export interface RadioConfig {
+  radioLogoUrl?: string | null;
+  radioLogoStoragePath?: string | null;
+  channelALive?: boolean;
+  channelBLive?: boolean;
+  nowBroadcastingTitle?: string;
+  stationName?: string;
+}
+
+export async function getLivestreamConfig(): Promise<RadioConfig> {
   const snap = await getDoc(livestreamConfigRef);
-  return snap.data() || {};
+  return (snap.data() as RadioConfig) || {};
+}
+
+export function subscribeRadioConfig(callback: (config: RadioConfig) => void) {
+  return onSnapshot(livestreamConfigRef, (snap) => {
+    callback((snap.data() as RadioConfig) || {});
+  });
+}
+
+export async function updateRadioConfig(data: Partial<RadioConfig>) {
+  return setDoc(livestreamConfigRef, { ...data, updatedAt: serverTimestamp() }, { merge: true });
 }
 
 export async function submitPrayerRequest(data: {
@@ -275,7 +294,7 @@ export interface PaymentMethod {
   label: string;         // e.g. "M-Pesa Send Money"
   type: string;          // e.g. "mpesa" | "paypal" | "sendwave" | "till"
   value: string;         // number / email / username
-  instructions: string;  // step-by-step text shown to donor
+  instructions?: string; // optional step-by-step text
   note?: string;         // optional scripture or extra note
   active: boolean;
   order: number;
