@@ -1,47 +1,52 @@
 @import "tailwindcss";
 
-/* ── VPM International Design System: "Warm Kinetic" ───────────────
-   Color tokens, typography, 1.5x section spacing, floating assets,
-   R48 anchor blocks, and strict color distribution discipline.
+/* ── VPM International Design System: "Prophetic Blue" ─────────────
+   Logo-matched palette: sky-blue (#5B9BD5), white, deep navy-blue.
+   Warm, trustworthy, and spiritually resonant.
    ───────────────────────────────────────────────────────────────── */
 
 @theme inline {
-  /* ── Core Warm Kinetic Theme Tokens (§2) ──────────────────────── */
-  --color-surface:        #F8FAF3;   /* primary page background — warm off-white */
-  --color-surface-alt:    #F1F4EA;   /* alt section background */
-  --color-cream:          #F8FAF3;   /* alias for surface */
+  /* ── Core Palette (logo-inspired sky-blue) ─────────────────────── */
+  --color-surface:        #F4F8FD;   /* primary page background — cool blue-white */
+  --color-surface-alt:    #EBF3FB;   /* alt section background */
+  --color-cream:          #F4F8FD;   /* alias for surface */
   --color-white:          #FFFFFF;   /* card surfaces */
-  --color-ink:            #1A1F16;   /* primary text — dark slate/olive */
-  --color-slate:          #5C6357;   /* body copy — warm-toned gray */
-  --color-line:           #E2E6D9;   /* hairline borders */
+  --color-ink:            #0D1B2A;   /* primary text — deep navy */
+  --color-slate:          #4A6080;   /* body copy — steel-blue grey */
+  --color-line:           #C8DDEF;   /* hairline borders — blue-tinted */
   --color-line-dark:      rgba(255, 255, 255, 0.14);
-  --color-accent:         #D1FF26;   /* vibrant lime — CTAs, active links, highlights ONLY */
-  --color-accent-ink:     #1A1F16;   /* text ON lime accent */
-  --color-anchor-olive:   #4B5320;   /* deep olive-green — full-bleed Anchor band background */
-  --color-navy-900:       #151C12;   /* deep olive/black for structural bands */
-  --color-navy-700:       #273322;   /* secondary deep olive surface */
-  --color-gold-500:       #D1FF26;   /* alias for accent */
-  --color-gold-700:       #B5E01D;   /* hover state for accent */
-  --color-terracotta:     #A8532E;   /* secondary warm accent for small tags */
-  --color-plum:           #2A1D2B;   /* subtle dark plum accent */
+  --color-accent:         #5B9BD5;   /* sky-blue — CTAs, active links, highlights */
+  --color-accent-ink:     #FFFFFF;   /* text ON sky-blue accent */
+  --color-accent-hover:   #3A7FBD;   /* darker blue for hover */
+  --color-anchor-olive:   #1E3A5F;   /* deep navy-blue — full-bleed anchor bands */
+  --color-navy-950:       #0A1628;   /* deepest structural dark */
+  --color-navy-900:       #0F2540;   /* deep structural bands */
+  --color-navy-700:       #1A3A6B;   /* secondary deep surface */
+  --color-gold-500:       #E8A020;   /* warm gold — secondary accent, scripture highlights */
+  --color-gold-700:       #C8861A;   /* darker gold for hover */
+  --color-terracotta:     #C0623A;   /* warm terracotta for small badges */
+  --color-plum:           #2A1D2B;   /* subtle dark accent */
   --color-live:           #E24C4C;   /* live status badge */
+  --color-mist:           #EBF3FB;   /* subtle bg fill */
+  --color-paper:          #F4F8FD;   /* alias */
 
-  /* ── Radius Tokens (§2 & §4) ─────────────────────────────────── */
-  --radius-eight:         8px;       /* ROUND_EIGHT — standard cards & containers */
-  --radius-image:         12px;      /* R12 — hero & large image corners */
-  --radius-block:         48px;      /* R48 — large anchor-band container radius */
+  /* ── Radius Tokens ──────────────────────────────────────────────── */
+  --radius-eight:         8px;
+  --radius-image:         12px;
+  --radius-block:         48px;
+  --radius-lg:            16px;
 
-  /* ── Shadow Tokens (§2 & §4) ─────────────────────────────────── */
-  --shadow-xl:            0 20px 50px -12px rgba(26,31,22,0.18);  /* SHADOW-XL — floating hero imagery & floating badges */
-  --shadow-card:          0 1px 2px rgba(26,31,22,0.06);          /* minimal card shadow */
+  /* ── Shadow Tokens ──────────────────────────────────────────────── */
+  --shadow-xl:            0 20px 50px -12px rgba(13,27,42,0.22);
+  --shadow-card:          0 1px 3px rgba(13,27,42,0.08);
 
-  /* ── Font Family Stack (§3) ──────────────────────────────────── */
+  /* ── Font Family Stack ──────────────────────────────────────────── */
   --font-display:      var(--font-hanken), var(--font-montserrat), sans-serif;
   --font-sans:         var(--font-hanken), var(--font-montserrat), sans-serif;
   --font-serif:        var(--font-hanken), var(--font-montserrat), sans-serif;
 }
 
-/* ── Base styles ──────────────────────────────────────────────── */
+/* ── Base styles ───────────────────────────────────────────────── */
 
 body {
   background-color: var(--color-surface);
@@ -71,7 +76,7 @@ h1 {
   text-align: left;
 }
 
-/* ── Section Spacing 1.5x Rule Helper Classes ────────────────── */
+/* ── Section Spacing 1.5x Rule ────────────────────────────────── */
 .section-gap {
   padding-top: 120px;
   padding-bottom: 120px;
@@ -87,3 +92,20 @@ h1 {
 .header-spacing {
   margin-bottom: 48px;
 }
+
+/* ── Highlight block ──────────────────────────────────────────── */
+.highlight-block {
+  background: linear-gradient(135deg, #5B9BD5 0%, #3A7FBD 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Gold scripture highlight ──────────────────────────────────── */
+.scripture-highlight {
+  background: linear-gradient(135deg, #E8A020 0%, #C8861A 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+

@@ -28,6 +28,9 @@ export const siteImagesRef = collection(db, "siteImages");
 export const prayerRequestsRef = collection(db, "prayerRequests");
 export const livestreamConfigRef = doc(db, "config", "livestream");
 export const carouselImagesRef = collection(db, "carouselImages");
+export const paymentMethodsRef = collection(db, "paymentMethods");
+export const eventsFirestoreRef = collection(db, "eventsFirestore");
+export const socialLinksRef = collection(db, "socialLinks");
 
 /* ── Typed helpers ──────────────────────────────────────────────── */
 
@@ -264,3 +267,107 @@ export async function getAllCarouselImagesForSlot(slot: CarouselSlot): Promise<C
 }
 
 export { onSnapshot, Timestamp, serverTimestamp };
+
+/* ── Payment Methods ────────────────────────────────────────────── */
+
+export interface PaymentMethod {
+  id: string;
+  label: string;         // e.g. "M-Pesa Send Money"
+  type: string;          // e.g. "mpesa" | "paypal" | "sendwave" | "till"
+  value: string;         // number / email / username
+  instructions: string;  // step-by-step text shown to donor
+  note?: string;         // optional scripture or extra note
+  active: boolean;
+  order: number;
+}
+
+export function subscribePaymentMethods(callback: (methods: PaymentMethod[]) => void) {
+  const q = query(paymentMethodsRef, orderBy("order", "asc"));
+  return onSnapshot(q, (snap) =>
+    callback(snap.docs.map((d) => ({ id: d.id, ...d.data() } as PaymentMethod)))
+  );
+}
+
+export async function upsertPaymentMethod(id: string | null, data: Omit<PaymentMethod, "id">) {
+  if (id) {
+    return updateDoc(doc(paymentMethodsRef, id), { ...data, updatedAt: serverTimestamp() });
+  }
+  return addDoc(paymentMethodsRef, { ...data, createdAt: serverTimestamp() });
+}
+
+export async function deletePaymentMethod(id: string) {
+  return deleteDoc(doc(paymentMethodsRef, id));
+}
+
+/* ── Events (Firestore-backed) ───────────────────────────────────── */
+
+export interface FirestoreEvent {
+  id: string;
+  title: string;
+  description: string;
+  date: string;           // ISO string "YYYY-MM-DD"
+  time: string;
+  location: string;
+  isOnline: boolean;
+  posterUrl?: string | null;
+  posterStoragePath?: string | null;
+  active: boolean;
+  order: number;
+  createdAt?: unknown;
+}
+
+export function subscribeEventsFirestore(callback: (events: FirestoreEvent[]) => void) {
+  const q = query(eventsFirestoreRef, where("active", "==", true), orderBy("date", "asc"));
+  return onSnapshot(q, (snap) =>
+    callback(snap.docs.map((d) => ({ id: d.id, ...d.data() } as FirestoreEvent)))
+  );
+}
+
+export function subscribeAllEventsFirestore(callback: (events: FirestoreEvent[]) => void) {
+  const q = query(eventsFirestoreRef, orderBy("date", "asc"));
+  return onSnapshot(q, (snap) =>
+    callback(snap.docs.map((d) => ({ id: d.id, ...d.data() } as FirestoreEvent)))
+  );
+}
+
+export async function addFirestoreEvent(data: Omit<FirestoreEvent, "id">) {
+  return addDoc(eventsFirestoreRef, { ...data, createdAt: serverTimestamp() });
+}
+
+export async function updateFirestoreEvent(id: string, data: Partial<Omit<FirestoreEvent, "id">>) {
+  return updateDoc(doc(eventsFirestoreRef, id), { ...data, updatedAt: serverTimestamp() });
+}
+
+export async function deleteFirestoreEvent(id: string) {
+  return deleteDoc(doc(eventsFirestoreRef, id));
+}
+
+/* ── Social Links (Linktree) ─────────────────────────────────────── */
+
+export interface SocialLink {
+  id: string;
+  label: string;      // e.g. "VPM Website"
+  url: string;        // full URL
+  icon: string;       // key: "website" | "radio" | "youtube" | "tiktok" | "instagram" | "x" | "whatsapp"
+  description?: string;
+  active: boolean;
+  order: number;
+}
+
+export function subscribeSocialLinks(callback: (links: SocialLink[]) => void) {
+  const q = query(socialLinksRef, orderBy("order", "asc"));
+  return onSnapshot(q, (snap) =>
+    callback(snap.docs.map((d) => ({ id: d.id, ...d.data() } as SocialLink)))
+  );
+}
+
+export async function upsertSocialLink(id: string | null, data: Omit<SocialLink, "id">) {
+  if (id) {
+    return updateDoc(doc(socialLinksRef, id), { ...data, updatedAt: serverTimestamp() });
+  }
+  return addDoc(socialLinksRef, { ...data, createdAt: serverTimestamp() });
+}
+
+export async function deleteSocialLink(id: string) {
+  return deleteDoc(doc(socialLinksRef, id));
+}

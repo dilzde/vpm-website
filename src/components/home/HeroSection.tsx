@@ -49,10 +49,10 @@ export default function HeroSection() {
           </p>
           <div className="pt-2 flex flex-wrap items-center gap-4">
             <Link
-              href="/branches"
+              href="/contact"
               className="inline-flex items-center justify-center gap-2 px-8 py-4 text-base font-sans font-bold text-white bg-[var(--color-navy-900)] hover:scale-105 rounded-full transition-all shadow-md group"
             >
-              <span>Plan Your Visit</span>
+              <span>Contact Us</span>
               <ArrowUpRight size={18} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
             </Link>
             <Link

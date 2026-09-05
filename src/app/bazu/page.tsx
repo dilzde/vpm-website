@@ -1,10 +1,23 @@
 import React from "react";
 import Link from "next/link";
-import { ImageIcon, Megaphone, Layers, GitBranch, Radio, MessageCircle } from "lucide-react";
+import {
+  ImageIcon,
+  Megaphone,
+  Layers,
+  GitBranch,
+  Radio,
+  MessageCircle,
+  Calendar,
+  DollarSign,
+  Share2,
+} from "lucide-react";
 
 const ADMIN_MODULES = [
   { label: "Site & Gallery Images", href: "/bazu/images", icon: ImageIcon, desc: "Manage interactive gallery photos above footer & ministry banners" },
   { label: "Announcements & News", href: "/bazu/announcements", icon: Megaphone, desc: "Add, edit, and reorder convention flyers & revival notices with importance tags" },
+  { label: "Events & Gatherings", href: "/bazu/events", icon: Calendar, desc: "Add revival meetings, upload posters, and set dates, venues & livestream links" },
+  { label: "Giving & Payment Methods", href: "/bazu/give", icon: DollarSign, desc: "Update M-Pesa Send Money, Missionary Till, PayPal, and Sendwave details" },
+  { label: "Social Hub Links", href: "/bazu/links", icon: Share2, desc: "Manage the private Linktree-style bio hub at /links" },
   { label: "Carousels & Section Bands", href: "/bazu/carousels", icon: Layers, desc: "Manage support the mission & booking slide bands" },
   { label: "Revival Branches", href: "/bazu/branches", icon: GitBranch, desc: "Add, update addresses, and reorder church fellowship locations" },
   { label: "Livestream Control", href: "/bazu/livestream", icon: Radio, desc: "Toggle live broadcast feeds from YouTube & Asriel Radio" },

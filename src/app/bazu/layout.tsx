@@ -14,6 +14,9 @@ import {
   Menu,
   X,
   ExternalLink,
+  Calendar,
+  DollarSign,
+  Share2,
 } from "lucide-react";
 
 const NAV_ITEMS = [
@@ -21,6 +24,9 @@ const NAV_ITEMS = [
   { label: "Site & Gallery Images", href: "/bazu/images", icon: ImageIcon },
   { label: "Announcements", href: "/bazu/announcements", icon: Megaphone },
   { label: "Carousels & Bands", href: "/bazu/carousels", icon: Layers },
+  { label: "Events & Gatherings", href: "/bazu/events", icon: Calendar },
+  { label: "Give & Payments", href: "/bazu/give", icon: DollarSign },
+  { label: "Link Directory", href: "/bazu/links", icon: Share2 },
   { label: "Revival Branches", href: "/bazu/branches", icon: GitBranch },
   { label: "Livestream Control", href: "/bazu/livestream", icon: Radio },
   { label: "Prayer & Counselling Inbox", href: "/bazu/prayers", icon: MessageCircle },
