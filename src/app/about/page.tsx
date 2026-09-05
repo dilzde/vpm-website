@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ArrowUpRight, Flame, Heart, Shield, Target, Users } from "lucide-react";
 import PlaceholderCongregation from "@/components/placeholders/PlaceholderCongregation";
 import PlaceholderSermon from "@/components/placeholders/PlaceholderSermon";
+import LiveCarouselImage from "@/components/LiveCarouselImage";
 
 export const metadata: Metadata = {
   title: "About Us & Prophet Dr. Samo Mtishiby | VPM International",
@@ -35,14 +36,24 @@ export default function AboutPage() {
 
           <div className="lg:col-span-6 relative">
             <div className="w-full h-[360px] sm:h-[420px] rounded-[var(--radius-image)] overflow-hidden border border-[var(--color-line)] bg-white shadow-[var(--shadow-xl)] relative">
-              <PlaceholderCongregation />
-              <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-navy-900)]/70 via-transparent to-transparent" />
-              <div className="absolute bottom-6 left-6 right-6 text-white">
-                <span className="text-xs font-sans font-bold uppercase tracking-wider text-[var(--color-accent)] block mb-1">
-                  Prophet Dr. Samo Mtishiby
-                </span>
-                <h3 className="font-sans text-xl font-bold">General Overseer & Founder</h3>
-              </div>
+              <LiveCarouselImage
+                slot="about"
+                eyebrow="Prophet Dr. Samo Mtishiby"
+                caption="General Overseer & Founder"
+                fallback={
+                  <>
+                    <PlaceholderCongregation />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-navy-900)]/70 via-transparent to-transparent" />
+                    <div className="absolute bottom-6 left-6 right-6 text-white">
+                      <span className="text-xs font-sans font-bold uppercase tracking-wider text-[var(--color-accent)] block mb-1">
+                        Prophet Dr. Samo Mtishiby
+                      </span>
+                      <h3 className="font-sans text-xl font-bold">General Overseer &amp; Founder</h3>
+                    </div>
+                  </>
+                }
+                className="w-full h-full"
+              />
             </div>
           </div>
         </div>

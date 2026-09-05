@@ -27,6 +27,7 @@ export const eventsRef = collection(db, "events");
 export const siteImagesRef = collection(db, "siteImages");
 export const prayerRequestsRef = collection(db, "prayerRequests");
 export const livestreamConfigRef = doc(db, "config", "livestream");
+export const carouselImagesRef = collection(db, "carouselImages");
 
 /* ── Typed helpers ──────────────────────────────────────────────── */
 
@@ -166,6 +167,100 @@ export async function adminGetAll(
       : query(collection(db, collectionName));
   const snap = await getDocs(q);
   return snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+}
+
+/* ── Carousel Images (real-time, per slot) ──────────────────────── */
+
+export type CarouselSlot = "hero" | "gallery" | "about" | "branches" | "media";
+
+export interface CarouselImage {
+  id: string;
+  slot: CarouselSlot;
+  url: string;
+  storagePath: string;
+  caption?: string;
+  order: number;
+  active: boolean;
+  createdAt: unknown;
+}
+
+/**
+ * Real-time listener — returns an unsubscribe function.
+ * Calls `callback` immediately and on every Firestore change.
+ */
+export function subscribeCarouselImages(
+  slot: CarouselSlot,
+  callback: (images: CarouselImage[]) => void
+) {
+  const q = query(
+    carouselImagesRef,
+    where("slot", "==", slot),
+    where("active", "==", true),
+    orderBy("order", "asc")
+  );
+  return onSnapshot(q, (snap) => {
+    callback(
+      snap.docs.map((d) => ({ id: d.id, ...d.data() } as CarouselImage))
+    );
+  });
+}
+
+/**
+ * One-time fetch for SSR/SSG contexts.
+ */
+export async function getCarouselImages(slot: CarouselSlot): Promise<CarouselImage[]> {
+  const q = query(
+    carouselImagesRef,
+    where("slot", "==", slot),
+    where("active", "==", true),
+    orderBy("order", "asc")
+  );
+  const snap = await getDocs(q);
+  return snap.docs.map((d) => ({ id: d.id, ...d.data() } as CarouselImage));
+}
+
+export async function addCarouselImage(
+  slot: CarouselSlot,
+  url: string,
+  storagePath: string,
+  caption = "",
+  order = 0
+) {
+  return addDoc(carouselImagesRef, {
+    slot,
+    url,
+    storagePath,
+    caption,
+    order,
+    active: true,
+    createdAt: serverTimestamp(),
+  });
+}
+
+export async function deleteCarouselImage(id: string) {
+  return deleteDoc(doc(carouselImagesRef, id));
+}
+
+export async function updateCarouselImageOrder(id: string, order: number) {
+  return updateDoc(doc(carouselImagesRef, id), { order, updatedAt: serverTimestamp() });
+}
+
+export async function updateCarouselImageCaption(id: string, caption: string) {
+  return updateDoc(doc(carouselImagesRef, id), { caption, updatedAt: serverTimestamp() });
+}
+
+export async function toggleCarouselImageActive(id: string, active: boolean) {
+  return updateDoc(doc(carouselImagesRef, id), { active, updatedAt: serverTimestamp() });
+}
+
+export async function getAllCarouselImagesForSlot(slot: CarouselSlot): Promise<CarouselImage[]> {
+  const q = query(
+    carouselImagesRef,
+    where("slot", "==", slot),
+    orderBy("order", "asc")
+  );
+  const snap = await getDocs(q);
+  return snap.docs.map((d) => ({ id: d.id, ...d.data() } as CarouselImage));
 }
 
 export { onSnapshot, Timestamp, serverTimestamp };

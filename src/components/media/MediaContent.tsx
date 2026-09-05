@@ -5,6 +5,7 @@ import { Search, Tv, Radio, MessageSquare, Play, Pause, ExternalLink, Video } fr
 import { YouTubeVideo } from "@/lib/youtube";
 import VideoCard from "@/components/home/VideoCard";
 import { useRadioPlayer } from "@/lib/hooks/useRadioPlayer";
+import LiveCarouselImage from "@/components/LiveCarouselImage";
 
 interface MediaContentProps {
   initialSermons: YouTubeVideo[];
@@ -58,7 +59,7 @@ export default function MediaContent({ initialSermons, liveVideo }: MediaContent
   return (
     <div className="bg-[var(--color-surface)] text-[var(--color-ink)] min-h-screen py-10 md:py-16">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 space-y-12">
-        
+
         {/* Entry: Utility Search Entry Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-8 border-b border-[var(--color-line)]">
           <div>
@@ -83,9 +84,16 @@ export default function MediaContent({ initialSermons, liveVideo }: MediaContent
           </div>
         </div>
 
+        {/* Media Banner Carousel — only shows when images are uploaded in admin */}
+        <LiveCarouselImage
+          slot="media"
+          className="w-full h-48 sm:h-64 rounded-[var(--radius-image)] overflow-hidden"
+          autoPlayMs={6000}
+        />
+
         {/* Live Broadcast Card & Compact Asriel Radio Widget */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          
+
           {/* Left: Featured Live Card */}
           <div className="lg:col-span-7 bg-white border border-[var(--color-line)] rounded-[var(--radius-eight)] p-6 space-y-4 shadow-[var(--shadow-card)]">
             <div className="flex items-center justify-between">
@@ -151,7 +159,7 @@ export default function MediaContent({ initialSermons, liveVideo }: MediaContent
         {/* Tab Sub-Navigation Pills & Direct YouTube Channel Links */}
         <div className="space-y-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[var(--color-line)] pb-3">
-            
+
             {/* Interactive Tabs */}
             <div className="flex items-center gap-6 overflow-x-auto">
               {tabs.map((tab) => {
@@ -161,9 +169,8 @@ export default function MediaContent({ initialSermons, liveVideo }: MediaContent
                     key={tab.id}
                     type="button"
                     onClick={() => setActiveTab(tab.id as any)}
-                    className={`text-sm font-sans font-extrabold uppercase tracking-wider relative py-2 transition-colors whitespace-nowrap cursor-pointer ${
-                      active ? "text-[var(--color-ink)]" : "text-[var(--color-slate)] hover:text-[var(--color-ink)]"
-                    }`}
+                    className={`text-sm font-sans font-extrabold uppercase tracking-wider relative py-2 transition-colors whitespace-nowrap cursor-pointer ${active ? "text-[var(--color-ink)]" : "text-[var(--color-slate)] hover:text-[var(--color-ink)]"
+                      }`}
                   >
                     {tab.label}
                     {active && (
