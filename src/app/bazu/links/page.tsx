@@ -30,7 +30,7 @@ const DEFAULT_LINKS: Omit<SocialLink, "id">[] = [
   { label: "YouTube Channel", url: "https://youtube.com/@vpminternational", icon: "youtube", description: "Sermons, revivals & live broadcasts", active: true, order: 2 },
   { label: "TikTok", url: "https://tiktok.com/@vpminternational", icon: "tiktok", description: "Short prophetic clips & highlights", active: true, order: 3 },
   { label: "Instagram", url: "https://instagram.com/vpminternational", icon: "instagram", description: "Ministry moments & announcements", active: true, order: 4 },
-  { label: "X (Twitter)", url: "https://x.com/vpminternational", icon: "x", description: "Prophetic updates & prayer points", active: true, order: 5 },
+  { label: "X (Twitter)", url: "https://x.com/vpminternational", icon: "x", description: "", active: true, order: 5 },
   { label: "WhatsApp Community", url: "https://wa.me/254759265819", icon: "whatsapp", description: "Join our prayer & fellowship group", active: true, order: 6 },
 ];
 
