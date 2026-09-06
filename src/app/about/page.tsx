@@ -133,10 +133,16 @@ export default function AboutPage() {
           <div className="w-12 h-12 rounded-full bg-white text-[#0B0F17] flex items-center justify-center mb-4 font-bold shadow-md">
             <Users size={22} />
           </div>
-          <h2 className="font-sans text-2xl sm:text-3xl font-extrabold mb-3 text-white">
+          <h2
+            className="font-sans text-2xl sm:text-3xl font-extrabold mb-3 !text-white"
+            style={{ color: "#FFFFFF" }}
+          >
             Connect With Our Ministry Family
           </h2>
-          <p className="text-white/85 text-base max-w-xl mb-6 font-sans">
+          <p
+            className="text-base max-w-xl mb-6 font-sans !text-white"
+            style={{ color: "rgba(255, 255, 255, 0.92)" }}
+          >
             Whether in person at our Nairobi (Mlolongo) sanctuary, Kisumu HQ, or joining remotely via Asriel Radio, you are welcome.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-4">

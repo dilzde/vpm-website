@@ -34,10 +34,16 @@ export default function RadioSpotlight() {
                 <Volume2 size={16} strokeWidth={2.5} className="text-[var(--color-accent)]" />
                 Global Audio Transmission
               </p>
-              <h2 className="text-3xl sm:text-4xl font-display font-extrabold text-white mb-4 tracking-tight">
+              <h2
+                className="text-3xl sm:text-4xl font-display font-extrabold !text-white mb-4 tracking-tight"
+                style={{ color: "#FFFFFF" }}
+              >
                 Stream <span className="highlight-block">Asriel FM Radio</span>
               </h2>
-              <p className="text-base md:text-lg text-slate-300 leading-relaxed font-sans">
+              <p
+                className="text-base md:text-lg !text-white leading-relaxed font-sans"
+                style={{ color: "rgba(255, 255, 255, 0.9)" }}
+              >
                 Tune in to powerful daily sermons, prophetic intercession, and heavenly worship broadcasting continuously to encourage your faith wherever you go.
               </p>
             </div>

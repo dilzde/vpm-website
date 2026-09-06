@@ -25,11 +25,17 @@ export default function SupportMissionBand() {
               KINGDOM STEWARDSHIP
             </span>
 
-            <h2 className="font-sans text-3xl sm:text-4xl md:text-5xl text-white font-extrabold mb-4 leading-tight">
+            <h2
+              className="font-sans text-3xl sm:text-4xl md:text-5xl !text-white font-extrabold mb-4 leading-tight"
+              style={{ color: "#FFFFFF" }}
+            >
               Support the Mission
             </h2>
 
-            <p className="text-white/85 text-base sm:text-lg max-w-2xl mb-8 leading-relaxed font-sans">
+            <p
+              className="text-base sm:text-lg max-w-2xl mb-8 leading-relaxed font-sans !text-white"
+              style={{ color: "rgba(255, 255, 255, 0.92)" }}
+            >
               Your faithful tithes and offerings directly fuel territorial church planting, gospel outreach, 24/7 radio broadcasts, and community relief across Kenya.
             </p>
 

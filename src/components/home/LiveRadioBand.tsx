@@ -147,10 +147,16 @@ export default function LiveRadioBand() {
                   <span className="w-1.5 h-1.5 rounded-full bg-[#29A3E4] animate-pulse" />
                   NOW BROADCASTING 24/7
                 </span>
-                <h4 className="font-sans text-xl sm:text-2xl font-extrabold text-white tracking-tight leading-snug">
+                <h4
+                  className="font-sans text-xl sm:text-2xl font-extrabold !text-white tracking-tight leading-snug"
+                  style={{ color: "#FFFFFF" }}
+                >
                   Anointed Preaching &amp; Worship
                 </h4>
-                <p className="text-xs text-white/75 font-sans mt-1">
+                <p
+                  className="text-xs !text-white font-sans mt-1"
+                  style={{ color: "rgba(255, 255, 255, 0.9)" }}
+                >
                   Global Voice of the Potter&apos;s Messengers
                 </p>
               </div>
@@ -177,18 +183,32 @@ export default function LiveRadioBand() {
                     )}
                   </button>
                 </div>
-                <span className="text-xs font-sans font-bold text-white/85 uppercase tracking-widest mt-3">
+                <span
+                  className="text-xs font-sans font-bold !text-white uppercase tracking-widest mt-3"
+                  style={{ color: "#FFFFFF" }}
+                >
                   {isPlaying ? "Live Broadcast On Air" : "Tap to Listen Live"}
                 </span>
               </div>
 
               {/* Bottom Stream Status */}
-              <div className="relative z-10 w-full flex items-center justify-between text-xs text-white/70 pt-3 border-t border-white/10">
-                <span className="flex items-center gap-1.5 font-medium">
+              <div
+                className="relative z-10 w-full flex items-center justify-between text-xs !text-white pt-3 border-t border-white/20"
+                style={{ color: "#FFFFFF" }}
+              >
+                <span
+                  className="flex items-center gap-1.5 font-medium !text-white"
+                  style={{ color: "#FFFFFF" }}
+                >
                   <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
                   Streaming live via Zeno.fm
                 </span>
-                <span className="font-mono text-[11px] font-semibold text-white/50">HD Audio</span>
+                <span
+                  className="font-mono text-[11px] font-semibold !text-white"
+                  style={{ color: "#FFFFFF" }}
+                >
+                  HD Audio
+                </span>
               </div>
 
             </div>
