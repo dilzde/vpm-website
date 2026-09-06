@@ -17,7 +17,7 @@ const ADMIN_MODULES = [
   { label: "Announcements & News", href: "/bazu/announcements", icon: Megaphone, desc: "Add, edit, and reorder convention flyers & revival notices with importance tags" },
   { label: "Events & Gatherings", href: "/bazu/events", icon: Calendar, desc: "Add revival meetings, upload posters, and set dates, venues & livestream links" },
   { label: "Giving & Payment Methods", href: "/bazu/give", icon: DollarSign, desc: "Update M-Pesa Send Money, Missionary Till, PayPal, and Sendwave details" },
-  { label: "Social Hub Links", href: "/bazu/links", icon: Share2, desc: "Manage the private Linktree-style bio hub at /links" },
+  { label: "Link Directory (/links)", href: "/bazu/links", icon: Share2, desc: "Add, edit, and delete social & ministry links for the public /links page" },
   { label: "Carousels & Section Bands", href: "/bazu/carousels", icon: Layers, desc: "Manage support the mission & booking slide bands" },
   { label: "Revival Branches", href: "/bazu/branches", icon: GitBranch, desc: "Add, update addresses, and reorder church fellowship locations" },
   { label: "Livestream Control", href: "/bazu/livestream", icon: Radio, desc: "Toggle live broadcast feeds from YouTube & Asriel Radio" },

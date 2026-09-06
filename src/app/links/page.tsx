@@ -12,6 +12,7 @@ const ICON_STYLES: Record<string, string> = {
   youtube:   "bg-[#DC2626] text-white",
   tiktok:    "bg-[#09090B] text-white",
   instagram: "bg-gradient-to-tr from-[#F58529] via-[#DD2A7B] to-[#8134AF] text-white",
+  facebook:  "bg-[#1877F2] text-white",
   x:         "bg-black text-white",
   whatsapp:  "bg-[#16A34A] text-white",
   default:   "bg-[#5B9BD5] text-white",
@@ -131,10 +132,19 @@ export default function LinksPage() {
       </div>
 
       {/* ── Footer ── */}
-      <div className="text-center mt-10">
+      <div className="text-center mt-10 space-y-2">
         <p className="text-[#94A3B8] text-xs font-sans">
           © {new Date().getFullYear()} Voice of the Potter&apos;s Messengers Ministry International
         </p>
+        <div>
+          <a
+            href="/bazu/links"
+            className="inline-flex items-center gap-1.5 text-[11px] font-sans font-semibold text-[#5A6F8C] hover:text-[#0D1B2A] transition-colors py-1 px-3 rounded-full hover:bg-black/5"
+          >
+            <span>Manage directory links in Bazu</span>
+            <span>→</span>
+          </a>
+        </div>
       </div>
 
     </div>
