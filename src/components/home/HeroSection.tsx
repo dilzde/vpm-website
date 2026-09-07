@@ -55,26 +55,13 @@ export default function HeroSection() {
             Experience the power of God&apos;s word through prophetic revelations, spiritual guidance, and a living community of prayer and revival.
           </p>
 
-          {/* Key Ministry Centers (HQ Mlolongo & Kisumu Mother Church) */}
-          <div className="w-full p-3.5 rounded-2xl bg-white border border-[var(--color-line)] shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs font-sans">
-            <div className="flex items-center gap-2 text-[var(--color-ink)] font-medium">
-              <span className="w-2 h-2 rounded-full bg-[var(--color-accent)] shrink-0" />
-              <span><strong className="text-[var(--color-ink)]">HQ:</strong> Family Bank, Mlolongo, Nairobi</span>
-            </div>
-            <div className="hidden sm:block text-[var(--color-line)]">|</div>
-            <div className="flex items-center gap-2 text-[var(--color-ink)] font-medium">
-              <span className="w-2 h-2 rounded-full bg-[#1B5299] shrink-0" />
-              <span><strong className="text-[var(--color-ink)]">Mother Church:</strong> Brighlight, Kisumu</span>
-            </div>
-          </div>
-
           {/* Primary Action Buttons */}
           <div className="pt-1 flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 w-full sm:w-auto">
             <Link
               href="/contact"
               className="inline-flex items-center justify-center gap-2 px-8 py-4 text-sm sm:text-base font-sans font-bold text-white bg-[var(--color-navy-900)] hover:bg-[#1A3A6B] hover:scale-[1.02] rounded-full transition-all shadow-md group text-center"
             >
-              <span>Contact Pastoral Desk</span>
+              <span>Contact Us</span>
               <ArrowUpRight size={18} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
             </Link>
             <Link
