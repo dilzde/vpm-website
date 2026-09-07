@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { ExternalLink } from "lucide-react";
-import { subscribeSocialLinks, type SocialLink } from "@/lib/firestore";
+import { subscribeSocialLinks, INITIAL_DEFAULT_LINKS, type SocialLink } from "@/lib/firestore";
 import { renderSocialIcon } from "@/components/common/SocialIcons";
 
 const ICON_STYLES: Record<string, string> = {
@@ -18,16 +18,7 @@ const ICON_STYLES: Record<string, string> = {
   default:   "bg-[#5B9BD5] text-white",
 };
 
-/* ─── Default links shown before Firestore loads ───────────────── */
-const DEFAULT_LINKS: SocialLink[] = [
-  { id: "1", label: "VPM International Website", url: "https://vpminternational.org", icon: "website", description: "Our official ministry website", active: true, order: 0 },
-  { id: "2", label: "Asriel Radio Live", url: "https://asrielradio.com", icon: "radio", description: "24/7 prophetic radio stream", active: true, order: 1 },
-  { id: "3", label: "YouTube Channel", url: "https://youtube.com/@vpminternational", icon: "youtube", description: "Sermons, revivals & live broadcasts", active: true, order: 2 },
-  { id: "4", label: "TikTok", url: "https://tiktok.com/@vpminternational", icon: "tiktok", description: "Short prophetic clips & highlights", active: true, order: 3 },
-  { id: "5", label: "Instagram", url: "https://instagram.com/vpminternational", icon: "instagram", description: "Ministry moments & announcements", active: true, order: 4 },
-  { id: "6", label: "X (Twitter)", url: "https://x.com/vpminternational", icon: "x", description: "", active: true, order: 5 },
-  { id: "7", label: "WhatsApp", url: "https://wa.me/254759265819", icon: "whatsapp", description: "Join our community", active: true, order: 6 },
-];
+const DEFAULT_LINKS: SocialLink[] = INITIAL_DEFAULT_LINKS;
 
 export default function LinksPage() {
   const [links, setLinks] = useState<SocialLink[]>([]);

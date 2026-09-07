@@ -55,6 +55,7 @@ export default function AdminLinksPage() {
   const [isNew, setIsNew] = useState(false);
   const [saving, setSaving] = useState(false);
   const [seeding, setSeeding] = useState(false);
+  const [feedback, setFeedback] = useState<string | null>(null);
   const formRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -70,6 +71,8 @@ export default function AdminLinksPage() {
     setSeeding(true);
     try {
       await resetSocialLinksToDefaults();
+      setFeedback("Official 7 ministry links restored successfully!");
+      setTimeout(() => setFeedback(null), 4000);
     } finally {
       setSeeding(false);
     }
@@ -100,14 +103,17 @@ export default function AdminLinksPage() {
 
     setSaving(true);
     try {
+      const savedLabel = editing.label.trim();
       await upsertSocialLink(isNew ? null : (editing.id ?? null), {
-        label: editing.label.trim(),
+        label: savedLabel,
         url: editing.url.trim(),
         icon: editing.icon ?? "website",
         description: editing.description?.trim() ?? "",
         active: editing.active ?? true,
         order: editing.order ?? links.length,
       });
+      setFeedback(isNew ? `New link "${savedLabel}" added to directory!` : `Changes saved to "${savedLabel}"!`);
+      setTimeout(() => setFeedback(null), 4000);
       setEditing(null);
     } catch (err) {
       console.error(err);
@@ -122,6 +128,8 @@ export default function AdminLinksPage() {
     if (!ok) return;
     try {
       await deleteSocialLink(l.id);
+      setFeedback(`"${l.label}" was removed from the directory.`);
+      setTimeout(() => setFeedback(null), 4000);
     } catch (err) {
       console.error(err);
       alert("Failed to delete link.");
@@ -225,15 +233,22 @@ export default function AdminLinksPage() {
         >
           <div className="flex items-center justify-between pb-4 border-b border-[var(--color-line)]">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-[#29A3E4]/15 text-[#29A3E4] flex items-center justify-center font-bold">
+              <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold ${isNew ? "bg-emerald-100 text-emerald-700" : "bg-[#29A3E4]/15 text-[#29A3E4]"}`}>
                 {isNew ? <Plus size={20} strokeWidth={2.5} /> : <Pencil size={18} />}
               </div>
               <div>
-                <h2 className="text-xl font-extrabold text-[var(--color-ink)]">
-                  {isNew ? "Add New Link to Directory" : `Edit Link: ${editing.label || "Link Details"}`}
-                </h2>
-                <p className="text-xs text-[var(--color-slate)]">
-                  Fill in the details below. This will appear immediately on the /links page.
+                <div className="flex flex-wrap items-center gap-2">
+                  <h2 className="text-xl font-extrabold text-[var(--color-ink)]">
+                    {isNew ? "Add New Link to Directory" : `Edit Link: ${editing.label || "Link Details"}`}
+                  </h2>
+                  <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider ${isNew ? "bg-emerald-50 text-emerald-700 border border-emerald-200" : "bg-blue-50 text-blue-700 border border-blue-200"}`}>
+                    {isNew ? "+ Adding New Link" : "Updating Existing Link"}
+                  </span>
+                </div>
+                <p className="text-xs text-[var(--color-slate)] mt-0.5">
+                  {isNew
+                    ? "This will append a new link to the directory. All existing links remain intact and untouched."
+                    : "You are editing this link in-place. If you want to create a separate link instead, click Cancel then 'Add New Link'."}
                 </p>
               </div>
             </div>
@@ -343,18 +358,41 @@ export default function AdminLinksPage() {
                 className="inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-[#0B0F17] hover:bg-[#1F2937] text-white font-extrabold text-sm rounded-full transition-all shadow-md disabled:opacity-50 cursor-pointer"
               >
                 {saving ? <Loader2 size={16} className="animate-spin" /> : <CheckCircle size={16} />}
-                <span>{saving ? "Saving Link..." : "Save Link"}</span>
+                <span>
+                  {saving
+                    ? "Saving Link..."
+                    : isNew
+                    ? "Add Link to Directory"
+                    : `Save Changes to "${editing.label || "Link"}"`}
+                </span>
               </button>
 
               <button
                 type="button"
                 onClick={() => setEditing(null)}
-                className="px-6 py-3.5 border border-[var(--color-line)] hover:border-[var(--color-ink)] text-[var(--color-ink)] text-sm font-bold rounded-full transition-colors"
+                className="px-6 py-3.5 border border-[var(--color-line)] hover:border-[var(--color-ink)] text-[var(--color-ink)] text-sm font-bold rounded-full transition-colors cursor-pointer"
               >
                 Cancel
               </button>
             </div>
           </form>
+        </div>
+      )}
+
+      {/* ── Action Feedback Banner ── */}
+      {feedback && (
+        <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm font-bold flex items-center justify-between shadow-xs animate-in fade-in">
+          <div className="flex items-center gap-2.5">
+            <CheckCircle size={18} className="text-emerald-600 shrink-0" />
+            <span>{feedback}</span>
+          </div>
+          <button
+            type="button"
+            onClick={() => setFeedback(null)}
+            className="text-emerald-700 hover:text-emerald-900 text-xs underline cursor-pointer"
+          >
+            Dismiss
+          </button>
         </div>
       )}
 
