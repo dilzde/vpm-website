@@ -162,11 +162,7 @@ export default function AdminLinksPage() {
             Link Directory (/links)
           </h1>
           <p className="text-xs sm:text-sm text-white/70 max-w-xl leading-relaxed">
-            Manage, add, and delete links displayed on the public{" "}
-            <Link href="/links" target="_blank" className="text-[#62B4EE] underline font-bold hover:text-white">
-              vpm-website.vercel.app/links
-            </Link>{" "}
-            page. Any changes you make here are updated in real time.
+            Manage, add, edit, and delete links displayed on the public Link Directory (/links) page. Any changes you make here are updated in real time.
           </p>
         </div>
 

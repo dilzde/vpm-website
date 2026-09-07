@@ -28,7 +28,7 @@ export const RECURRING_SCHEDULE: ScheduleItem[] = [
     endTime: "15:00",
     title: "Prophetic Checking",
     description: "Personal prophetic guidance & prayer consultation",
-    platform: "Kisumu HQ & Nairobi Sanctuary",
+    platform: "Kisumu Mother Church & Nairobi HQ",
   },
   {
     id: "deliverance-fri",

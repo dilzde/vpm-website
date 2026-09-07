@@ -9,29 +9,32 @@ export interface BranchRecord {
   phone: string;
   mapsUrl: string;
   isFeatured?: boolean;
+  badge?: string;
 }
 
 export const FOUR_BRANCHES: BranchRecord[] = [
   {
     id: "nairobi-mlolongo",
-    name: "Nairobi Branch",
-    location: "Family Bank, Mlolongo",
+    name: "Nairobi Headquarters",
+    location: "Family Bank, Mlolongo, Nairobi",
     phone: "+254 794 731 831",
     mapsUrl: "https://maps.app.goo.gl/XyRajWmu3kFt8h5K9",
     isFeatured: true,
+    badge: "Ministry HQ",
   },
   {
     id: "kisumu-hq",
-    name: "Kisumu Headquarters",
+    name: "Kisumu Mother Church",
     location: "Brighlight, Kisumu",
     phone: "+254 757 871 123",
     mapsUrl: "https://maps.app.goo.gl/CzAQhusk4crKfLjHA",
     isFeatured: false,
+    badge: "Mother Church",
   },
   {
     id: "kisumu-nyamasaria",
     name: "Kisumu Branch",
-    location: "Nyamasaria",
+    location: "Nyamasaria, Kisumu",
     phone: "+254 720 408 630",
     mapsUrl: "https://maps.google.com/?q=-0.1022,34.7617",
     isFeatured: false,
@@ -39,7 +42,7 @@ export const FOUR_BRANCHES: BranchRecord[] = [
   {
     id: "siaya-branch",
     name: "Siaya Branch",
-    location: "Siaya",
+    location: "Siaya Town",
     phone: "+254 794 731 831",
     mapsUrl: "https://maps.google.com/?q=-0.0607,34.2878",
     isFeatured: false,
@@ -82,10 +85,14 @@ export default function BranchesPreview() {
               }`}
             >
               <div>
-                {/* Featured Badge Pill */}
-                {branch.isFeatured && (
-                  <span className="inline-block bg-[var(--color-accent)] text-[var(--color-accent-ink)] font-bold text-[10px] uppercase px-2.5 py-0.5 rounded-full mb-3 tracking-wider">
-                    Main Sanctuary
+                {/* Branch Badge Pill */}
+                {branch.badge && (
+                  <span className={`inline-block font-bold text-[10px] uppercase px-2.5 py-0.5 rounded-full mb-3 tracking-wider ${
+                    branch.isFeatured
+                      ? "bg-[var(--color-accent)] text-[var(--color-accent-ink)]"
+                      : "bg-[#1B5299]/15 text-[#1B5299] border border-[#1B5299]/30"
+                  }`}>
+                    {branch.badge}
                   </span>
                 )}
 

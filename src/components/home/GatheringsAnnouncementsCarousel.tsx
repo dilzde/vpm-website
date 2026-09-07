@@ -64,7 +64,7 @@ const CAROUSEL_SLIDES: AnnouncementSlide[] = [
     title: "Official Sunday Service",
     subtitle: "Main weekly celebration service, prophetic word, and territorial worship. All believers are encouraged to join!",
     time: "8:30 AM – 4:00 PM",
-    platform: "Nairobi Mlolongo & All Sanctuaries",
+    platform: "Nairobi HQ (Mlolongo) & All Sanctuaries",
     isHighImportance: true,
   },
   {
@@ -74,7 +74,7 @@ const CAROUSEL_SLIDES: AnnouncementSlide[] = [
     title: "Prophetic Revival Convention",
     subtitle: "Special regional gathering and intercessory prayer convention. Purpose to attend and bring family.",
     time: "Coming Soon",
-    platform: "Nairobi Sanctuary (Family Bank, Mlolongo)",
+    platform: "Nairobi HQ (Family Bank, Mlolongo)",
     isHighImportance: true,
   },
 ];
@@ -181,7 +181,63 @@ export default function GatheringsAnnouncementsCarousel() {
 
         {/* Interactive Carousel Cards Row */}
         <div className="relative overflow-hidden" ref={carouselRef}>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 transition-all duration-300">
+          {/* Mobile: Single focused slide */}
+          <div className="block md:hidden">
+            {(() => {
+              const slide = CAROUSEL_SLIDES[currentIndex];
+              return (
+                <div
+                  key={slide.id}
+                  className={`bg-white border rounded-[var(--radius-eight)] p-6 flex flex-col justify-between shadow-[var(--shadow-card)] transition-all ${
+                    slide.isHighImportance
+                      ? "border-[var(--color-accent)] ring-1 ring-[var(--color-accent)]"
+                      : "border-[var(--color-line)]"
+                  }`}
+                >
+                  <div>
+                    {/* Badge Pill */}
+                    <div className="flex items-center justify-between mb-4">
+                      <span className={`inline-block font-sans font-bold text-[10px] uppercase px-2.5 py-0.5 rounded-full tracking-wider ${
+                        slide.isHighImportance
+                          ? "bg-[var(--color-accent)] text-[var(--color-accent-ink)]"
+                          : "bg-[var(--color-surface-alt)] text-[var(--color-terracotta)]"
+                      }`}>
+                        {slide.tag}
+                      </span>
+                      {slide.isHighImportance && (
+                        <span className="text-[10px] font-mono text-[var(--color-terracotta)] font-bold">
+                          HIGH PRIORITY
+                        </span>
+                      )}
+                    </div>
+
+                    <h3 className="font-sans text-xl font-extrabold text-[var(--color-ink)] mb-2 leading-snug">
+                      {slide.title}
+                    </h3>
+
+                    <p className="text-xs text-[var(--color-slate)] leading-relaxed font-sans mb-4">
+                      {slide.subtitle}
+                    </p>
+                  </div>
+
+                  <div className="pt-4 border-t border-[var(--color-line)] space-y-1">
+                    <div className="flex items-center gap-1.5 text-xs font-sans font-bold text-[var(--color-ink)]">
+                      <Clock size={14} className="text-[var(--color-slate)] shrink-0" />
+                      <span>{slide.time}</span>
+                    </div>
+                    {slide.platform && (
+                      <p className="text-[11px] font-sans text-[var(--color-slate)] italic">
+                        {slide.platform}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              );
+            })()}
+          </div>
+
+          {/* Desktop: 3-column carousel */}
+          <div className="hidden md:grid md:grid-cols-3 gap-6 transition-all duration-300">
             {[0, 1, 2].map((offset) => {
               const slideIndex = (currentIndex + offset) % CAROUSEL_SLIDES.length;
               const slide = CAROUSEL_SLIDES[slideIndex];

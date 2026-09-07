@@ -7,7 +7,7 @@ import { FOUR_BRANCHES } from "@/components/home/BranchesPreview";
 export const metadata: Metadata = {
   title: "Branches & Sanctuary Locations | VPM International",
   description:
-    "Find a Voice of the Potter's Messengers sanctuary near you. Worship locations across Kenya including Nairobi (Mlolongo) main church and Kisumu Headquarters.",
+    "Find a Voice of the Potter's Messengers sanctuary near you. Worship locations across Kenya including Nairobi (Family Bank, Mlolongo) Ministry Headquarters and Kisumu Mother Church.",
 };
 
 export default function BranchesPage() {
@@ -44,7 +44,7 @@ export default function BranchesPage() {
         {/* Featured Main Church Hero Card (No image placeholder box) */}
         <div className="bg-white border border-[var(--color-accent)] rounded-[var(--radius-image)] p-8 sm:p-10 shadow-[var(--shadow-card)] ring-1 ring-[var(--color-accent)] space-y-4">
           <span className="inline-block bg-[var(--color-accent)] text-[var(--color-accent-ink)] font-bold text-xs px-3 py-1 rounded-full uppercase tracking-wider">
-            Main Sanctuary & Church
+            {featuredBranch.badge || "Ministry Headquarters"}
           </span>
           <h2 className="font-sans text-3xl sm:text-4xl font-extrabold text-[var(--color-ink)]">
             {featuredBranch.name}
@@ -86,9 +86,13 @@ export default function BranchesPage() {
                 }`}
               >
                 <div>
-                  {branch.isFeatured && (
-                    <span className="inline-block bg-[var(--color-accent)] text-[var(--color-accent-ink)] font-bold text-[10px] uppercase px-2.5 py-0.5 rounded-full mb-3 tracking-wider">
-                      Main Sanctuary
+                  {branch.badge && (
+                    <span className={`inline-block font-bold text-[10px] uppercase px-2.5 py-0.5 rounded-full mb-3 tracking-wider ${
+                      branch.isFeatured
+                        ? "bg-[var(--color-accent)] text-[var(--color-accent-ink)]"
+                        : "bg-[#1B5299]/15 text-[#1B5299] border border-[#1B5299]/30"
+                    }`}>
+                      {branch.badge}
                     </span>
                   )}
 

@@ -30,7 +30,7 @@ export default function AboutPage() {
               Voice of the Potter&apos;s Messengers (VPM International) is a kingdom movement founded and led by <strong>Prophet Dr. Samo Mtishiby</strong>, rooted in intercessory prayer, the uncompromised Word of God, and territorial evangelism across Kenya and the world.
             </p>
             <p className="text-base text-[var(--color-slate)] font-sans leading-relaxed">
-              From our headquarters in Kisumu to our main sanctuary at Family Bank, Mlolongo and our growing network of branches, we remain devoted to equipping believers to walk in the fullness of God&apos;s power and prophetic purpose. For over 15 years, VPM International has stood as a beacon of hope, faith, and spiritual awakening.
+              From our ministry headquarters at Family Bank, Mlolongo (Nairobi), to our mother church in Kisumu and our growing network of branches, we remain devoted to equipping believers to walk in the fullness of God&apos;s power and prophetic purpose. For over 15 years, VPM International has stood as a beacon of hope, faith, and spiritual awakening.
             </p>
           </div>
 
@@ -143,7 +143,7 @@ export default function AboutPage() {
             className="text-base max-w-xl mb-6 font-sans !text-white"
             style={{ color: "rgba(255, 255, 255, 0.92)" }}
           >
-            Whether in person at our Nairobi (Mlolongo) sanctuary, Kisumu HQ, or joining remotely via Asriel Radio, you are welcome.
+            Whether in person at our Nairobi (Mlolongo) Headquarters, Kisumu Mother Church, or joining remotely via Asriel Radio, you are welcome.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-4">
             <Link

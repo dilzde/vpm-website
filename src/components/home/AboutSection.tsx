@@ -41,7 +41,7 @@ export default function AboutSection() {
             </p>
 
             <p className="text-base text-[var(--color-slate)] font-sans leading-relaxed">
-              From our headquarters in Kisumu to our growing network of branches including our main sanctuary at Family Bank, Mlolongo, we remain devoted to equipping believers to walk in the fullness of God&apos;s power and prophetic purpose. For over 15 years, VPM International has stood as a beacon of hope, faith, and spiritual awakening in Kenya and beyond.
+              From our ministry headquarters at Family Bank, Mlolongo (Nairobi), to our mother church in Kisumu and our growing network of territorial branches, we remain devoted to equipping believers to walk in the fullness of God&apos;s power and prophetic purpose. For over 15 years, VPM International has stood as a beacon of hope, faith, and spiritual awakening in Kenya and beyond.
             </p>
 
             <div className="pt-2">

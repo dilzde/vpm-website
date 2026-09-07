@@ -70,19 +70,27 @@ export default function Footer() {
           {/* Col 3: Main Church Location & Contact (§O & User Instruction) (5 cols) */}
           <div className="lg:col-span-5 space-y-4 text-xs">
             <h4 className="font-bold text-white uppercase tracking-wider text-sm mb-4">
-              Main Church & Pastoral Desk
+              Ministry Headquarters &amp; Pastoral Desk
             </h4>
 
-            <div className="p-4 rounded-[var(--radius-eight)] bg-white/5 border border-white/10 space-y-2.5 text-white/85">
+            <div className="p-4 rounded-[var(--radius-eight)] bg-white/5 border border-white/10 space-y-3 text-white/85">
               <div className="flex items-start gap-2.5">
                 <MapPin size={16} className="text-[var(--color-accent)] shrink-0 mt-0.5" />
                 <div>
-                  <p className="font-bold text-white">Nairobi Main Sanctuary</p>
+                  <p className="font-bold text-white">Nairobi Ministry Headquarters</p>
                   <p className="text-white/70">Family Bank, Mlolongo, Nairobi, Kenya</p>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2.5 pt-1">
+              <div className="flex items-start gap-2.5">
+                <MapPin size={16} className="text-[#62B4EE] shrink-0 mt-0.5" />
+                <div>
+                  <p className="font-bold text-white">Kisumu Mother Church</p>
+                  <p className="text-white/70">Brighlight, Kisumu, Kenya</p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2.5 pt-1 border-t border-white/10">
                 <Phone size={16} className="text-[var(--color-accent)] shrink-0" />
                 <a href="tel:+254794731831" className="font-bold hover:underline text-white">
                   +254 794 731 831

@@ -22,7 +22,7 @@ export default function ContactPage() {
             Contact & Pastoral Desk
           </h1>
           <p className="text-base text-[var(--color-slate)] font-sans leading-relaxed">
-            Have questions about services, branch locations, or radio broadcasts? Contact our office or visit our main altar in Githurai.
+            Have questions about services, branch locations, or radio broadcasts? Contact our office or visit our Nairobi Headquarters at Mlolongo or our Kisumu Mother Church.
           </p>
         </div>
 
@@ -32,23 +32,31 @@ export default function ContactPage() {
           {/* Main Contact Card (7 cols) */}
           <div className="lg:col-span-7 bg-white border border-[var(--color-line)] rounded-[var(--radius-eight)] p-6 sm:p-8 space-y-6 shadow-[var(--shadow-card)]">
             <h2 className="font-sans text-xl font-bold text-[var(--color-ink)] border-b border-[var(--color-line)] pb-3">
-              Githurai Main Sanctuary & Headquarters
+              Nairobi Ministry Headquarters &amp; Main Sanctuary
             </h2>
 
             <div className="space-y-4 font-sans text-sm text-[var(--color-slate)]">
               <div className="flex items-start gap-3">
                 <MapPin size={18} className="text-[var(--color-ink)] shrink-0 mt-1" />
                 <div>
-                  <p className="font-bold text-[var(--color-ink)]">Physical Address</p>
-                  <p>Githurai 45, Off Thika Superhighway, Nairobi, Kenya</p>
+                  <p className="font-bold text-[var(--color-ink)]">Headquarters Physical Address</p>
+                  <p>Family Bank, Mlolongo, Nairobi, Kenya</p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3">
+                <MapPin size={18} className="text-[#1B5299] shrink-0 mt-1" />
+                <div>
+                  <p className="font-bold text-[var(--color-ink)]">Kisumu Mother Church</p>
+                  <p>Brighlight, Kisumu, Kenya (Tel: +254 757 871 123)</p>
                 </div>
               </div>
 
               <div className="flex items-start gap-3">
                 <Phone size={18} className="text-[var(--color-ink)] shrink-0 mt-1" />
                 <div>
-                  <p className="font-bold text-[var(--color-ink)]">Telephone & WhatsApp</p>
-                  <p>0759265819</p>
+                  <p className="font-bold text-[var(--color-ink)]">Telephone &amp; WhatsApp</p>
+                  <p>+254 794 731 831 / 0759265819</p>
                 </div>
               </div>
 
@@ -65,7 +73,7 @@ export default function ContactPage() {
                 <div>
                   <p className="font-bold text-[var(--color-ink)]">Office Hours</p>
                   <p>Monday – Friday: 8:30 AM – 5:00 PM</p>
-                  <p>Sunday Worship: 9:00 AM – 1:00 PM</p>
+                  <p>Sunday Worship: 8:30 AM – 4:00 PM</p>
                 </div>
               </div>
             </div>

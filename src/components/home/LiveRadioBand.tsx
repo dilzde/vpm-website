@@ -64,7 +64,7 @@ export default function LiveRadioBand() {
                     Sunday Worship &amp; Prophetic Word
                   </h3>
                   <p className="text-sm font-sans text-[var(--color-slate)] leading-relaxed max-w-lg">
-                    Join us live from Nairobi Main Sanctuary (Family Bank, Mlolongo) for intercessory prayer, prophetic worship, and foundational preaching every Sunday at 8:30 AM.
+                    Join us live from Nairobi Ministry Headquarters (Family Bank, Mlolongo) for intercessory prayer, prophetic worship, and foundational preaching every Sunday at 8:30 AM.
                   </p>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
