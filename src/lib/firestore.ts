@@ -444,10 +444,9 @@ function healMissingOfficialLinks(incoming: SocialLink[]): SocialLink[] {
 }
 
 /**
- * Saves links to both config document (atomic array) and individual documents.
+ * Saves links to config document atomically in a single fast network call.
  */
 async function syncLinksToCloud(links: SocialLink[]): Promise<void> {
-  // 1. Atomic save to doc(db, "config", "socialLinks")
   try {
     await setDoc(
       socialLinksConfigRef,
@@ -459,20 +458,6 @@ async function syncLinksToCloud(links: SocialLink[]): Promise<void> {
     );
   } catch (err) {
     console.warn("Cloud config sync notice (link saved locally):", err);
-  }
-
-  // 2. Dual-write to collection(db, "socialLinks") for compatibility
-  try {
-    for (const item of links) {
-      const { id, ...rest } = item;
-      await setDoc(
-        doc(socialLinksRef, id),
-        { ...rest, updatedAt: serverTimestamp() },
-        { merge: true }
-      );
-    }
-  } catch {
-    // ignore
   }
 }
 
@@ -592,11 +577,13 @@ export async function upsertSocialLink(
   // Ensure sequential order
   updatedList.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
 
-  // 1. Save locally immediately
+  // 1. Save locally and broadcast to all pages immediately (0ms instant response)
   saveLocalLinks(updatedList);
 
-  // 2. Sync to Firestore (both atomic doc and collection)
-  await syncLinksToCloud(updatedList);
+  // 2. Sync to Firestore in background without blocking the UI
+  syncLinksToCloud(updatedList).catch((err) => {
+    console.warn("Background cloud sync error:", err);
+  });
 
   return targetId;
 }
@@ -609,15 +596,13 @@ export async function deleteSocialLink(id: string): Promise<void> {
     localStorage.setItem(CUSTOMIZED_KEY, "true");
   }
 
+  // 1. Save locally and broadcast immediately
   saveLocalLinks(filtered);
-  await syncLinksToCloud(filtered);
 
-  // Also remove from collection if exists
-  try {
-    await deleteDoc(doc(socialLinksRef, id));
-  } catch {
-    // ignore
-  }
+  // 2. Sync to Firestore in background without blocking the UI
+  syncLinksToCloud(filtered).catch((err) => {
+    console.warn("Background cloud sync error:", err);
+  });
 }
 
 export async function resetSocialLinksToDefaults(): Promise<void> {

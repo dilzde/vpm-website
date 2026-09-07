@@ -94,61 +94,58 @@ export default function AdminLinksPage() {
     }, 100);
   };
 
-  const handleSave = async (e: React.FormEvent) => {
+  const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
     if (!editing?.label?.trim() || !editing.url?.trim()) {
       alert("Please provide both a Link Title (Label) and a valid URL.");
       return;
     }
 
-    setSaving(true);
-    try {
-      const savedLabel = editing.label.trim();
-      await upsertSocialLink(isNew ? null : (editing.id ?? null), {
-        label: savedLabel,
-        url: editing.url.trim(),
-        icon: editing.icon ?? "website",
-        description: editing.description?.trim() ?? "",
-        active: editing.active ?? true,
-        order: editing.order ?? links.length,
-      });
-      setFeedback(isNew ? `New link "${savedLabel}" added to directory!` : `Changes saved to "${savedLabel}"!`);
-      setTimeout(() => setFeedback(null), 4000);
-      setEditing(null);
-    } catch (err) {
+    const savedLabel = editing.label.trim();
+    const linkData = {
+      label: savedLabel,
+      url: editing.url.trim(),
+      icon: editing.icon ?? "website",
+      description: editing.description?.trim() ?? "",
+      active: editing.active ?? true,
+      order: typeof editing.order === "number" ? editing.order : links.length,
+    };
+    const targetId = isNew ? null : (editing.id ?? null);
+
+    // 1. Instantly close form & show feedback (0ms)
+    setEditing(null);
+    setFeedback(isNew ? `New link "${savedLabel}" added to directory!` : `Changes saved to "${savedLabel}"!`);
+    setTimeout(() => setFeedback(null), 4000);
+
+    // 2. Persist locally & cloud sync
+    upsertSocialLink(targetId, linkData).catch((err) => {
       console.error(err);
-      alert("Failed to save link. Please try again.");
-    } finally {
-      setSaving(false);
-    }
+      alert("Failed to save link. Please check your connection.");
+    });
   };
 
-  const handleDelete = async (l: SocialLink) => {
+  const handleDelete = (l: SocialLink) => {
     const ok = confirm(`Are you sure you want to delete "${l.label}" from the directory?\n\nThis will remove it completely from the public /links page.`);
     if (!ok) return;
-    try {
-      await deleteSocialLink(l.id);
-      setFeedback(`"${l.label}" was removed from the directory.`);
-      setTimeout(() => setFeedback(null), 4000);
-    } catch (err) {
+
+    setFeedback(`"${l.label}" was removed from the directory.`);
+    setTimeout(() => setFeedback(null), 4000);
+
+    deleteSocialLink(l.id).catch((err) => {
       console.error(err);
       alert("Failed to delete link.");
-    }
+    });
   };
 
-  const toggleActive = async (l: SocialLink) => {
-    try {
-      await upsertSocialLink(l.id, {
-        label: l.label,
-        url: l.url,
-        icon: l.icon,
-        description: l.description,
-        active: !l.active,
-        order: l.order,
-      });
-    } catch (err) {
-      console.error(err);
-    }
+  const toggleActive = (l: SocialLink) => {
+    upsertSocialLink(l.id, {
+      label: l.label,
+      url: l.url,
+      icon: l.icon,
+      description: l.description,
+      active: !l.active,
+      order: l.order,
+    }).catch(console.error);
   };
 
   const getIconStyle = (iconKey?: string) => {
