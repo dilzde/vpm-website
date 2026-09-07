@@ -2,7 +2,7 @@
   {
     "id": "vpm-website",
     "label": "VPM International Website",
-    "url": "https://vpminternational.org",
+    "url": "https://vpm-website.vercel.app",
     "icon": "website",
     "description": "Our official ministry website",
     "active": true,
