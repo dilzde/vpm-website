@@ -35,7 +35,7 @@ const EMPTY: Omit<PaymentMethod, "id"> = {
 
 const DEFAULT_METHODS: Omit<PaymentMethod, "id">[] = [
   { label: "M-Pesa Send Money", type: "mpesa", value: "0759265819", instructions: "Open M-Pesa → Send Money → Enter 0759265819 → Amount → PIN", active: true, order: 0 },
-  { label: "M-Pesa Till (Missionary Work)", type: "till", value: "Enter Till Number", instructions: "Open M-Pesa → Lipa na M-Pesa → Buy Goods → Till Number → Amount → PIN", note: "Matthew 25:35-40", active: true, order: 1 },
+  { label: "M-Pesa Till (Mission & Charity Work)", type: "till", value: "6981760", instructions: "Open M-Pesa → Lipa na M-Pesa → Buy Goods and Services → Till Number 6981760 → Amount → PIN", note: "Purely for mission and charity work helping orphans, widows, and the vulnerable in society (Matthew 25:35-40)", active: true, order: 1 },
   { label: "PayPal", type: "paypal", value: "mtishiby@gmail.com", instructions: "Go to paypal.me or send to mtishiby@gmail.com — select 'Sending to a friend'", active: true, order: 2 },
   { label: "Sendwave", type: "sendwave", value: "+254 759 265 819", instructions: "Open Sendwave → Send to Kenya → Enter +254759265819 (VPM International)", active: true, order: 3 },
 ];

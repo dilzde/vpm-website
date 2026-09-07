@@ -31,6 +31,7 @@ const DEFAULT_LINKS: SocialLink[] = [
 
 export default function LinksPage() {
   const [links, setLinks] = useState<SocialLink[]>([]);
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     const unsub = subscribeSocialLinks((data) => {
@@ -43,11 +44,12 @@ export default function LinksPage() {
         return l;
       });
       setLinks(sanitized.filter((l) => l.active));
+      setLoaded(true);
     });
     return () => unsub();
   }, []);
 
-  const displayLinks = links.length > 0 ? links : DEFAULT_LINKS;
+  const displayLinks = loaded ? links : DEFAULT_LINKS;
 
   return (
     <div className="min-h-screen w-full bg-[#FAF7F2] text-[#0D1B2A] flex flex-col items-center justify-between px-4 py-12 sm:py-16">
@@ -78,45 +80,52 @@ export default function LinksPage() {
 
         {/* ── Social Links Stack ── */}
         <div className="w-full space-y-3">
-          {displayLinks.map((link) => {
-            const iconStyle = ICON_STYLES[link.icon] ?? ICON_STYLES.default;
-            const hasDescription = Boolean(link.description && link.description.trim().length > 0);
+          {displayLinks.length === 0 ? (
+            <div className="w-full p-8 text-center bg-white rounded-2xl border border-[#E8E2D6] shadow-xs text-sm text-[#5A6F8C]">
+              <p className="font-bold text-[#0D1B2A] mb-1">No Links Currently Published</p>
+              <p className="text-xs">Official ministry channels will appear here once published.</p>
+            </div>
+          ) : (
+            displayLinks.map((link) => {
+              const iconStyle = ICON_STYLES[link.icon] ?? ICON_STYLES.default;
+              const hasDescription = Boolean(link.description && link.description.trim().length > 0);
 
-            return (
-              <a
-                key={link.id}
-                href={link.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group flex items-center gap-4 w-full p-4 rounded-2xl bg-white border border-[#E8E2D6] shadow-[0_2px_8px_rgba(0,0,0,0.03)] hover:shadow-[0_6px_20px_rgba(15,37,64,0.08)] hover:border-[#5B9BD5] hover:-translate-y-0.5 transition-all duration-200"
-              >
-                {/* Platform Icon Box */}
-                <div
-                  className={`w-11 h-11 rounded-xl ${iconStyle} flex items-center justify-center shrink-0 shadow-sm`}
+              return (
+                <a
+                  key={link.id}
+                  href={link.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group flex items-center gap-4 w-full p-4 rounded-2xl bg-white border border-[#E8E2D6] shadow-[0_2px_8px_rgba(0,0,0,0.03)] hover:shadow-[0_6px_20px_rgba(15,37,64,0.08)] hover:border-[#5B9BD5] hover:-translate-y-0.5 transition-all duration-200"
                 >
-                  {renderSocialIcon(link.icon, 22)}
-                </div>
+                  {/* Platform Icon Box */}
+                  <div
+                    className={`w-11 h-11 rounded-xl ${iconStyle} flex items-center justify-center shrink-0 shadow-sm`}
+                  >
+                    {renderSocialIcon(link.icon, 22)}
+                  </div>
 
-                {/* Text (Title + Description only, no badges next to title) */}
-                <div className="flex-1 min-w-0 text-left">
-                  <p className="font-sans font-bold text-[15px] text-[#0D1B2A] group-hover:text-[#1A3A6B] transition-colors truncate">
-                    {link.label}
-                  </p>
-                  {hasDescription && (
-                    <p className="text-[#64748B] text-xs font-sans mt-0.5 truncate">
-                      {link.description}
+                  {/* Text (Title + Description only, no badges next to title) */}
+                  <div className="flex-1 min-w-0 text-left">
+                    <p className="font-sans font-bold text-[15px] text-[#0D1B2A] group-hover:text-[#1A3A6B] transition-colors truncate">
+                      {link.label}
                     </p>
-                  )}
-                </div>
+                    {hasDescription && (
+                      <p className="text-[#64748B] text-xs font-sans mt-0.5 truncate">
+                        {link.description}
+                      </p>
+                    )}
+                  </div>
 
-                {/* Clean Arrow Indicator */}
-                <ExternalLink
-                  size={16}
-                  className="text-[#94A3B8] group-hover:text-[#1A3A6B] transition-colors shrink-0"
-                />
-              </a>
-            );
-          })}
+                  {/* Clean Arrow Indicator */}
+                  <ExternalLink
+                    size={16}
+                    className="text-[#94A3B8] group-hover:text-[#1A3A6B] transition-colors shrink-0"
+                  />
+                </a>
+              );
+            })
+          )}
         </div>
 
         {/* ── Inspiring Scripture Banner ── */}

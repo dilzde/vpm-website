@@ -4,11 +4,12 @@ import { Heart, HandCoins, ShieldCheck, ArrowRight } from "lucide-react";
 
 export default function SupportCarousel() {
   const mpesaNumber = process.env.NEXT_PUBLIC_MPESA_NUMBER || "0759265819";
+  const mpesaTillNumber = process.env.NEXT_PUBLIC_MPESA_TILL_NUMBER || "6981760";
 
   const pillars = [
     {
-      title: "Give via M-Pesa",
-      body: `Use Till Number ${mpesaNumber}. Your faithful generosity enables us to preach the uncompromised Gospel and equip believers globally.`,
+      title: "Mission & Charity Till",
+      body: `Use Till Number ${mpesaTillNumber}. Purely dedicated for mission and charity work — helping orphans, widows, and the vulnerable in society.`,
       icon: HandCoins,
     },
     {
@@ -73,7 +74,9 @@ export default function SupportCarousel() {
             <ArrowRight size={18} strokeWidth={2.5} />
           </Link>
           <p className="text-xs text-slate-400 mt-4 font-sans">
-            M-Pesa Till Number: <strong className="text-white tracking-wider">{mpesaNumber}</strong>
+            M-Pesa Till (Mission &amp; Charity): <strong className="text-white tracking-wider font-mono">{mpesaTillNumber}</strong>
+            <span className="mx-2 text-white/30">|</span>
+            Send Money: <strong className="text-white tracking-wider font-mono">{mpesaNumber}</strong>
           </p>
         </div>
       </div>

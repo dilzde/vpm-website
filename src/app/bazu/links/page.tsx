@@ -22,6 +22,7 @@ import {
   subscribeSocialLinks,
   upsertSocialLink,
   deleteSocialLink,
+  resetSocialLinksToDefaults,
   type SocialLink,
 } from "@/lib/firestore";
 import { renderSocialIcon } from "@/components/common/SocialIcons";
@@ -36,16 +37,6 @@ const ICON_OPTIONS = [
   { value: "x", label: "X (Twitter)", style: "bg-black text-white" },
   { value: "whatsapp", label: "WhatsApp", style: "bg-[#16A34A] text-white" },
   { value: "default", label: "Other / Generic Link", style: "bg-[#5B9BD5] text-white" },
-];
-
-const DEFAULT_LINKS: Omit<SocialLink, "id">[] = [
-  { label: "VPM International Website", url: "https://vpminternational.org", icon: "website", description: "Our official ministry website", active: true, order: 0 },
-  { label: "Asriel Radio Live", url: "https://asrielradio.com", icon: "radio", description: "24/7 prophetic radio stream", active: true, order: 1 },
-  { label: "YouTube Channel", url: "https://youtube.com/@vpminternational", icon: "youtube", description: "Sermons, revivals & live broadcasts", active: true, order: 2 },
-  { label: "TikTok", url: "https://tiktok.com/@vpminternational", icon: "tiktok", description: "Short prophetic clips & highlights", active: true, order: 3 },
-  { label: "Instagram", url: "https://instagram.com/vpminternational", icon: "instagram", description: "Ministry moments & announcements", active: true, order: 4 },
-  { label: "X (Twitter)", url: "https://x.com/vpminternational", icon: "x", description: "", active: true, order: 5 },
-  { label: "WhatsApp", url: "https://wa.me/254759265819", icon: "whatsapp", description: "Join our community", active: true, order: 6 },
 ];
 
 const EMPTY: Omit<SocialLink, "id"> = {
@@ -67,31 +58,18 @@ export default function AdminLinksPage() {
   const formRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    let seededOnce = false;
     const unsub = subscribeSocialLinks((data) => {
       setLinks(data);
       setLoading(false);
-
-      // If Firestore has 0 links, auto-seed with standard 7 default links once so the admin immediately sees existing links
-      if (data.length === 0 && !seededOnce) {
-        seededOnce = true;
-        (async () => {
-          for (const l of DEFAULT_LINKS) {
-            await upsertSocialLink(null, l);
-          }
-        })();
-      }
     });
     return () => unsub();
   }, []);
 
   const seedDefaults = async () => {
-    if (!confirm("This will load the 7 official VPM links into the database. Continue?")) return;
+    if (!confirm("This will restore the 7 official VPM ministry links into the directory. Continue?")) return;
     setSeeding(true);
     try {
-      for (const l of DEFAULT_LINKS) {
-        await upsertSocialLink(null, l);
-      }
+      await resetSocialLinksToDefaults();
     } finally {
       setSeeding(false);
     }
@@ -140,7 +118,7 @@ export default function AdminLinksPage() {
   };
 
   const handleDelete = async (l: SocialLink) => {
-    const ok = confirm(`Are you sure you want to delete "${l.label}" from the directory?\n\nThis will remove it from the public /links page.`);
+    const ok = confirm(`Are you sure you want to delete "${l.label}" from the directory?\n\nThis will remove it completely from the public /links page.`);
     if (!ok) return;
     try {
       await deleteSocialLink(l.id);
@@ -152,7 +130,14 @@ export default function AdminLinksPage() {
 
   const toggleActive = async (l: SocialLink) => {
     try {
-      await upsertSocialLink(l.id, { ...l, active: !l.active });
+      await upsertSocialLink(l.id, {
+        label: l.label,
+        url: l.url,
+        icon: l.icon,
+        description: l.description,
+        active: !l.active,
+        order: l.order,
+      });
     } catch (err) {
       console.error(err);
     }

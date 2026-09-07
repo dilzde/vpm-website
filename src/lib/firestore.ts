@@ -367,26 +367,182 @@ export interface SocialLink {
   id: string;
   label: string;      // e.g. "VPM Website"
   url: string;        // full URL
-  icon: string;       // key: "website" | "radio" | "youtube" | "tiktok" | "instagram" | "x" | "whatsapp"
+  icon: string;       // key: "website" | "radio" | "youtube" | "tiktok" | "instagram" | "facebook" | "x" | "whatsapp" | "default"
   description?: string;
   active: boolean;
   order: number;
 }
 
-export function subscribeSocialLinks(callback: (links: SocialLink[]) => void) {
-  const q = query(socialLinksRef, orderBy("order", "asc"));
-  return onSnapshot(q, (snap) =>
-    callback(snap.docs.map((d) => ({ id: d.id, ...d.data() } as SocialLink)))
-  );
-}
+export const INITIAL_DEFAULT_LINKS: SocialLink[] = [
+  { id: "vpm-website", label: "VPM International Website", url: "https://vpminternational.org", icon: "website", description: "Our official ministry website", active: true, order: 0 },
+  { id: "asriel-radio", label: "Asriel Radio Live", url: "https://asrielradio.com", icon: "radio", description: "24/7 prophetic radio stream", active: true, order: 1 },
+  { id: "youtube-channel", label: "YouTube Channel", url: "https://youtube.com/@vpminternational", icon: "youtube", description: "Sermons, revivals & live broadcasts", active: true, order: 2 },
+  { id: "tiktok", label: "TikTok", url: "https://tiktok.com/@vpminternational", icon: "tiktok", description: "Short prophetic clips & highlights", active: true, order: 3 },
+  { id: "instagram", label: "Instagram", url: "https://instagram.com/vpminternational", icon: "instagram", description: "Ministry moments & announcements", active: true, order: 4 },
+  { id: "x-twitter", label: "X (Twitter)", url: "https://x.com/vpminternational", icon: "x", description: "", active: true, order: 5 },
+  { id: "whatsapp", label: "WhatsApp", url: "https://wa.me/254759265819", icon: "whatsapp", description: "Join our community", active: true, order: 6 },
+];
 
-export async function upsertSocialLink(id: string | null, data: Omit<SocialLink, "id">) {
-  if (id) {
-    return updateDoc(doc(socialLinksRef, id), { ...data, updatedAt: serverTimestamp() });
+const LOCAL_STORAGE_KEY = "vpm_social_links_cache_v2";
+const LOCAL_STORAGE_INIT_KEY = "vpm_social_links_initialized_v2";
+const SYNC_EVENT_NAME = "vpm_social_links_updated";
+
+function getLocalLinks(): SocialLink[] | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = localStorage.getItem(LOCAL_STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) return parsed;
+    }
+    const isInit = localStorage.getItem(LOCAL_STORAGE_INIT_KEY);
+    if (isInit) {
+      return [];
+    }
+  } catch (err) {
+    console.warn("Failed to read local links cache:", err);
   }
-  return addDoc(socialLinksRef, { ...data, createdAt: serverTimestamp() });
+  return null;
 }
 
-export async function deleteSocialLink(id: string) {
-  return deleteDoc(doc(socialLinksRef, id));
+function saveLocalLinks(links: SocialLink[]) {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(links));
+    localStorage.setItem(LOCAL_STORAGE_INIT_KEY, "true");
+    window.dispatchEvent(new CustomEvent(SYNC_EVENT_NAME, { detail: links }));
+  } catch (err) {
+    console.warn("Failed to write local links cache:", err);
+  }
 }
+
+export function subscribeSocialLinks(callback: (links: SocialLink[]) => void) {
+  // 1. Immediately emit from local cache or defaults to avoid any blank / frozen loading states
+  const local = getLocalLinks();
+  if (local !== null) {
+    callback(local);
+  } else {
+    saveLocalLinks(INITIAL_DEFAULT_LINKS);
+    callback(INITIAL_DEFAULT_LINKS);
+  }
+
+  // 2. Listen to cross-tab / local updates
+  const handleLocalSync = (e: Event) => {
+    const customEvent = e as CustomEvent<SocialLink[]>;
+    if (customEvent.detail) {
+      callback(customEvent.detail);
+    } else {
+      const updated = getLocalLinks();
+      if (updated !== null) callback(updated);
+    }
+  };
+
+  const handleStorage = (e: StorageEvent) => {
+    if (e.key === LOCAL_STORAGE_KEY) {
+      const updated = getLocalLinks();
+      if (updated !== null) callback(updated);
+    }
+  };
+
+  if (typeof window !== "undefined") {
+    window.addEventListener(SYNC_EVENT_NAME, handleLocalSync);
+    window.addEventListener("storage", handleStorage);
+  }
+
+  // 3. Connect to Firestore with graceful fallback on error
+  let unsubFirestore: (() => void) | null = null;
+  try {
+    const q = query(socialLinksRef, orderBy("order", "asc"));
+    unsubFirestore = onSnapshot(
+      q,
+      (snap) => {
+        if (!snap.empty) {
+          const docs = snap.docs.map((d) => ({ id: d.id, ...d.data() } as SocialLink));
+          saveLocalLinks(docs);
+          callback(docs);
+        } else {
+          // Firestore is empty. Check if user explicitly initialized or has local links
+          const currentLocal = getLocalLinks();
+          if (currentLocal === null) {
+            saveLocalLinks(INITIAL_DEFAULT_LINKS);
+            callback(INITIAL_DEFAULT_LINKS);
+          }
+        }
+      },
+      (err) => {
+        console.warn("Firestore socialLinks listener Notice (using local persistence):", err.message);
+      }
+    );
+  } catch (err) {
+    console.warn("Firestore setup error (using local persistence):", err);
+  }
+
+  return () => {
+    if (unsubFirestore) unsubFirestore();
+    if (typeof window !== "undefined") {
+      window.removeEventListener(SYNC_EVENT_NAME, handleLocalSync);
+      window.removeEventListener("storage", handleStorage);
+    }
+  };
+}
+
+export async function upsertSocialLink(id: string | null, data: Omit<SocialLink, "id">): Promise<string> {
+  const current = getLocalLinks() ?? [...INITIAL_DEFAULT_LINKS];
+  const targetId = id || ("link-" + Date.now() + "-" + Math.random().toString(36).substring(2, 7));
+
+  const existingIndex = current.findIndex((l) => l.id === targetId);
+  const updatedItem: SocialLink = { id: targetId, ...data };
+
+  let updatedList: SocialLink[];
+  if (existingIndex >= 0) {
+    updatedList = [...current];
+    updatedList[existingIndex] = updatedItem;
+  } else {
+    updatedList = [...current, updatedItem];
+  }
+
+  updatedList.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+
+  // 1. Save locally first for instant, guaranteed persistence
+  saveLocalLinks(updatedList);
+
+  // 2. Cloud sync in Firestore via setDoc with merge: true (creates or updates)
+  try {
+    await setDoc(doc(socialLinksRef, targetId), {
+      ...data,
+      updatedAt: serverTimestamp(),
+    }, { merge: true });
+  } catch (err) {
+    console.warn("Firestore cloud sync notice (link saved locally):", err);
+  }
+
+  return targetId;
+}
+
+export async function deleteSocialLink(id: string): Promise<void> {
+  const current = getLocalLinks() ?? [...INITIAL_DEFAULT_LINKS];
+  const filtered = current.filter((l) => l.id !== id);
+
+  // 1. Remove locally immediately
+  saveLocalLinks(filtered);
+
+  // 2. Cloud delete in Firestore
+  try {
+    await deleteDoc(doc(socialLinksRef, id));
+  } catch (err) {
+    console.warn("Firestore cloud delete notice (link removed locally):", err);
+  }
+}
+
+export async function resetSocialLinksToDefaults(): Promise<void> {
+  saveLocalLinks(INITIAL_DEFAULT_LINKS);
+  for (const item of INITIAL_DEFAULT_LINKS) {
+    try {
+      const { id, ...rest } = item;
+      await setDoc(doc(socialLinksRef, id), { ...rest, updatedAt: serverTimestamp() }, { merge: true });
+    } catch {
+      // ignore
+    }
+  }
+}
+

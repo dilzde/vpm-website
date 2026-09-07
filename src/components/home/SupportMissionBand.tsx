@@ -36,11 +36,11 @@ export default function SupportMissionBand() {
               className="text-base sm:text-lg max-w-2xl mb-8 leading-relaxed font-sans !text-white"
               style={{ color: "rgba(255, 255, 255, 0.92)" }}
             >
-              Your faithful tithes and offerings directly fuel territorial church planting, gospel outreach, 24/7 radio broadcasts, and community relief across Kenya.
+              Your faithful partnership directly empowers mission and charity work — caring for orphans, widows, and the vulnerable, alongside nationwide gospel crusades and 24/7 radio broadcasts across Kenya.
             </p>
 
             {/* High-Contrast Standout CTA Button */}
-            <div className="flex items-center justify-center">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
                 href="/give"
                 className="inline-flex items-center justify-center gap-2 px-8 py-4 text-base font-sans font-bold text-[#0B0F17] bg-white hover:bg-[#FAF7F2] hover:scale-105 rounded-full transition-all shadow-xl group"
@@ -48,6 +48,13 @@ export default function SupportMissionBand() {
                 <span>Share with VPM International</span>
                 <ArrowUpRight size={18} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform text-[#0B0F17]" />
               </Link>
+            </div>
+
+            <div className="mt-5 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 text-xs font-sans text-white/90">
+              <span>M-Pesa Till:</span>
+              <strong className="font-mono text-white tracking-wider font-bold">6981760</strong>
+              <span className="text-white/60">•</span>
+              <span className="text-[#62B4EE] font-medium">Mission &amp; Charity Work</span>
             </div>
 
           </div>

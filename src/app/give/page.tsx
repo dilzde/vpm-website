@@ -22,9 +22,9 @@ const DEFAULT_METHODS: PaymentMethod[] = [
   },
   {
     id: "till",
-    label: "M-Pesa Till (Missionary Work of Jesus)",
+    label: "M-Pesa Till (Mission & Charity Work)",
     type: "till",
-    value: "—",
+    value: process.env.NEXT_PUBLIC_MPESA_TILL_NUMBER || "6981760",
     note: "Matthew 25:35-40",
     active: true,
     order: 1,
@@ -103,7 +103,7 @@ export default function GivePage() {
                       {method.label}
                     </h2>
                     <p className="text-xs text-[#1B5299] font-sans font-bold capitalize mt-0.5">
-                      {method.type === "till" ? "Missionary Support Till" : method.type.replace("-", " ")}
+                      {method.type === "till" ? "Mission & Charity Till" : method.type.replace("-", " ")}
                     </p>
                   </div>
                 </div>
@@ -115,7 +115,7 @@ export default function GivePage() {
                       {method.type === "paypal"
                         ? "PayPal Account Email"
                         : method.type === "till"
-                        ? "Lipa Na M-Pesa Till"
+                        ? "Lipa Na M-Pesa Buy Goods Till"
                         : "Send Money Number"}
                     </span>
                     <span className="font-mono text-2xl sm:text-3xl font-black text-[#0A1D36] tracking-wide select-all">
@@ -147,7 +147,7 @@ export default function GivePage() {
                   <div className="p-4 rounded-2xl bg-gradient-to-r from-[#0F2540] to-[#1A3A6B] text-white border border-[#29A3E4]/30 space-y-2 shadow-sm">
                     <div className="flex items-center justify-between gap-2">
                       <span className="text-xs font-sans font-bold text-[#62B4EE] uppercase tracking-wider">
-                        Support for Missionary Work of Jesus
+                        Mission &amp; Charity Work (Orphans, Widows &amp; Vulnerable)
                       </span>
                       <a
                         href="https://www.bible.com/bible/compare/MAT.25.35-40"
@@ -159,6 +159,9 @@ export default function GivePage() {
                         <ArrowUpRight size={13} />
                       </a>
                     </div>
+                    <p className="text-xs text-emerald-300 font-sans font-semibold">
+                      This Till Number is purely dedicated for mission and charity work helping orphans, widows, and the vulnerable in society.
+                    </p>
                     <p className="text-xs text-white/80 font-sans italic leading-relaxed">
                       &ldquo;For I was hungry and you gave me food, I was thirsty and you gave me drink… as you did it to one of the least of these my brothers, you did it to me.&rdquo;
                     </p>

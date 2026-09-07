@@ -16,7 +16,7 @@ const ADMIN_MODULES = [
   { label: "Site & Gallery Images", href: "/bazu/images", icon: ImageIcon, desc: "Manage interactive gallery photos above footer & ministry banners" },
   { label: "Announcements & News", href: "/bazu/announcements", icon: Megaphone, desc: "Add, edit, and reorder convention flyers & revival notices with importance tags" },
   { label: "Events & Gatherings", href: "/bazu/events", icon: Calendar, desc: "Add revival meetings, upload posters, and set dates, venues & livestream links" },
-  { label: "Giving & Payment Methods", href: "/bazu/give", icon: DollarSign, desc: "Update M-Pesa Send Money, Missionary Till, PayPal, and Sendwave details" },
+  { label: "Giving & Payment Methods", href: "/bazu/give", icon: DollarSign, desc: "Update M-Pesa Send Money, Mission & Charity Till (6981760), PayPal, and Sendwave details" },
   { label: "Link Directory (/links)", href: "/bazu/links", icon: Share2, desc: "Add, edit, and delete social & ministry links for the public /links page" },
   { label: "Carousels & Section Bands", href: "/bazu/carousels", icon: Layers, desc: "Manage support the mission & booking slide bands" },
   { label: "Revival Branches", href: "/bazu/branches", icon: GitBranch, desc: "Add, update addresses, and reorder church fellowship locations" },
