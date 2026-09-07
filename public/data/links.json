@@ -61,5 +61,14 @@
     "description": "Join our community",
     "active": true,
     "order": 6
+  },
+  {
+    "id": "link-1788791854524-sa3q",
+    "label": "AsrielTV 24/7",
+    "url": "https://youtube.com/@asrieltv-247?si=vGyfpN7oZC8ntXRH",
+    "icon": "youtube",
+    "description": "Your 24/7 Non-Stop Stream",
+    "active": true,
+    "order": 7
   }
 ]
