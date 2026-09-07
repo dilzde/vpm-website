@@ -5,7 +5,7 @@
     "url": "https://vpm-website.vercel.app",
     "icon": "website",
     "description": "Our official ministry website",
-    "active": true,
+    "active": false,
     "order": 0
   },
   {
