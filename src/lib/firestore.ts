@@ -444,9 +444,24 @@ function healMissingOfficialLinks(incoming: SocialLink[]): SocialLink[] {
 }
 
 /**
- * Saves links to config document atomically in a single fast network call.
+ * Saves links across collection & config documents in Firestore.
  */
 async function syncLinksToCloud(links: SocialLink[]): Promise<void> {
+  // 1. Atomic array in collection(db, "socialLinks") document "--all--"
+  try {
+    await setDoc(
+      doc(socialLinksRef, "--all--"),
+      {
+        links,
+        updatedAt: serverTimestamp(),
+      },
+      { merge: true }
+    );
+  } catch (err) {
+    console.warn("Notice syncing --all-- doc:", err);
+  }
+
+  // 2. Also save to doc(db, "config", "socialLinks") as backup
   try {
     await setDoc(
       socialLinksConfigRef,
@@ -456,13 +471,27 @@ async function syncLinksToCloud(links: SocialLink[]): Promise<void> {
       },
       { merge: true }
     );
-  } catch (err) {
-    console.warn("Cloud config sync notice (link saved locally):", err);
+  } catch {
+    // ignore
+  }
+
+  // 3. Dual-sync each individual doc in socialLinksRef
+  try {
+    for (const item of links) {
+      const { id, ...rest } = item;
+      setDoc(
+        doc(socialLinksRef, id),
+        { ...rest, updatedAt: serverTimestamp() },
+        { merge: true }
+      ).catch(() => {});
+    }
+  } catch {
+    // ignore
   }
 }
 
 export function subscribeSocialLinks(callback: (links: SocialLink[]) => void) {
-  // 1. Immediately provide local cache or defaults
+  // 1. Immediately provide local cache or defaults for 0ms initial render
   const local = getLocalLinks();
   if (local && local.length > 0) {
     const healed = healMissingOfficialLinks(local);
@@ -496,23 +525,39 @@ export function subscribeSocialLinks(callback: (links: SocialLink[]) => void) {
     window.addEventListener("storage", handleStorage);
   }
 
-  // 3. Listen to config document in Firestore: doc(db, "config", "socialLinks")
-  let unsubDoc: (() => void) | null = null;
+  // 3. Live real-time Firestore listener on socialLinks collection (syncs across all devices)
+  let unsubCollection: (() => void) | null = null;
   try {
-    unsubDoc = onSnapshot(
-      socialLinksConfigRef,
+    unsubCollection = onSnapshot(
+      socialLinksRef,
       (snap) => {
-        if (snap.exists()) {
-          const data = snap.data();
-          if (data && Array.isArray(data.links) && data.links.length > 0) {
-            const healed = healMissingOfficialLinks(data.links);
+        if (!snap.empty) {
+          // Check if --all-- summary document exists
+          const allDoc = snap.docs.find((d) => d.id === "--all--");
+          if (allDoc && Array.isArray(allDoc.data().links) && allDoc.data().links.length > 0) {
+            const rawLinks = allDoc.data().links as SocialLink[];
+            const healed = healMissingOfficialLinks(rawLinks);
+            saveLocalLinks(healed);
+            callback(healed);
+            return;
+          }
+
+          // Otherwise map individual documents
+          const itemDocs = snap.docs
+            .filter((d) => !d.id.startsWith("--"))
+            .map((d) => ({ id: d.id, ...d.data() } as SocialLink));
+
+          if (itemDocs.length > 0) {
+            itemDocs.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+            const healed = healMissingOfficialLinks(itemDocs);
             saveLocalLinks(healed);
             callback(healed);
             return;
           }
         }
-        // If config doc does not exist yet, check collection or seed defaults
-        checkCollectionOrSeed();
+
+        // If collection has nothing, check config doc or seed defaults
+        checkConfigOrSeed();
       },
       (err) => {
         console.warn("Firestore socialLinks listener notice (using local cache):", err.message);
@@ -522,28 +567,23 @@ export function subscribeSocialLinks(callback: (links: SocialLink[]) => void) {
     console.warn("Firestore socialLinks setup error:", err);
   }
 
-  async function checkCollectionOrSeed() {
+  async function checkConfigOrSeed() {
     try {
-      const snap = await getDocs(socialLinksRef);
-      if (!snap.empty) {
-        const docs = snap.docs.map((d) => ({ id: d.id, ...d.data() } as SocialLink));
-        const healed = healMissingOfficialLinks(docs);
-        await syncLinksToCloud(healed);
+      const cfgSnap = await getDoc(socialLinksConfigRef);
+      if (cfgSnap.exists() && Array.isArray(cfgSnap.data().links) && cfgSnap.data().links.length > 0) {
+        const healed = healMissingOfficialLinks(cfgSnap.data().links);
         saveLocalLinks(healed);
         callback(healed);
       } else {
-        // Entirely empty Firestore: seed all 7 defaults to cloud & local!
         await syncLinksToCloud(INITIAL_DEFAULT_LINKS);
-        saveLocalLinks(INITIAL_DEFAULT_LINKS);
-        callback(INITIAL_DEFAULT_LINKS);
       }
     } catch {
-      // Offline fallback: keep local defaults
+      // offline fallback
     }
   }
 
   return () => {
-    if (unsubDoc) unsubDoc();
+    if (unsubCollection) unsubCollection();
     if (typeof window !== "undefined") {
       window.removeEventListener(SYNC_EVENT_NAME, handleLocalSync);
       window.removeEventListener("storage", handleStorage);
@@ -577,12 +617,16 @@ export async function upsertSocialLink(
   // Ensure sequential order
   updatedList.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
 
-  // 1. Save locally and broadcast to all pages immediately (0ms instant response)
+  // 1. Instant local persistence & UI broadcast (0ms delay)
   saveLocalLinks(updatedList);
 
-  // 2. Sync to Firestore in background without blocking the UI
-  syncLinksToCloud(updatedList).catch((err) => {
-    console.warn("Background cloud sync error:", err);
+  // 2. Direct cloud write to target document AND atomic summary (real-time WebSocket broadcast)
+  const syncTask = async () => {
+    await setDoc(doc(socialLinksRef, targetId), { ...updatedItem, updatedAt: serverTimestamp() }, { merge: true });
+    await syncLinksToCloud(updatedList);
+  };
+  syncTask().catch((err) => {
+    console.warn("Cloud sync error:", err);
   });
 
   return targetId;
@@ -596,12 +640,16 @@ export async function deleteSocialLink(id: string): Promise<void> {
     localStorage.setItem(CUSTOMIZED_KEY, "true");
   }
 
-  // 1. Save locally and broadcast immediately
+  // 1. Instant local update
   saveLocalLinks(filtered);
 
-  // 2. Sync to Firestore in background without blocking the UI
-  syncLinksToCloud(filtered).catch((err) => {
-    console.warn("Background cloud sync error:", err);
+  // 2. Cloud delete
+  const deleteTask = async () => {
+    await deleteDoc(doc(socialLinksRef, id)).catch(() => {});
+    await syncLinksToCloud(filtered);
+  };
+  deleteTask().catch((err) => {
+    console.warn("Cloud delete error:", err);
   });
 }
 
