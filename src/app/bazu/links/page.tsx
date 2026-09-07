@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useTransition } from "react";
 import Link from "next/link";
 import {
   Plus,
@@ -17,14 +17,15 @@ import {
   ExternalLink,
   RotateCcw,
   Sparkles,
+  AlertCircle,
 } from "lucide-react";
 import {
-  subscribeSocialLinks,
-  upsertSocialLink,
-  deleteSocialLink,
-  resetSocialLinksToDefaults,
-  type SocialLink,
-} from "@/lib/firestore";
+  fetchAllLinks,
+  upsertLink,
+  deleteLink,
+  resetToDefaults,
+} from "./actions";
+import { type SocialLink } from "@/lib/link-types";
 import { renderSocialIcon } from "@/components/common/SocialIcons";
 
 const ICON_OPTIONS = [
@@ -32,11 +33,20 @@ const ICON_OPTIONS = [
   { value: "radio", label: "Radio Stream", style: "bg-[#6B21A8] text-white" },
   { value: "youtube", label: "YouTube", style: "bg-[#DC2626] text-white" },
   { value: "tiktok", label: "TikTok", style: "bg-[#09090B] text-white" },
-  { value: "instagram", label: "Instagram", style: "bg-gradient-to-tr from-[#F58529] via-[#DD2A7B] to-[#8134AF] text-white" },
+  {
+    value: "instagram",
+    label: "Instagram",
+    style:
+      "bg-gradient-to-tr from-[#F58529] via-[#DD2A7B] to-[#8134AF] text-white",
+  },
   { value: "facebook", label: "Facebook", style: "bg-[#1877F2] text-white" },
   { value: "x", label: "X (Twitter)", style: "bg-black text-white" },
   { value: "whatsapp", label: "WhatsApp", style: "bg-[#16A34A] text-white" },
-  { value: "default", label: "Other / Generic Link", style: "bg-[#5B9BD5] text-white" },
+  {
+    value: "default",
+    label: "Other / Generic Link",
+    style: "bg-[#5B9BD5] text-white",
+  },
 ];
 
 const EMPTY: Omit<SocialLink, "id"> = {
@@ -53,31 +63,38 @@ export default function AdminLinksPage() {
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState<Partial<SocialLink> | null>(null);
   const [isNew, setIsNew] = useState(false);
-  const [saving, setSaving] = useState(false);
-  const [seeding, setSeeding] = useState(false);
-  const [feedback, setFeedback] = useState<string | null>(null);
+  const [feedback, setFeedback] = useState<{
+    msg: string;
+    type: "success" | "error";
+  } | null>(null);
   const formRef = useRef<HTMLDivElement>(null);
+  const [isPending, startTransition] = useTransition();
 
-  useEffect(() => {
-    const unsub = subscribeSocialLinks((data) => {
+  /* ── Load links on mount ──────────────────────────── */
+  const reload = () => {
+    setLoading(true);
+    fetchAllLinks().then((data) => {
       setLinks(data);
       setLoading(false);
     });
-    return () => unsub();
-  }, []);
-
-  const seedDefaults = async () => {
-    if (!confirm("This will restore the 7 official VPM ministry links into the directory. Continue?")) return;
-    setSeeding(true);
-    try {
-      await resetSocialLinksToDefaults();
-      setFeedback("Official 7 ministry links restored successfully!");
-      setTimeout(() => setFeedback(null), 4000);
-    } finally {
-      setSeeding(false);
-    }
   };
 
+  useEffect(() => {
+    reload();
+  }, []);
+
+  /* ── Feedback helpers ─────────────────────────────── */
+  const ok = (msg: string) => {
+    setFeedback({ msg, type: "success" });
+    setTimeout(() => setFeedback(null), 5000);
+  };
+
+  const fail = (msg: string) => {
+    setFeedback({ msg, type: "error" });
+    setTimeout(() => setFeedback(null), 8000);
+  };
+
+  /* ── Open form ────────────────────────────────────── */
   const openNew = () => {
     setEditing({ ...EMPTY, order: links.length });
     setIsNew(true);
@@ -94,15 +111,16 @@ export default function AdminLinksPage() {
     }, 100);
   };
 
+  /* ── Save (add / update) ──────────────────────────── */
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
     if (!editing?.label?.trim() || !editing.url?.trim()) {
-      alert("Please provide both a Link Title (Label) and a valid URL.");
+      alert("Please provide both a Link Title and a valid URL.");
       return;
     }
 
     const savedLabel = editing.label.trim();
-    const linkData = {
+    const linkData: Omit<SocialLink, "id"> = {
       label: savedLabel,
       url: editing.url.trim(),
       icon: editing.icon ?? "website",
@@ -112,40 +130,82 @@ export default function AdminLinksPage() {
     };
     const targetId = isNew ? null : (editing.id ?? null);
 
-    // 1. Instantly close form & show feedback (0ms)
+    // Close form instantly for smooth UX
     setEditing(null);
-    setFeedback(isNew ? `New link "${savedLabel}" added to directory!` : `Changes saved to "${savedLabel}"!`);
-    setTimeout(() => setFeedback(null), 4000);
 
-    // 2. Persist locally & cloud sync
-    upsertSocialLink(targetId, linkData).catch((err) => {
-      console.error(err);
-      alert("Failed to save link. Please check your connection.");
+    startTransition(async () => {
+      const res = await upsertLink(targetId, linkData);
+      if (res.ok) {
+        ok(
+          isNew
+            ? `"${savedLabel}" added to directory!`
+            : `"${savedLabel}" updated!`
+        );
+        reload();
+      } else {
+        fail(`Save failed: ${res.error ?? "unknown error"}`);
+      }
     });
   };
 
+  /* ── Delete ───────────────────────────────────────── */
   const handleDelete = (l: SocialLink) => {
-    const ok = confirm(`Are you sure you want to delete "${l.label}" from the directory?\n\nThis will remove it completely from the public /links page.`);
-    if (!ok) return;
+    if (
+      !confirm(
+        `Delete "${l.label}" from the directory?\n\nThis removes it from the public /links page.`
+      )
+    )
+      return;
 
-    setFeedback(`"${l.label}" was removed from the directory.`);
-    setTimeout(() => setFeedback(null), 4000);
-
-    deleteSocialLink(l.id).catch((err) => {
-      console.error(err);
-      alert("Failed to delete link.");
+    startTransition(async () => {
+      const res = await deleteLink(l.id);
+      if (res.ok) {
+        ok(`"${l.label}" removed from directory.`);
+        reload();
+      } else {
+        fail(`Delete failed: ${res.error ?? "unknown error"}`);
+      }
     });
   };
 
+  /* ── Toggle active ────────────────────────────────── */
   const toggleActive = (l: SocialLink) => {
-    upsertSocialLink(l.id, {
-      label: l.label,
-      url: l.url,
-      icon: l.icon,
-      description: l.description,
-      active: !l.active,
-      order: l.order,
-    }).catch(console.error);
+    startTransition(async () => {
+      const res = await upsertLink(l.id, {
+        label: l.label,
+        url: l.url,
+        icon: l.icon,
+        description: l.description,
+        active: !l.active,
+        order: l.order,
+      });
+      if (res.ok) {
+        ok(l.active ? `"${l.label}" hidden from /links.` : `"${l.label}" is now visible on /links.`);
+        reload();
+      } else {
+        fail(`Toggle failed: ${res.error ?? "unknown error"}`);
+      }
+    });
+  };
+
+  /* ── Seed defaults ────────────────────────────────── */
+  const seedDefaults = async () => {
+    if (
+      !confirm(
+        "This will restore the 7 official VPM ministry links. Continue?"
+      )
+    )
+      return;
+
+    startTransition(async () => {
+      const res = await resetToDefaults();
+      if (res.ok) {
+        ok("Official 7 ministry links restored!");
+        reload();
+      } else {
+        fail(`Reset failed: ${res.error ?? "unknown error"}`);
+      }
+    });
   };
 
   const getIconStyle = (iconKey?: string) => {
@@ -155,7 +215,6 @@ export default function AdminLinksPage() {
 
   return (
     <div className="space-y-8 font-sans max-w-5xl">
-      
       {/* ── Top Header Banner ── */}
       <div className="bg-[#0B0F17] text-white p-6 sm:p-8 rounded-3xl border border-white/10 shadow-xl flex flex-col sm:flex-row sm:items-center justify-between gap-6">
         <div className="space-y-2">
@@ -167,16 +226,18 @@ export default function AdminLinksPage() {
             Link Directory (/links)
           </h1>
           <p className="text-xs sm:text-sm text-white/70 max-w-xl leading-relaxed">
-            Manage, add, edit, and delete links displayed on the public Link Directory (/links) page. Any changes you make here are updated in real time.
+            Changes save to your GitHub repo and go live on{" "}
+            <span className="text-[#62B4EE] font-bold">/links</span> within
+            seconds. No third-party services — your data, your repo.
           </p>
         </div>
 
-        {/* Primary Action Buttons */}
         <div className="flex flex-wrap items-center gap-3 shrink-0">
           <button
             type="button"
             onClick={openNew}
-            className="inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-[#29A3E4] hover:bg-[#1E87C2] text-white font-extrabold text-sm rounded-full transition-all shadow-lg hover:scale-105 active:scale-95 cursor-pointer"
+            disabled={isPending}
+            className="inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-[#29A3E4] hover:bg-[#1E87C2] text-white font-extrabold text-sm rounded-full transition-all shadow-lg hover:scale-105 active:scale-95 cursor-pointer disabled:opacity-60"
             id="add-link-btn"
           >
             <Plus size={18} strokeWidth={3} />
@@ -186,11 +247,15 @@ export default function AdminLinksPage() {
           <button
             type="button"
             onClick={seedDefaults}
-            disabled={seeding}
+            disabled={isPending}
             className="inline-flex items-center justify-center gap-1.5 px-4 py-3 bg-white/10 hover:bg-white/20 text-white text-xs font-bold rounded-full border border-white/20 transition-all disabled:opacity-50"
             title="Restore default 7 ministry links"
           >
-            {seeding ? <Loader2 size={14} className="animate-spin" /> : <RotateCcw size={14} />}
+            {isPending ? (
+              <Loader2 size={14} className="animate-spin" />
+            ) : (
+              <RotateCcw size={14} />
+            )}
             <span>Reset Defaults</span>
           </button>
         </div>
@@ -230,22 +295,40 @@ export default function AdminLinksPage() {
         >
           <div className="flex items-center justify-between pb-4 border-b border-[var(--color-line)]">
             <div className="flex items-center gap-3">
-              <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold ${isNew ? "bg-emerald-100 text-emerald-700" : "bg-[#29A3E4]/15 text-[#29A3E4]"}`}>
-                {isNew ? <Plus size={20} strokeWidth={2.5} /> : <Pencil size={18} />}
+              <div
+                className={`w-10 h-10 rounded-full flex items-center justify-center font-bold ${
+                  isNew
+                    ? "bg-emerald-100 text-emerald-700"
+                    : "bg-[#29A3E4]/15 text-[#29A3E4]"
+                }`}
+              >
+                {isNew ? (
+                  <Plus size={20} strokeWidth={2.5} />
+                ) : (
+                  <Pencil size={18} />
+                )}
               </div>
               <div>
                 <div className="flex flex-wrap items-center gap-2">
                   <h2 className="text-xl font-extrabold text-[var(--color-ink)]">
-                    {isNew ? "Add New Link to Directory" : `Edit Link: ${editing.label || "Link Details"}`}
+                    {isNew
+                      ? "Add New Link to Directory"
+                      : `Edit Link: ${editing.label || "Link Details"}`}
                   </h2>
-                  <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider ${isNew ? "bg-emerald-50 text-emerald-700 border border-emerald-200" : "bg-blue-50 text-blue-700 border border-blue-200"}`}>
+                  <span
+                    className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider ${
+                      isNew
+                        ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                        : "bg-blue-50 text-blue-700 border border-blue-200"
+                    }`}
+                  >
                     {isNew ? "+ Adding New Link" : "Updating Existing Link"}
                   </span>
                 </div>
                 <p className="text-xs text-[var(--color-slate)] mt-0.5">
                   {isNew
-                    ? "This will append a new link to the directory. All existing links remain intact and untouched."
-                    : "You are editing this link in-place. If you want to create a separate link instead, click Cancel then 'Add New Link'."}
+                    ? "This will append a new link to the directory. All existing links remain intact."
+                    : "You are editing this link in-place. Click Cancel then 'Add New Link' to add a separate one instead."}
                 </p>
               </div>
             </div>
@@ -262,7 +345,6 @@ export default function AdminLinksPage() {
 
           <form onSubmit={handleSave} className="space-y-5">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-              
               {/* Title / Label */}
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-[var(--color-slate)] mb-1.5">
@@ -272,7 +354,9 @@ export default function AdminLinksPage() {
                   type="text"
                   required
                   value={editing.label ?? ""}
-                  onChange={(e) => setEditing((p) => ({ ...p!, label: e.target.value }))}
+                  onChange={(e) =>
+                    setEditing((p) => ({ ...p!, label: e.target.value }))
+                  }
                   placeholder="e.g. YouTube Channel or Facebook Page"
                   className="w-full bg-[var(--color-surface)] border border-[var(--color-line)] rounded-xl px-4 py-3 text-sm text-[var(--color-ink)] focus:outline-none focus:border-[#29A3E4] focus:bg-white transition-all font-medium"
                 />
@@ -285,7 +369,9 @@ export default function AdminLinksPage() {
                 </label>
                 <select
                   value={editing.icon ?? "website"}
-                  onChange={(e) => setEditing((p) => ({ ...p!, icon: e.target.value }))}
+                  onChange={(e) =>
+                    setEditing((p) => ({ ...p!, icon: e.target.value }))
+                  }
                   className="w-full bg-[var(--color-surface)] border border-[var(--color-line)] rounded-xl px-4 py-3 text-sm text-[var(--color-ink)] focus:outline-none focus:border-[#29A3E4] focus:bg-white transition-all font-medium"
                 >
                   {ICON_OPTIONS.map((opt) => (
@@ -305,8 +391,10 @@ export default function AdminLinksPage() {
                   type="url"
                   required
                   value={editing.url ?? ""}
-                  onChange={(e) => setEditing((p) => ({ ...p!, url: e.target.value }))}
-                  placeholder="https://youtube.com/@vpminternational or https://..."
+                  onChange={(e) =>
+                    setEditing((p) => ({ ...p!, url: e.target.value }))
+                  }
+                  placeholder="https://youtube.com/@vpminternational"
                   className="w-full bg-[var(--color-surface)] border border-[var(--color-line)] rounded-xl px-4 py-3 text-sm font-mono text-[var(--color-ink)] focus:outline-none focus:border-[#29A3E4] focus:bg-white transition-all"
                 />
               </div>
@@ -319,7 +407,12 @@ export default function AdminLinksPage() {
                 <input
                   type="text"
                   value={editing.description ?? ""}
-                  onChange={(e) => setEditing((p) => ({ ...p!, description: e.target.value }))}
+                  onChange={(e) =>
+                    setEditing((p) => ({
+                      ...p!,
+                      description: e.target.value,
+                    }))
+                  }
                   placeholder="e.g. Join our community or Watch Sunday service live"
                   className="w-full bg-[var(--color-surface)] border border-[var(--color-line)] rounded-xl px-4 py-3 text-sm text-[var(--color-ink)] focus:outline-none focus:border-[#29A3E4] focus:bg-white transition-all"
                 />
@@ -331,7 +424,9 @@ export default function AdminLinksPage() {
                   <input
                     type="checkbox"
                     checked={editing.active ?? true}
-                    onChange={(e) => setEditing((p) => ({ ...p!, active: e.target.checked }))}
+                    onChange={(e) =>
+                      setEditing((p) => ({ ...p!, active: e.target.checked }))
+                    }
                     className="w-5 h-5 rounded text-[#29A3E4] focus:ring-[#29A3E4] cursor-pointer"
                   />
                   <div>
@@ -344,20 +439,23 @@ export default function AdminLinksPage() {
                   </div>
                 </label>
               </div>
-
             </div>
 
             {/* Form Buttons */}
             <div className="pt-4 border-t border-[var(--color-line)] flex items-center gap-3">
               <button
                 type="submit"
-                disabled={saving}
+                disabled={isPending}
                 className="inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-[#0B0F17] hover:bg-[#1F2937] text-white font-extrabold text-sm rounded-full transition-all shadow-md disabled:opacity-50 cursor-pointer"
               >
-                {saving ? <Loader2 size={16} className="animate-spin" /> : <CheckCircle size={16} />}
+                {isPending ? (
+                  <Loader2 size={16} className="animate-spin" />
+                ) : (
+                  <CheckCircle size={16} />
+                )}
                 <span>
-                  {saving
-                    ? "Saving Link..."
+                  {isPending
+                    ? "Saving…"
                     : isNew
                     ? "Add Link to Directory"
                     : `Save Changes to "${editing.label || "Link"}"`}
@@ -376,17 +474,27 @@ export default function AdminLinksPage() {
         </div>
       )}
 
-      {/* ── Action Feedback Banner ── */}
+      {/* ── Feedback Banner ── */}
       {feedback && (
-        <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm font-bold flex items-center justify-between shadow-xs animate-in fade-in">
+        <div
+          className={`p-4 rounded-2xl border text-sm font-bold flex items-center justify-between shadow-xs animate-in fade-in ${
+            feedback.type === "success"
+              ? "bg-emerald-50 border-emerald-200 text-emerald-800"
+              : "bg-red-50 border-red-200 text-red-800"
+          }`}
+        >
           <div className="flex items-center gap-2.5">
-            <CheckCircle size={18} className="text-emerald-600 shrink-0" />
-            <span>{feedback}</span>
+            {feedback.type === "success" ? (
+              <CheckCircle size={18} className="text-emerald-600 shrink-0" />
+            ) : (
+              <AlertCircle size={18} className="text-red-500 shrink-0" />
+            )}
+            <span>{feedback.msg}</span>
           </div>
           <button
             type="button"
             onClick={() => setFeedback(null)}
-            className="text-emerald-700 hover:text-emerald-900 text-xs underline cursor-pointer"
+            className="text-current opacity-70 hover:opacity-100 text-xs underline cursor-pointer"
           >
             Dismiss
           </button>
@@ -400,7 +508,10 @@ export default function AdminLinksPage() {
             Existing Directory Links ({links.length})
           </h2>
           <p className="text-xs text-[var(--color-slate)] mt-0.5">
-            Each link below has dedicated <strong className="text-[var(--color-ink)]">Edit</strong> and <strong className="text-red-600">Delete</strong> buttons.
+            Each link has dedicated{" "}
+            <strong className="text-[var(--color-ink)]">Edit</strong>,{" "}
+            <strong>Hide/Show</strong>, and{" "}
+            <strong className="text-red-600">Delete</strong> buttons.
           </p>
         </div>
 
@@ -417,8 +528,11 @@ export default function AdminLinksPage() {
       {/* ── Links Cards List ── */}
       {loading ? (
         <div className="bg-white border border-[var(--color-line)] rounded-2xl p-12 text-center text-[var(--color-slate)]">
-          <Loader2 size={32} className="animate-spin mx-auto mb-3 text-[#29A3E4]" />
-          <p className="font-bold text-sm">Loading directory links from database...</p>
+          <Loader2
+            size={32}
+            className="animate-spin mx-auto mb-3 text-[#29A3E4]"
+          />
+          <p className="font-bold text-sm">Loading links from GitHub…</p>
         </div>
       ) : links.length === 0 ? (
         <div className="bg-white border-2 border-dashed border-[var(--color-line)] rounded-3xl p-12 text-center space-y-4">
@@ -426,9 +540,11 @@ export default function AdminLinksPage() {
             <Link2 size={28} />
           </div>
           <div className="space-y-1">
-            <h3 className="text-lg font-extrabold text-[var(--color-ink)]">No Links In Database Yet</h3>
+            <h3 className="text-lg font-extrabold text-[var(--color-ink)]">
+              No Links Yet
+            </h3>
             <p className="text-xs text-[var(--color-slate)] max-w-sm mx-auto">
-              Click below to immediately load the 7 official VPM ministry links or create your own custom link.
+              Load the 7 official VPM ministry links or create your own.
             </p>
           </div>
           <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
@@ -454,7 +570,6 @@ export default function AdminLinksPage() {
         <div className="space-y-3">
           {links.map((link, idx) => {
             const iconBg = getIconStyle(link.icon);
-
             return (
               <div
                 key={link.id}
@@ -468,14 +583,12 @@ export default function AdminLinksPage() {
                     {idx + 1}
                   </span>
 
-                  {/* Platform Icon */}
                   <div
                     className={`w-12 h-12 rounded-xl ${iconBg} flex items-center justify-center shrink-0 shadow-sm`}
                   >
                     {renderSocialIcon(link.icon, 22)}
                   </div>
 
-                  {/* Details */}
                   <div className="min-w-0 flex-1 space-y-1">
                     <div className="flex flex-wrap items-center gap-2">
                       <h3 className="font-sans font-extrabold text-base text-[var(--color-ink)] truncate">
@@ -512,14 +625,14 @@ export default function AdminLinksPage() {
                   </div>
                 </div>
 
-                {/* Right Action Buttons (BIG, EXPLICIT, UNMISTAKABLE) */}
+                {/* Right Action Buttons */}
                 <div className="flex items-center gap-2 pt-3 sm:pt-0 border-t sm:border-t-0 border-[var(--color-line)] shrink-0 self-end sm:self-center">
-                  
                   {/* Edit Button */}
                   <button
                     type="button"
                     onClick={() => openEdit(link)}
-                    className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white hover:bg-[var(--color-surface-alt)] border border-[var(--color-line)] text-xs font-bold text-[var(--color-ink)] hover:border-[#0B0F17] transition-all cursor-pointer shadow-xs"
+                    disabled={isPending}
+                    className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white hover:bg-[var(--color-surface-alt)] border border-[var(--color-line)] text-xs font-bold text-[var(--color-ink)] hover:border-[#0B0F17] transition-all cursor-pointer shadow-xs disabled:opacity-50"
                     title={`Edit ${link.label}`}
                   >
                     <Pencil size={14} className="text-[#1B5299]" />
@@ -530,34 +643,41 @@ export default function AdminLinksPage() {
                   <button
                     type="button"
                     onClick={() => toggleActive(link)}
-                    className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border text-xs font-bold transition-all cursor-pointer shadow-xs ${
+                    disabled={isPending}
+                    className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border text-xs font-bold transition-all cursor-pointer shadow-xs disabled:opacity-50 ${
                       link.active
                         ? "bg-white hover:bg-gray-50 text-[var(--color-slate)] border-[var(--color-line)]"
                         : "bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border-emerald-200"
                     }`}
-                    title={link.active ? "Hide from public view" : "Show in public directory"}
+                    title={
+                      link.active
+                        ? "Hide from public view"
+                        : "Show in public directory"
+                    }
                   >
                     {link.active ? <EyeOff size={14} /> : <Eye size={14} />}
-                    <span className="hidden md:inline">{link.active ? "Hide" : "Show"}</span>
+                    <span className="hidden md:inline">
+                      {link.active ? "Hide" : "Show"}
+                    </span>
                   </button>
 
-                  {/* Delete Button (PROMINENT RED DANGER STYLE) */}
+                  {/* Delete Button */}
                   <button
                     type="button"
                     onClick={() => handleDelete(link)}
-                    className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-red-50 hover:bg-red-100 text-red-600 hover:text-red-700 border border-red-200 text-xs font-bold transition-all cursor-pointer shadow-xs"
+                    disabled={isPending}
+                    className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-red-50 hover:bg-red-100 text-red-600 hover:text-red-700 border border-red-200 text-xs font-bold transition-all cursor-pointer shadow-xs disabled:opacity-50"
                     title={`Delete ${link.label}`}
                   >
                     <Trash2 size={14} />
                     <span>Delete</span>
                   </button>
-
                 </div>
               </div>
             );
           })}
 
-          {/* ── Prominent Bottom "+ Add Another Link" Button Box ── */}
+          {/* Bottom add button */}
           <button
             type="button"
             onClick={openNew}
@@ -569,6 +689,13 @@ export default function AdminLinksPage() {
         </div>
       )}
 
+      {/* ── Saving indicator overlay ── */}
+      {isPending && (
+        <div className="fixed bottom-6 right-6 z-50 bg-[#0B0F17] text-white text-xs font-bold px-4 py-2.5 rounded-full shadow-2xl flex items-center gap-2 animate-in slide-in-from-bottom-4">
+          <Loader2 size={14} className="animate-spin" />
+          <span>Saving to GitHub…</span>
+        </div>
+      )}
     </div>
   );
 }

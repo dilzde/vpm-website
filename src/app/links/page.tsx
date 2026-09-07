@@ -1,53 +1,56 @@
-"use client";
+/**
+ * Public /links page — Server Component.
+ * Reads links.json directly from GitHub via the server-side helper.
+ * revalidateTag("vpm-links") / revalidatePath("/links") called from admin
+ * server actions means every admin change appears here on next visit.
+ */
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Image from "next/image";
 import { ExternalLink } from "lucide-react";
-import { subscribeSocialLinks, INITIAL_DEFAULT_LINKS, type SocialLink } from "@/lib/firestore";
+import { getLinks } from "@/lib/links.server";
 import { renderSocialIcon } from "@/components/common/SocialIcons";
 
-const ICON_STYLES: Record<string, string> = {
-  website:   "bg-[#0F2540] text-white",
-  radio:     "bg-[#6B21A8] text-white",
-  youtube:   "bg-[#DC2626] text-white",
-  tiktok:    "bg-[#09090B] text-white",
-  instagram: "bg-gradient-to-tr from-[#F58529] via-[#DD2A7B] to-[#8134AF] text-white",
-  facebook:  "bg-[#1877F2] text-white",
-  x:         "bg-black text-white",
-  whatsapp:  "bg-[#16A34A] text-white",
-  default:   "bg-[#5B9BD5] text-white",
+// Always render fresh so changes from admin appear immediately.
+export const dynamic = "force-dynamic";
+
+export const metadata = {
+  title: "Links | VPM International",
+  description:
+    "Official links for Voice of the Potter's Messengers Ministry International — website, radio, YouTube, social media and WhatsApp community.",
 };
 
-const DEFAULT_LINKS: SocialLink[] = INITIAL_DEFAULT_LINKS;
+const ICON_STYLES: Record<string, string> = {
+  website: "bg-[#0F2540] text-white",
+  radio: "bg-[#6B21A8] text-white",
+  youtube: "bg-[#DC2626] text-white",
+  tiktok: "bg-[#09090B] text-white",
+  instagram:
+    "bg-gradient-to-tr from-[#F58529] via-[#DD2A7B] to-[#8134AF] text-white",
+  facebook: "bg-[#1877F2] text-white",
+  x: "bg-black text-white",
+  whatsapp: "bg-[#16A34A] text-white",
+  default: "bg-[#5B9BD5] text-white",
+};
 
-export default function LinksPage() {
-  const [links, setLinks] = useState<SocialLink[]>([]);
-  const [loaded, setLoaded] = useState(false);
+export default async function LinksPage() {
+  const all = await getLinks();
 
-  useEffect(() => {
-    const unsub = subscribeSocialLinks((data) => {
-      // Ensure X has no description, and ensure WhatsApp defaults to 'Join our community'
-      const sanitized = data.map((l) => {
-        if (l.icon === "x") return { ...l, description: "" };
-        if (l.icon === "whatsapp" && (!l.description || l.description === "Join our prayer & fellowship group")) {
-          return { ...l, description: "Join our community" };
-        }
-        return l;
-      });
-      setLinks(sanitized.filter((l) => l.active));
-      setLoaded(true);
+  const links = all
+    .filter((l) => l.active)
+    .sort((a, b) => a.order - b.order)
+    .map((l) => {
+      // Sanitise descriptions
+      if (l.icon === "x") return { ...l, description: "" };
+      if (l.icon === "whatsapp" && !l.description?.trim())
+        return { ...l, description: "Join our community" };
+      return l;
     });
-    return () => unsub();
-  }, []);
-
-  const displayLinks = loaded ? links : DEFAULT_LINKS;
 
   return (
     <div className="min-h-screen w-full bg-[#FAF7F2] text-[#0D1B2A] flex flex-col items-center justify-between px-4 py-12 sm:py-16">
-
       <div className="w-full max-w-md flex flex-col items-center">
-
-        {/* ── Logo Container (Natural, unclipped, sitting well on cream) ── */}
+        {/* ── Logo ── */}
         <div className="w-32 h-32 mb-2 flex items-center justify-center">
           <Image
             src="/vpm_logo.png"
@@ -69,17 +72,24 @@ export default function LinksPage() {
           </p>
         </div>
 
-        {/* ── Social Links Stack ── */}
+        {/* ── Links Stack ── */}
         <div className="w-full space-y-3">
-          {displayLinks.length === 0 ? (
+          {links.length === 0 ? (
             <div className="w-full p-8 text-center bg-white rounded-2xl border border-[#E8E2D6] shadow-xs text-sm text-[#5A6F8C]">
-              <p className="font-bold text-[#0D1B2A] mb-1">No Links Currently Published</p>
-              <p className="text-xs">Official ministry channels will appear here once published.</p>
+              <p className="font-bold text-[#0D1B2A] mb-1">
+                No Links Currently Published
+              </p>
+              <p className="text-xs">
+                Official ministry channels will appear here once published.
+              </p>
             </div>
           ) : (
-            displayLinks.map((link) => {
-              const iconStyle = ICON_STYLES[link.icon] ?? ICON_STYLES.default;
-              const hasDescription = Boolean(link.description && link.description.trim().length > 0);
+            links.map((link) => {
+              const iconStyle =
+                ICON_STYLES[link.icon] ?? ICON_STYLES.default;
+              const hasDescription = Boolean(
+                link.description && link.description.trim().length > 0
+              );
 
               return (
                 <a
@@ -96,7 +106,7 @@ export default function LinksPage() {
                     {renderSocialIcon(link.icon, 22)}
                   </div>
 
-                  {/* Text (Title + Description only, no badges next to title) */}
+                  {/* Text */}
                   <div className="flex-1 min-w-0 text-left">
                     <p className="font-sans font-bold text-[15px] text-[#0D1B2A] group-hover:text-[#1A3A6B] transition-colors truncate">
                       {link.label}
@@ -108,7 +118,7 @@ export default function LinksPage() {
                     )}
                   </div>
 
-                  {/* Clean Arrow Indicator */}
+                  {/* Arrow */}
                   <ExternalLink
                     size={16}
                     className="text-[#94A3B8] group-hover:text-[#1A3A6B] transition-colors shrink-0"
@@ -119,25 +129,25 @@ export default function LinksPage() {
           )}
         </div>
 
-        {/* ── Inspiring Scripture Banner ── */}
+        {/* ── Scripture Banner ── */}
         <div className="w-full mt-8 p-4 rounded-2xl bg-white/60 border border-[#E8E2D6] text-center">
           <p className="text-xs text-[#C8861A] font-sans font-bold tracking-wider uppercase mb-1">
             Jeremiah 18:2-4
           </p>
           <p className="text-[#64748B] text-xs font-sans italic leading-relaxed">
-            &ldquo;Arise, and go down to the potter&apos;s house, and there I will cause thee to hear my words.&rdquo;
+            &ldquo;Arise, and go down to the potter&apos;s house, and there I
+            will cause thee to hear my words.&rdquo;
           </p>
         </div>
-
       </div>
 
       {/* ── Footer ── */}
       <div className="text-center mt-10">
         <p className="text-[#94A3B8] text-xs font-sans">
-          © {new Date().getFullYear()} Voice of the Potter&apos;s Messengers Ministry International
+          © {new Date().getFullYear()} Voice of the Potter&apos;s Messengers
+          Ministry International
         </p>
       </div>
-
     </div>
   );
 }
