@@ -3,7 +3,12 @@
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { Clock, Calendar, ChevronLeft, ChevronRight, Sparkles, ArrowRight } from "lucide-react";
-import { getCurrentOrNextService, CurrentOrNextService, RECURRING_SCHEDULE } from "@/lib/data/schedule";
+import {
+  getCurrentOrNextService,
+  CurrentOrNextService,
+  getWeeklyGatheringSlides,
+  WeeklyGatheringSlide,
+} from "@/lib/data/schedule";
 import type { Announcement } from "@/lib/announcement-types";
 import type { SiteEvent } from "@/lib/event-types";
 
@@ -15,56 +20,13 @@ export interface AnnouncementSlide {
   time: string;
   tag: string;
   platform?: string;
-  dateVal?: number;
+  isHappeningNow?: boolean;
+  isToday?: boolean;
+  isTomorrow?: boolean;
+  isThisWeek?: boolean;
+  distinctDay?: string;
+  orderScore: number;
 }
-
-const WEEKLY_SCHEDULE_SLIDES: AnnouncementSlide[] = [
-  {
-    id: "prophetic-checking",
-    type: "schedule",
-    tag: "EVERY WEDNESDAY",
-    title: "Prophetic Checking",
-    subtitle: "Personal prophetic guidance, consultation, and prayer check-in with the ministry presbytery.",
-    time: "11:00 AM – 3:00 PM",
-    platform: "Sanctuary Altars",
-  },
-  {
-    id: "deliverance-service",
-    type: "schedule",
-    tag: "EVERY FRIDAY",
-    title: "Deliverance Service",
-    subtitle: "Intercessory warfare, breaking strongholds, and deliverance prayer for all believers.",
-    time: "4:00 PM – 6:00 PM",
-    platform: "Sanctuary Altars",
-  },
-  {
-    id: "sunday-interactive",
-    type: "schedule",
-    tag: "EVERY SUNDAY MORNING",
-    title: "Worship & Interactive Session",
-    subtitle: "A wonderful morning worship and interactive session with Prophet Dr. Samo Mtishiby.",
-    time: "5:30 AM – 8:00 AM",
-    platform: "Asriel Radio Live",
-  },
-  {
-    id: "sunday-official",
-    type: "schedule",
-    tag: "EVERY SUNDAY MAIN",
-    title: "Official Sunday Service",
-    subtitle: "Main weekly celebration service, prophetic word, and territorial worship. All believers are encouraged to join!",
-    time: "8:30 AM – 4:00 PM",
-    platform: "Nairobi HQ (Mlolongo) & All Sanctuaries",
-  },
-  {
-    id: "prophetic-teaching",
-    type: "schedule",
-    tag: "TUESDAY – FRIDAY",
-    title: "Prophetic Teaching Hour",
-    subtitle: "Prophet Dr. Samo Mtishiby holds live teachings streaming online. Listen live on YouTube & Asriel Radio.",
-    time: "8:00 PM – 10:00 PM",
-    platform: "YouTube (Asriel TV) & asrielradio.com",
-  },
-];
 
 export default function GatheringsAnnouncementsCarousel({
   initialAnnouncements,
@@ -74,18 +36,38 @@ export default function GatheringsAnnouncementsCarousel({
   initialEvents?: SiteEvent[];
 }) {
   const [scheduleState, setScheduleState] = useState<CurrentOrNextService | null>(null);
+  const [currentTime, setCurrentTime] = useState<Date>(() => new Date());
   const [currentIndex, setCurrentIndex] = useState(0);
   const carouselRef = useRef<HTMLDivElement>(null);
 
-  // Map dynamic events from Bazu, sorted chronologically ascending (upcoming soonest first)
+  useEffect(() => {
+    setCurrentTime(new Date());
+    setScheduleState(getCurrentOrNextService());
+    const interval = setInterval(() => {
+      setCurrentTime(new Date());
+      setScheduleState(getCurrentOrNextService());
+    }, 60000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // 1. Dynamic recurring weekly schedule, calculated relative to now (Today, Tomorrow, Thursday, Friday, Sunday...)
+  const weeklySlides: AnnouncementSlide[] = getWeeklyGatheringSlides(currentTime);
+
+  // 2. Dynamic non-recurring special events from Bazu
+  const nowMs = currentTime.getTime();
   const dynamicEventSlides: AnnouncementSlide[] = (initialEvents || [])
-    .filter((e) => e.active)
+    .filter((e) => e.active && !e.isRecurring)
     .map((e) => {
       const dateObj = e.date ? new Date(e.date) : null;
       const hasValidDate = dateObj && !isNaN(dateObj.getTime());
+      // Skip events that ended more than 24 hours ago
+      if (hasValidDate && dateObj.getTime() < nowMs - 24 * 60 * 60 * 1000) {
+        return null;
+      }
+
       const dateTag = hasValidDate
         ? dateObj.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" }).toUpperCase()
-        : "UPCOMING GATHERING";
+        : "SPECIAL GATHERING";
 
       return {
         id: e.id,
@@ -95,13 +77,14 @@ export default function GatheringsAnnouncementsCarousel({
         subtitle: e.description,
         time: e.time || "Schedule TBA",
         platform: e.location || (e.isOnline ? "Online Live Stream" : "Sanctuary"),
-        dateVal: hasValidDate ? dateObj.getTime() : 9999999999999,
+        distinctDay: dateTag,
+        orderScore: hasValidDate ? dateObj.getTime() : 9999999999999,
       };
     })
-    .sort((a, b) => (a.dateVal || 0) - (b.dateVal || 0));
+    .filter(Boolean) as AnnouncementSlide[];
 
-  // Map dynamic announcements
-  const dynamicAnnouncementSlides: AnnouncementSlide[] = (initialAnnouncements || []).map((a) => ({
+  // 3. Dynamic announcements
+  const dynamicAnnouncementSlides: AnnouncementSlide[] = (initialAnnouncements || []).map((a, idx) => ({
     id: a.id,
     type: "announcement" as const,
     tag: a.dateBadge || "MINISTRY UPDATE",
@@ -109,13 +92,14 @@ export default function GatheringsAnnouncementsCarousel({
     subtitle: a.body,
     time: a.time || "Notice",
     platform: "VPM Sanctuaries & Online",
+    orderScore: 50000 + idx * 100,
   }));
 
-  // Combine: Upcoming dated events first (soonest first), followed by announcements and weekly schedules
+  // Combine: Upcoming recurring weekly schedule first (chronological from today), followed by special events and announcements
   const activeSlides: AnnouncementSlide[] = [
+    ...weeklySlides,
     ...dynamicEventSlides,
     ...dynamicAnnouncementSlides,
-    ...WEEKLY_SCHEDULE_SLIDES,
   ];
 
   useEffect(() => {
@@ -132,6 +116,77 @@ export default function GatheringsAnnouncementsCarousel({
 
   const handlePrev = () => {
     setCurrentIndex((prev) => (prev - 1 + activeSlides.length) % activeSlides.length);
+  };
+
+  const renderSlideCard = (slide: AnnouncementSlide, key: string | number) => {
+    return (
+      <div
+        key={key}
+        className={`bg-white border rounded-[var(--radius-eight)] p-6 flex flex-col justify-between h-full shadow-[var(--shadow-card)] transition-all ${
+          slide.isHappeningNow
+            ? "border-red-400 ring-2 ring-red-100 shadow-md"
+            : slide.isToday
+            ? "border-emerald-400 ring-2 ring-emerald-100 shadow-md"
+            : "border-[var(--color-line)] hover:border-[var(--color-accent)]"
+        }`}
+      >
+        <div>
+          {/* Badge Pill with Distinct Day Formatting & Highlights */}
+          <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <span
+                className={`inline-flex items-center gap-1.5 font-sans font-extrabold text-[11px] uppercase px-3 py-1 rounded-full tracking-wider shadow-2xs ${
+                  slide.isHappeningNow
+                    ? "bg-red-600 text-white animate-pulse"
+                    : slide.isToday
+                    ? "bg-emerald-600 text-white ring-2 ring-emerald-300/50"
+                    : slide.isTomorrow
+                    ? "bg-[#1B5299] text-white"
+                    : "bg-[var(--color-surface-alt)] text-[#1B5299] border border-[#1B5299]/30 font-bold"
+                }`}
+              >
+                {slide.isHappeningNow && <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping" />}
+                {slide.isToday && <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />}
+                <span>{slide.tag}</span>
+              </span>
+
+              {slide.isThisWeek && !slide.isToday && !slide.isTomorrow && !slide.isHappeningNow && (
+                <span className="text-[10px] font-sans font-extrabold text-[var(--color-slate)] uppercase tracking-wider bg-slate-100 px-2 py-0.5 rounded-md">
+                  This Week
+                </span>
+              )}
+            </div>
+
+            {slide.isToday && (
+              <span className="text-[11px] font-sans font-bold text-emerald-600 flex items-center gap-1">
+                <Sparkles size={12} />
+                <span>Next Up</span>
+              </span>
+            )}
+          </div>
+
+          <h3 className="font-sans text-xl font-extrabold text-[var(--color-ink)] mb-2 leading-snug">
+            {slide.title}
+          </h3>
+
+          <p className="text-xs text-[var(--color-slate)] leading-relaxed font-sans mb-4">
+            {slide.subtitle}
+          </p>
+        </div>
+
+        <div className="pt-4 border-t border-[var(--color-line)] space-y-1">
+          <div className="flex items-center gap-1.5 text-xs font-sans font-bold text-[var(--color-ink)]">
+            <Clock size={14} className="text-[var(--color-slate)] shrink-0" />
+            <span>{slide.time}</span>
+          </div>
+          {slide.platform && (
+            <p className="text-[11px] font-sans text-[var(--color-slate)] italic">
+              {slide.platform}
+            </p>
+          )}
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -220,41 +275,7 @@ export default function GatheringsAnnouncementsCarousel({
             {(() => {
               const slide = activeSlides[currentIndex % activeSlides.length];
               if (!slide) return null;
-              return (
-                <div
-                  key={slide.id}
-                  className="bg-white border border-[var(--color-line)] hover:border-[var(--color-accent)] rounded-[var(--radius-eight)] p-6 flex flex-col justify-between shadow-[var(--shadow-card)] transition-all"
-                >
-                  <div>
-                    {/* Badge Pill */}
-                    <div className="flex items-center justify-between mb-4">
-                      <span className="inline-block font-sans font-bold text-[10px] uppercase px-2.5 py-0.5 rounded-full tracking-wider bg-[var(--color-surface-alt)] text-[#1B5299] border border-[var(--color-line)]">
-                        {slide.tag}
-                      </span>
-                    </div>
-
-                    <h3 className="font-sans text-xl font-extrabold text-[var(--color-ink)] mb-2 leading-snug">
-                      {slide.title}
-                    </h3>
-
-                    <p className="text-xs text-[var(--color-slate)] leading-relaxed font-sans mb-4">
-                      {slide.subtitle}
-                    </p>
-                  </div>
-
-                  <div className="pt-4 border-t border-[var(--color-line)] space-y-1">
-                    <div className="flex items-center gap-1.5 text-xs font-sans font-bold text-[var(--color-ink)]">
-                      <Clock size={14} className="text-[var(--color-slate)] shrink-0" />
-                      <span>{slide.time}</span>
-                    </div>
-                    {slide.platform && (
-                      <p className="text-[11px] font-sans text-[var(--color-slate)] italic">
-                        {slide.platform}
-                      </p>
-                    )}
-                  </div>
-                </div>
-              );
+              return renderSlideCard(slide, slide.id);
             })()}
           </div>
 
@@ -264,42 +285,7 @@ export default function GatheringsAnnouncementsCarousel({
               const slideIndex = (currentIndex + offset) % activeSlides.length;
               const slide = activeSlides[slideIndex];
               if (!slide) return null;
-
-              return (
-                <div
-                  key={`${slide.id}-${offset}`}
-                  className="bg-white border border-[var(--color-line)] hover:border-[var(--color-accent)] rounded-[var(--radius-eight)] p-6 flex flex-col justify-between h-full shadow-[var(--shadow-card)] transition-all"
-                >
-                  <div>
-                    {/* Badge Pill */}
-                    <div className="flex items-center justify-between mb-4">
-                      <span className="inline-block font-sans font-bold text-[10px] uppercase px-2.5 py-0.5 rounded-full tracking-wider bg-[var(--color-surface-alt)] text-[#1B5299] border border-[var(--color-line)]">
-                        {slide.tag}
-                      </span>
-                    </div>
-
-                    <h3 className="font-sans text-xl font-extrabold text-[var(--color-ink)] mb-2 leading-snug">
-                      {slide.title}
-                    </h3>
-
-                    <p className="text-xs text-[var(--color-slate)] leading-relaxed font-sans mb-4">
-                      {slide.subtitle}
-                    </p>
-                  </div>
-
-                  <div className="pt-4 border-t border-[var(--color-line)] space-y-1">
-                    <div className="flex items-center gap-1.5 text-xs font-sans font-bold text-[var(--color-ink)]">
-                      <Clock size={14} className="text-[var(--color-slate)] shrink-0" />
-                      <span>{slide.time}</span>
-                    </div>
-                    {slide.platform && (
-                      <p className="text-[11px] font-sans text-[var(--color-slate)] italic">
-                        {slide.platform}
-                      </p>
-                    )}
-                  </div>
-                </div>
-              );
+              return renderSlideCard(slide, `${slide.id}-${offset}`);
             })}
           </div>
         </div>

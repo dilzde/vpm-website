@@ -8,6 +8,8 @@ export interface SiteEvent {
   time: string;
   location: string;
   isOnline: boolean;
+  isRecurring?: boolean;
+  recurringDay?: string;
   posterUrl?: string | null;
   posterStoragePath?: string | null;
   displayMode?: EventDisplayMode;

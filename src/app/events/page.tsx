@@ -49,12 +49,17 @@ export default async function EventsPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {events.map((ev) => {
               const mode = ev.displayMode || (ev.posterUrl ? "poster_details" : "details");
-              const dateObj = ev.date ? new Date(ev.date) : null;
+              const isWeekly = ev.isRecurring || ev.date?.toLowerCase().startsWith("every");
+              const dateObj = ev.date && !isWeekly ? new Date(ev.date) : null;
               const hasValidDate = dateObj && !isNaN(dateObj.getTime());
-              const monthStr = hasValidDate
+              const monthStr = isWeekly
+                ? "WEEKLY"
+                : hasValidDate
                 ? dateObj.toLocaleDateString("en-US", { month: "short" }).toUpperCase()
                 : "DATE";
-              const dayStr = hasValidDate
+              const dayStr = isWeekly
+                ? (ev.recurringDay ? ev.recurringDay.slice(0, 3).toUpperCase() : "REC")
+                : hasValidDate
                 ? dateObj.toLocaleDateString("en-US", { day: "2-digit" })
                 : "TBA";
 

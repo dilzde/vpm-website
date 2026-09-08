@@ -6,8 +6,8 @@ const DATA_PATH = "public/data/events.json";
 export async function getEvents(activeOnly = false): Promise<SiteEvent[]> {
   const all = await readJsonFile<SiteEvent[]>(DATA_PATH, []);
   return activeOnly
-    ? all.filter((e) => e.active).sort((a, b) => a.date.localeCompare(b.date))
-    : all.sort((a, b) => a.date.localeCompare(b.date));
+    ? all.filter((e) => e.active).sort((a, b) => (a.date || "").localeCompare(b.date || ""))
+    : all.sort((a, b) => (a.date || "").localeCompare(b.date || ""));
 }
 
 export async function upsertEvent(id: string | null, data: Omit<SiteEvent, "id">): Promise<SiteEvent> {

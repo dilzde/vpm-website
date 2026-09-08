@@ -83,30 +83,6 @@ export default function HeroSection() {
             </Link>
           </div>
 
-          {/* Mobile-Only Live Radio Tap-to-Listen Card */}
-          <div className="relative z-10 lg:hidden w-full pt-2">
-            <Link
-              href="/radio"
-              className="w-full flex items-center justify-between p-3.5 rounded-2xl bg-gradient-to-r from-[#0F2540]/90 to-[#1A3A6B]/90 text-white border border-[#29A3E4]/40 shadow-md hover:scale-[1.01] transition-all backdrop-blur-xs"
-            >
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-[#29A3E4] text-white flex items-center justify-center font-bold shrink-0 shadow-sm">
-                  <Radio size={20} />
-                </div>
-                <div className="text-left">
-                  <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-                    <p className="text-xs font-bold text-white">24/7 Asriel Radio Live</p>
-                  </div>
-                  <p className="text-[11px] text-white/80 font-sans">Broadcasting prophetic revival globally</p>
-                </div>
-              </div>
-              <span className="text-xs font-bold text-[#62B4EE] flex items-center gap-1 shrink-0">
-                Listen Live →
-              </span>
-            </Link>
-          </div>
-
         </div>
 
         {/* Right Column: Hero Visual Image / Carousel (hidden on mobile to prevent image above image) */}

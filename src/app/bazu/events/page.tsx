@@ -12,6 +12,8 @@ const EMPTY: Omit<SiteEvent, "id"> = {
   title: "",
   description: "",
   date: "",
+  isRecurring: true,
+  recurringDay: "Wednesday",
   time: "",
   location: "",
   isOnline: false,
@@ -202,6 +204,15 @@ export default function AdminEventsPage() {
                     <span className={`px-2 py-0.5 rounded text-xs font-semibold ${ev.active ? "bg-emerald-50 text-emerald-700" : "bg-slate-200 text-slate-600"}`}>
                       {ev.active ? "Active" : "Hidden"}
                     </span>
+                    {ev.isRecurring ? (
+                      <span className="px-2 py-0.5 rounded text-xs font-semibold bg-purple-50 text-purple-700 flex items-center gap-1">
+                        <RotateCcw size={11} /> Weekly: {ev.recurringDay || "Weekly"}
+                      </span>
+                    ) : (
+                      <span className="px-2 py-0.5 rounded text-xs font-semibold bg-amber-50 text-amber-700 flex items-center gap-1">
+                        <Calendar size={11} /> Special Event
+                      </span>
+                    )}
                     <span className="px-2 py-0.5 rounded text-xs font-semibold bg-indigo-50 text-indigo-700">
                       {ev.displayMode === "poster_only" ? "🖼️ Poster Only" : ev.displayMode === "poster_details" ? "📰 Poster + Details" : "📝 Details Only"}
                     </span>
@@ -244,7 +255,7 @@ export default function AdminEventsPage() {
                 <div className="space-y-1 text-xs text-slate-600 font-medium">
                   <div className="flex items-center gap-2">
                     <Calendar size={13} className="text-slate-400" />
-                    <span>{ev.date || "Date TBA"}</span>
+                    <span>{ev.isRecurring ? `Every ${ev.recurringDay || "Week"}` : ev.date || "Date TBA"}</span>
                     {ev.time && <span className="text-slate-400">• {ev.time}</span>}
                   </div>
                   <div className="flex items-center gap-2">
@@ -304,16 +315,85 @@ export default function AdminEventsPage() {
                 />
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Date</label>
-                  <input
-                    type="date"
-                    value={editing.date}
-                    onChange={(e) => setEditing({ ...editing, date: e.target.value })}
-                    className="w-full px-3 py-2 border border-line rounded-md focus:outline-none focus:border-sky-500"
-                  />
+              {/* Recurrence / Gathering Type Selector */}
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1.5">
+                  Schedule Type *
+                </label>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setEditing({
+                        ...editing,
+                        isRecurring: true,
+                        date: `Every ${editing.recurringDay || "Wednesday"}`,
+                      })
+                    }
+                    className={`py-2 px-3 rounded-md text-xs font-bold flex items-center justify-center gap-1.5 border transition-all cursor-pointer ${
+                      editing.isRecurring
+                        ? "bg-sky-50 text-sky-700 border-sky-500 ring-1 ring-sky-500"
+                        : "bg-white text-slate-600 border-line hover:bg-slate-50"
+                    }`}
+                  >
+                    <RotateCcw size={13} />
+                    <span>Weekly Recurring</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setEditing({ ...editing, isRecurring: false })}
+                    className={`py-2 px-3 rounded-md text-xs font-bold flex items-center justify-center gap-1.5 border transition-all cursor-pointer ${
+                      !editing.isRecurring
+                        ? "bg-sky-50 text-sky-700 border-sky-500 ring-1 ring-sky-500"
+                        : "bg-white text-slate-600 border-line hover:bg-slate-50"
+                    }`}
+                  >
+                    <Calendar size={13} />
+                    <span>One-Time / Special Date</span>
+                  </button>
                 </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {editing.isRecurring ? (
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                      Recurring Day *
+                    </label>
+                    <select
+                      value={editing.recurringDay || "Wednesday"}
+                      onChange={(e) =>
+                        setEditing({
+                          ...editing,
+                          recurringDay: e.target.value,
+                          date: `Every ${e.target.value}`,
+                        })
+                      }
+                      className="w-full px-3 py-2 border border-line rounded-md focus:outline-none focus:border-sky-500 bg-white text-slate-800 text-sm font-medium"
+                    >
+                      <option value="Wednesday">Every Wednesday (Prophetic Checking)</option>
+                      <option value="Tuesday – Friday">Tuesday – Friday (Teaching Hour)</option>
+                      <option value="Thursday">Every Thursday</option>
+                      <option value="Friday">Every Friday (Deliverance)</option>
+                      <option value="Sunday">Every Sunday (Official Service)</option>
+                      <option value="Sunday Morning">Every Sunday Morning</option>
+                      <option value="Saturday">Every Saturday</option>
+                      <option value="Monday">Every Monday</option>
+                    </select>
+                  </div>
+                ) : (
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                      Event Date *
+                    </label>
+                    <input
+                      type="date"
+                      value={editing.date}
+                      onChange={(e) => setEditing({ ...editing, date: e.target.value })}
+                      className="w-full px-3 py-2 border border-line rounded-md focus:outline-none focus:border-sky-500"
+                    />
+                  </div>
+                )}
                 <div>
                   <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Time</label>
                   <input
