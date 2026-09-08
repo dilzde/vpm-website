@@ -59,10 +59,21 @@ export default function Footer() {
                 <Link href="/radio" className="hover:text-[var(--color-accent)] transition-colors">Asriel Radio Live</Link>
               </li>
               <li>
-                <Link href="/branches" className="hover:text-[var(--color-accent)] transition-colors">Sanctuary Branches</Link>
+                <Link href="/contact" className="hover:text-[var(--color-accent)] transition-colors">Contact &amp; Pastoral Desk</Link>
               </li>
               <li>
-                <Link href="/events" className="hover:text-[var(--color-accent)] transition-colors">Gatherings & Schedule</Link>
+                <Link href="/give" className="hover:text-[var(--color-accent)] transition-colors">Give / Partnership</Link>
+              </li>
+              <li>
+                <a
+                  href="https://www.amazon.com/s?i=digital-text&rh=p_27%3AProphet%2BDr%2BSamo%2BMtishiby&s=relevancerank&text=Prophet+Dr+Samo+Mtishiby&ref=dp_byline_sr_ebooks_1"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-[#FF9900] transition-colors inline-flex items-center gap-1"
+                >
+                  <span>Spiritual Books (Amazon)</span>
+                  <span className="text-[10px] text-[#FF9900]">↗</span>
+                </a>
               </li>
             </ul>
           </div>

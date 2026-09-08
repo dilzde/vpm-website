@@ -4,16 +4,17 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Menu, X, Heart, Radio, Play, Pause } from "lucide-react";
+import { Menu, X, Heart, Radio, Play, Pause, ChevronRight, Phone, MessageCircle } from "lucide-react";
 import { useRadioPlayer } from "@/lib/hooks/useRadioPlayer";
 
 const NAV_ITEMS = [
   { label: "Home", href: "/" },
   { label: "About", href: "/about" },
+  { label: "Events", href: "/events" },
+  { label: "Branches", href: "/branches" },
   { label: "Media", href: "/media" },
   { label: "Radio", href: "/radio" },
-  { label: "Branches", href: "/branches" },
-  { label: "Events", href: "/events" },
+  { label: "Contact", href: "/contact" },
 ];
 
 export default function Header() {
@@ -61,23 +62,28 @@ export default function Header() {
               priority
             />
           </div>
-          <span className="font-sans font-extrabold tracking-tight text-lg sm:text-xl text-[var(--color-ink)] hidden sm:inline-block">
-            VPM International
-          </span>
+          <div className="flex flex-col">
+            <span className="font-sans font-extrabold tracking-tight text-lg sm:text-xl text-[var(--color-ink)] leading-tight">
+              VPM International
+            </span>
+            <span className="text-[10px] font-sans font-bold tracking-widest uppercase text-[var(--color-slate)] hidden sm:block">
+              Voice of The Potter&apos;s Messengers
+            </span>
+          </div>
         </Link>
 
         {/* Center-Right: Desktop Nav Links & Give CTA */}
-        <div className="hidden lg:flex items-center gap-8">
+        <div className="hidden lg:flex items-center gap-6 xl:gap-8">
           
           {/* Nav Links */}
-          <nav className="flex items-center gap-6" aria-label="Main navigation">
+          <nav className="flex items-center gap-5 xl:gap-6" aria-label="Main navigation">
             {NAV_ITEMS.map((item) => {
               const active = pathname === item.href;
               return (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`text-sm font-sans font-semibold uppercase tracking-[0.03em] relative py-1 transition-colors ${
+                  className={`text-xs xl:text-sm font-sans font-semibold uppercase tracking-[0.03em] relative py-1 transition-colors ${
                     active ? "text-[var(--color-ink)] font-bold" : "text-[var(--color-slate)] hover:text-[var(--color-ink)]"
                   }`}
                 >
@@ -90,90 +96,145 @@ export default function Header() {
             })}
           </nav>
 
-          {/* Solid Black Pill Button (Give) */}
-          <div className="pl-6 border-l border-[var(--color-line)]">
+          {/* Desktop Right Action Area: Live Radio Quick Pill + Give Pill */}
+          <div className="flex items-center gap-3 pl-4 border-l border-[var(--color-line)]">
+            <button
+              type="button"
+              onClick={() => toggle()}
+              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-sans font-bold border transition-all cursor-pointer ${
+                isPlaying
+                  ? "bg-[#29A3E4] text-white border-[#29A3E4] shadow-sm"
+                  : "bg-[var(--color-surface-alt)] text-[var(--color-ink)] border-[var(--color-line)] hover:border-[#29A3E4]"
+              }`}
+              title={isPlaying ? "Pause Asriel Radio" : "Listen to Asriel Radio Live"}
+            >
+              <Radio size={13} className={isPlaying ? "text-white animate-pulse" : "text-[#29A3E4]"} />
+              <span>{isPlaying ? "On Air" : "Radio"}</span>
+              {isPlaying ? <Pause size={11} className="fill-current" /> : <Play size={11} className="fill-current ml-0.5" />}
+            </button>
+
             <Link
               href="/give"
-              className="inline-flex items-center gap-1.5 px-6 py-2.5 text-sm font-sans font-bold text-white bg-[#0B0F17] hover:bg-[#1F2937] hover:scale-105 rounded-full transition-all shadow-xs"
+              className="inline-flex items-center gap-1.5 px-5 py-2 text-xs xl:text-sm font-sans font-bold text-white bg-[#0B0F17] hover:bg-[#1F2937] hover:scale-105 rounded-full transition-all shadow-xs"
               id="give-cta"
             >
-              <Heart size={14} className="fill-current" />
+              <Heart size={13} className="fill-current" />
               <span>Give</span>
             </Link>
           </div>
 
         </div>
 
-        {/* Android & Mobile Ultra-Responsive Hamburger Toggle Button */}
-        <button
-          type="button"
-          onClick={() => setMobileOpen((prev) => !prev)}
-          aria-label={mobileOpen ? "Close menu" : "Open menu"}
-          aria-expanded={mobileOpen}
-          id="mobile-menu-toggle"
-          className="lg:hidden min-w-[44px] min-h-[44px] p-2.5 rounded-full bg-[var(--color-surface-alt)] border border-[var(--color-line)] text-[var(--color-ink)] flex items-center justify-center active:scale-95 touch-manipulation cursor-pointer shadow-xs"
-        >
-          {mobileOpen ? <X size={22} className="stroke-[2.5]" /> : <Menu size={22} className="stroke-[2.5]" />}
-        </button>
+        {/* Mobile Action Hub (Radio Quick Pill + Hamburger) */}
+        <div className="flex lg:hidden items-center gap-2.5">
+          <button
+            type="button"
+            onClick={() => toggle()}
+            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-sans font-bold border transition-all cursor-pointer ${
+              isPlaying
+                ? "bg-[#29A3E4] text-white border-[#29A3E4] shadow-xs"
+                : "bg-[var(--color-surface-alt)] text-[var(--color-ink)] border-[var(--color-line)]"
+            }`}
+            aria-label={isPlaying ? "Pause Radio" : "Listen to Radio Live"}
+          >
+            <Radio size={13} className={isPlaying ? "text-white animate-pulse" : "text-[#29A3E4]"} />
+            <span className="text-[11px] font-bold">{isPlaying ? "Live" : "Radio"}</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setMobileOpen((prev) => !prev)}
+            aria-label={mobileOpen ? "Close menu" : "Open menu"}
+            aria-expanded={mobileOpen}
+            id="mobile-menu-toggle"
+            className="min-w-[42px] min-h-[42px] p-2 rounded-full bg-[var(--color-surface-alt)] border border-[var(--color-line)] text-[var(--color-ink)] flex items-center justify-center active:scale-95 touch-manipulation cursor-pointer shadow-xs"
+          >
+            {mobileOpen ? <X size={20} className="stroke-[2.5]" /> : <Menu size={20} className="stroke-[2.5]" />}
+          </button>
+        </div>
 
       </div>
 
       {/* Android & Mobile Slide-In Fullscreen Panel */}
       {mobileOpen && (
         <div
-          className="fixed top-[72px] left-0 right-0 bottom-0 z-[100] bg-[var(--color-surface)] text-[var(--color-ink)] lg:hidden flex flex-col px-6 py-8 h-[calc(100dvh-72px)] overflow-y-auto shadow-2xl border-t border-[var(--color-line)]"
+          className="fixed top-[72px] left-0 right-0 bottom-0 z-[100] bg-[var(--color-surface)] text-[var(--color-ink)] lg:hidden flex flex-col justify-between px-6 py-6 h-[calc(100dvh-72px)] overflow-y-auto shadow-2xl border-t border-[var(--color-line)]"
           style={{ WebkitOverflowScrolling: "touch" }}
         >
-          
-          {/* Action CTAs */}
-          <div className="pb-6 border-b border-[var(--color-line)] mb-6 space-y-3">
-            <Link
-              href="/give"
-              onClick={() => setMobileOpen(false)}
-              className="inline-flex items-center justify-center gap-2 w-full py-3.5 text-base font-sans font-bold text-white bg-[#0B0F17] hover:bg-[#1F2937] rounded-full shadow-md active:scale-98 transition-all"
-            >
-              <Heart size={18} className="fill-current" />
-              <span>Give / Support Mission</span>
-            </Link>
+          <div>
+            {/* Action CTAs */}
+            <div className="pb-5 border-b border-[var(--color-line)] mb-5 space-y-2.5">
+              <Link
+                href="/give"
+                onClick={() => setMobileOpen(false)}
+                className="inline-flex items-center justify-center gap-2 w-full py-3 text-sm font-sans font-bold text-white bg-[#0B0F17] hover:bg-[#1F2937] rounded-full shadow-md active:scale-98 transition-all"
+              >
+                <Heart size={16} className="fill-current text-[#DC2626]" />
+                <span>Give / Support Mission</span>
+              </Link>
 
-            {/* Quick Radio Play Toggle inside Mobile Menu */}
-            <button
-              type="button"
-              onClick={() => toggle()}
-              className="inline-flex items-center justify-between w-full px-5 py-3 rounded-full bg-[#0B0F17] text-white text-xs font-sans font-bold shadow-xs cursor-pointer active:scale-98 transition-all"
-            >
-              <span className="flex items-center gap-2">
-                <Radio size={16} className="text-[#29A3E4]" />
-                <span>Asriel Radio 24/7</span>
-              </span>
-              <span className="flex items-center gap-1 text-[#29A3E4] font-extrabold">
-                {isPlaying ? <Pause size={14} className="fill-[#29A3E4]" /> : <Play size={14} className="fill-[#29A3E4]" />}
-                <span>{isPlaying ? "Pause" : "Listen Live"}</span>
-              </span>
-            </button>
+              {/* Quick Radio Play Toggle inside Mobile Menu */}
+              <button
+                type="button"
+                onClick={() => toggle()}
+                className="inline-flex items-center justify-between w-full px-4 py-2.5 rounded-full bg-[var(--color-surface-alt)] border border-[var(--color-line)] text-[var(--color-ink)] text-xs font-sans font-bold shadow-xs cursor-pointer active:scale-98 transition-all"
+              >
+                <span className="flex items-center gap-2">
+                  <Radio size={15} className="text-[#29A3E4]" />
+                  <span>Asriel Radio 24/7 Global Stream</span>
+                </span>
+                <span className="flex items-center gap-1 text-[#29A3E4] font-extrabold">
+                  {isPlaying ? <Pause size={13} className="fill-[#29A3E4]" /> : <Play size={13} className="fill-[#29A3E4]" />}
+                  <span>{isPlaying ? "Pause" : "Play"}</span>
+                </span>
+              </button>
+            </div>
+
+            {/* Navigation Links */}
+            <nav className="flex flex-col divide-y divide-[var(--color-line)]" aria-label="Mobile navigation">
+              {NAV_ITEMS.map((item) => {
+                const active = pathname === item.href;
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => setMobileOpen(false)}
+                    className={`text-base font-sans font-bold tracking-wide uppercase py-3.5 transition-colors flex items-center justify-between ${
+                      active ? "text-[#0B0F17] font-black" : "text-[var(--color-slate)] hover:text-[var(--color-ink)]"
+                    }`}
+                  >
+                    <span>{item.label}</span>
+                    <div className="flex items-center gap-2">
+                      {active && (
+                        <span className="w-2 h-2 rounded-full bg-[var(--color-accent)]" />
+                      )}
+                      <ChevronRight size={16} className="text-[var(--color-slate)]/50" />
+                    </div>
+                  </Link>
+                );
+              })}
+            </nav>
           </div>
 
-          {/* Navigation Links */}
-          <nav className="flex flex-col gap-5" aria-label="Mobile navigation">
-            {NAV_ITEMS.map((item) => {
-              const active = pathname === item.href;
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  onClick={() => setMobileOpen(false)}
-                  className={`text-xl font-sans font-extrabold tracking-wide uppercase py-1 transition-colors flex items-center justify-between ${
-                    active ? "text-[var(--color-ink)] font-black text-2xl" : "text-[var(--color-slate)] hover:text-[var(--color-ink)]"
-                  }`}
-                >
-                  <span>{item.label}</span>
-                  {active && (
-                    <span className="w-2.5 h-2.5 rounded-full bg-[var(--color-accent)]" />
-                  )}
-                </Link>
-              );
-            })}
-          </nav>
+          {/* Pastoral Desk Quick Contact Footer inside Mobile Menu */}
+          <div className="pt-4 border-t border-[var(--color-line)] mt-4 space-y-2">
+            <p className="text-[11px] font-sans font-bold text-[var(--color-slate)] uppercase tracking-wider">
+              Pastoral Desk &amp; Inquiry
+            </p>
+            <div className="flex items-center justify-between text-xs font-sans text-[var(--color-ink)] font-bold">
+              <a href="tel:+254794731831" className="flex items-center gap-1.5 hover:underline">
+                <Phone size={13} className="text-[var(--color-accent)]" />
+                <span>+254 794 731 831</span>
+              </a>
+              <Link
+                href="/contact"
+                onClick={() => setMobileOpen(false)}
+                className="text-xs text-[#1B5299] hover:underline"
+              >
+                Directions →
+              </Link>
+            </div>
+          </div>
 
         </div>
       )}

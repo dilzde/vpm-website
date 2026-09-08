@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
-import { ArrowUpRight, Radio, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowUpRight, Radio, ChevronLeft, ChevronRight, Sparkles } from "lucide-react";
 import PlaceholderCongregation from "../placeholders/PlaceholderCongregation";
 import { useCarouselImages } from "@/lib/hooks/useCarouselImages";
 
@@ -24,25 +24,24 @@ export default function HeroSection() {
     return () => { timerRef.current && clearInterval(timerRef.current); };
   }, [count, go]);
 
-  // Reset index when images change (e.g. admin deletes one)
   useEffect(() => {
     setCurrent((p) => (count > 0 ? Math.min(p, count - 1) : 0));
   }, [count]);
 
   return (
     <section
-      className="bg-[var(--color-surface)] text-[var(--color-ink)] pt-10 pb-14 sm:pt-14 sm:pb-20 md:pt-16 md:pb-24 border-b border-[var(--color-line)] relative overflow-hidden"
+      className="bg-[var(--color-surface)] text-[var(--color-ink)] pt-8 pb-12 sm:pt-14 sm:pb-20 md:pt-16 md:pb-24 border-b border-[var(--color-line)] relative overflow-hidden"
       id="hero-section"
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 w-full flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
         
-        {/* Left Column (Expertly arranged, clean and commanding on mobile) */}
+        {/* Left Column: Heading, Value Proposition & Actions */}
         <div className="w-full lg:w-1/2 flex flex-col items-start text-left space-y-5 sm:space-y-6">
           
           {/* Eyebrow Pill */}
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[var(--color-surface-alt)] border border-[var(--color-line)] text-xs font-sans font-bold text-[var(--color-anchor-olive)] uppercase tracking-wider">
             <span className="w-2 h-2 rounded-full bg-[#29A3E4] animate-pulse" />
-            <span>Voice of The Potter&apos;s Messengers Ministry</span>
+            <span>Voice of The Potter&apos;s Messengers</span>
           </div>
 
           {/* Main Title */}
@@ -52,11 +51,11 @@ export default function HeroSection() {
 
           {/* Subtitle */}
           <p className="text-sm sm:text-base md:text-lg text-[var(--color-slate)] max-w-lg leading-relaxed font-sans font-normal">
-            Experience the power of God&apos;s word through prophetic revelations, spiritual guidance, and a living community of prayer and revival.
+            Experience the power of God&apos;s word through prophetic revelations, spiritual guidance, and an active national prayer altar led by Prophet Dr. Samo Mtishiby.
           </p>
 
           {/* Primary Action Buttons */}
-          <div className="pt-1 flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 w-full sm:w-auto">
+          <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 w-full sm:w-auto">
             <Link
               href="/contact"
               className="inline-flex items-center justify-center gap-2 px-8 py-4 text-sm sm:text-base font-sans font-bold text-white bg-[var(--color-navy-900)] hover:bg-[#1A3A6B] hover:scale-[1.02] rounded-full transition-all shadow-md group text-center"
@@ -66,14 +65,14 @@ export default function HeroSection() {
             </Link>
             <Link
               href="/media"
-              className="inline-flex items-center justify-center gap-2 px-6 py-4 text-sm sm:text-base font-sans font-semibold text-[var(--color-ink)] bg-white border border-[var(--color-line)] hover:bg-[var(--color-surface-alt)] hover:scale-[1.02] rounded-full transition-all text-center shadow-xs"
+              className="inline-flex items-center justify-center gap-2 px-7 py-4 text-sm sm:text-base font-sans font-semibold text-[var(--color-ink)] bg-white border border-[var(--color-line)] hover:bg-[var(--color-surface-alt)] hover:scale-[1.02] rounded-full transition-all text-center shadow-xs"
             >
               <span>Watch Sermons</span>
             </Link>
           </div>
 
           {/* Mobile-Only Live Radio Tap-to-Listen Card */}
-          <div className="lg:hidden w-full pt-1">
+          <div className="lg:hidden w-full pt-2">
             <Link
               href="/radio"
               className="w-full flex items-center justify-between p-3.5 rounded-2xl bg-gradient-to-r from-[#0F2540] to-[#1A3A6B] text-white border border-[#29A3E4]/30 shadow-md hover:scale-[1.01] transition-all"
@@ -98,10 +97,9 @@ export default function HeroSection() {
 
         </div>
 
-        {/* Right Column: Hero image or carousel (Desktop only — removed from mobile to give a clean, fast, perfectly organized screen) */}
-        <div className="hidden lg:block lg:w-1/2 relative">
-
-          <div className="w-full h-[460px] rounded-[var(--radius-image)] overflow-hidden border border-[var(--color-line)] bg-white shadow-[var(--shadow-xl)] relative">
+        {/* Right Column: Hero Visual Image / Carousel */}
+        <div className="w-full lg:w-1/2 relative mt-4 lg:mt-0">
+          <div className="w-full h-64 sm:h-80 lg:h-[460px] rounded-[var(--radius-image)] overflow-hidden border border-[var(--color-line)] bg-white shadow-[var(--shadow-xl)] relative">
             {count > 0 ? (
               <>
                 {/* Slides */}
@@ -125,9 +123,9 @@ export default function HeroSection() {
                 <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-navy-900)]/70 via-transparent to-transparent pointer-events-none" />
 
                 {/* Caption */}
-                <div className="absolute bottom-6 left-6 right-16 text-white pointer-events-none">
+                <div className="absolute bottom-4 left-4 right-16 text-white pointer-events-none sm:bottom-6 sm:left-6">
                   {images[current]?.caption && (
-                    <p className="text-sm font-sans font-semibold">{images[current].caption}</p>
+                    <p className="text-xs sm:text-sm font-sans font-semibold">{images[current].caption}</p>
                   )}
                 </div>
 
@@ -136,14 +134,14 @@ export default function HeroSection() {
                   <>
                     <button
                       onClick={() => go(-1)}
-                      className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 bg-black/40 hover:bg-black/70 text-white rounded-full flex items-center justify-center transition-colors cursor-pointer"
+                      className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 sm:w-9 sm:h-9 bg-black/40 hover:bg-black/70 text-white rounded-full flex items-center justify-center transition-colors cursor-pointer"
                       aria-label="Previous image"
                     >
                       <ChevronLeft size={18} />
                     </button>
                     <button
                       onClick={() => go(1)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 bg-black/40 hover:bg-black/70 text-white rounded-full flex items-center justify-center transition-colors cursor-pointer"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 sm:w-9 sm:h-9 bg-black/40 hover:bg-black/70 text-white rounded-full flex items-center justify-center transition-colors cursor-pointer"
                       aria-label="Next image"
                     >
                       <ChevronRight size={18} />
@@ -166,18 +164,18 @@ export default function HeroSection() {
               <>
                 <PlaceholderCongregation />
                 <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-navy-900)]/70 via-transparent to-transparent" />
-                <div className="absolute bottom-6 left-6 right-6 text-white">
-                  <span className="text-xs font-sans font-bold uppercase tracking-wider text-[var(--color-accent)] block mb-1">
+                <div className="absolute bottom-4 left-4 right-4 text-white sm:bottom-6 sm:left-6">
+                  <span className="text-[11px] sm:text-xs font-sans font-bold uppercase tracking-wider text-[var(--color-accent)] block mb-1">
                     Nairobi Ministry Headquarters — Mlolongo
                   </span>
-                  <h3 className="font-sans text-xl font-bold">Worship &amp; Prophetic Service</h3>
+                  <h3 className="font-sans text-base sm:text-xl font-bold">Worship &amp; Prophetic Service</h3>
                 </div>
               </>
             )}
           </div>
 
           {/* Desktop floating badge */}
-          <div className="absolute -bottom-5 -left-5 bg-white border border-[var(--color-line)] rounded-2xl p-4 shadow-xl flex items-center gap-3 z-20 max-w-xs">
+          <div className="hidden sm:flex absolute -bottom-4 -left-4 bg-white border border-[var(--color-line)] rounded-2xl p-3.5 shadow-xl items-center gap-3 z-20 max-w-xs">
             <div className="w-10 h-10 rounded-xl bg-[#29A3E4] text-white flex items-center justify-center font-bold shrink-0 shadow-sm">
               <Radio size={20} />
             </div>
@@ -186,7 +184,7 @@ export default function HeroSection() {
                 24/7 Live Radio
               </p>
               <p className="text-[11px] font-sans text-[var(--color-slate)]">
-                Broadcasting Global Faith Stream
+                Continuous Faith Broadcast
               </p>
             </div>
           </div>

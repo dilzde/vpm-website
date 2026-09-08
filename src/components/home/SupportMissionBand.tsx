@@ -45,7 +45,7 @@ export default function SupportMissionBand() {
                 href="/give"
                 className="inline-flex items-center justify-center gap-2 px-8 py-4 text-base font-sans font-bold text-[#0B0F17] bg-white hover:bg-[#FAF7F2] hover:scale-105 rounded-full transition-all shadow-xl group"
               >
-                <span>Share with VPM International</span>
+                <span>Give &amp; Partner with VPM</span>
                 <ArrowUpRight size={18} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform text-[#0B0F17]" />
               </Link>
             </div>

@@ -18,8 +18,8 @@ export default function BookingCarousel() {
       title: "Submit Prayer Needs",
       body: "Share your prayer requests and praise reports with us. Our 24/7 intercessory prayer shield will stand with you in faith.",
       icon: MessageCircle,
-      ctaLabel: "Request Prayer",
-      ctaUrl: "/prayer",
+      ctaLabel: "Contact Pastoral Desk",
+      ctaUrl: "/contact",
       external: false,
     },
     {
