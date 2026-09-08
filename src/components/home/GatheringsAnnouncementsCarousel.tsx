@@ -5,29 +5,20 @@ import Link from "next/link";
 import { Clock, Calendar, ChevronLeft, ChevronRight, Sparkles, ArrowRight } from "lucide-react";
 import { getCurrentOrNextService, CurrentOrNextService, RECURRING_SCHEDULE } from "@/lib/data/schedule";
 import type { Announcement } from "@/lib/announcement-types";
+import type { SiteEvent } from "@/lib/event-types";
 
 export interface AnnouncementSlide {
   id: string;
-  type: "schedule" | "announcement";
+  type: "schedule" | "announcement" | "event";
   title: string;
   subtitle: string;
   time: string;
   tag: string;
-  isHighImportance?: boolean;
   platform?: string;
+  dateVal?: number;
 }
 
-const CAROUSEL_SLIDES: AnnouncementSlide[] = [
-  {
-    id: "prophetic-teaching",
-    type: "schedule",
-    tag: "TUESDAY – FRIDAY",
-    title: "Prophetic Teaching Hour",
-    subtitle: "Prophet Dr. Samo Mtishiby holds live teachings streaming online. Listen live on YouTube & Asriel Radio.",
-    time: "8:00 PM – 10:00 PM",
-    platform: "YouTube (Asriel TV) & asrielradio.com",
-    isHighImportance: true,
-  },
+const WEEKLY_SCHEDULE_SLIDES: AnnouncementSlide[] = [
   {
     id: "prophetic-checking",
     type: "schedule",
@@ -36,7 +27,6 @@ const CAROUSEL_SLIDES: AnnouncementSlide[] = [
     subtitle: "Personal prophetic guidance, consultation, and prayer check-in with the ministry presbytery.",
     time: "11:00 AM – 3:00 PM",
     platform: "Sanctuary Altars",
-    isHighImportance: false,
   },
   {
     id: "deliverance-service",
@@ -46,7 +36,6 @@ const CAROUSEL_SLIDES: AnnouncementSlide[] = [
     subtitle: "Intercessory warfare, breaking strongholds, and deliverance prayer for all believers.",
     time: "4:00 PM – 6:00 PM",
     platform: "Sanctuary Altars",
-    isHighImportance: false,
   },
   {
     id: "sunday-interactive",
@@ -56,7 +45,6 @@ const CAROUSEL_SLIDES: AnnouncementSlide[] = [
     subtitle: "A wonderful morning worship and interactive session with Prophet Dr. Samo Mtishiby.",
     time: "5:30 AM – 8:00 AM",
     platform: "Asriel Radio Live",
-    isHighImportance: true,
   },
   {
     id: "sunday-official",
@@ -66,30 +54,54 @@ const CAROUSEL_SLIDES: AnnouncementSlide[] = [
     subtitle: "Main weekly celebration service, prophetic word, and territorial worship. All believers are encouraged to join!",
     time: "8:30 AM – 4:00 PM",
     platform: "Nairobi HQ (Mlolongo) & All Sanctuaries",
-    isHighImportance: true,
   },
   {
-    id: "announcement-convention",
-    type: "announcement",
-    tag: "SPECIAL MINISTRY ANNOUNCEMENT",
-    title: "Prophetic Revival Convention",
-    subtitle: "Special regional gathering and intercessory prayer convention. Purpose to attend and bring family.",
-    time: "Coming Soon",
-    platform: "Nairobi HQ (Family Bank, Mlolongo)",
-    isHighImportance: true,
+    id: "prophetic-teaching",
+    type: "schedule",
+    tag: "TUESDAY – FRIDAY",
+    title: "Prophetic Teaching Hour",
+    subtitle: "Prophet Dr. Samo Mtishiby holds live teachings streaming online. Listen live on YouTube & Asriel Radio.",
+    time: "8:00 PM – 10:00 PM",
+    platform: "YouTube (Asriel TV) & asrielradio.com",
   },
 ];
 
 export default function GatheringsAnnouncementsCarousel({
   initialAnnouncements,
+  initialEvents,
 }: {
   initialAnnouncements?: Announcement[];
+  initialEvents?: SiteEvent[];
 }) {
   const [scheduleState, setScheduleState] = useState<CurrentOrNextService | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const carouselRef = useRef<HTMLDivElement>(null);
 
-  const dynamicSlides: AnnouncementSlide[] = (initialAnnouncements || []).map((a) => ({
+  // Map dynamic events from Bazu, sorted chronologically ascending (upcoming soonest first)
+  const dynamicEventSlides: AnnouncementSlide[] = (initialEvents || [])
+    .filter((e) => e.active)
+    .map((e) => {
+      const dateObj = e.date ? new Date(e.date) : null;
+      const hasValidDate = dateObj && !isNaN(dateObj.getTime());
+      const dateTag = hasValidDate
+        ? dateObj.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" }).toUpperCase()
+        : "UPCOMING GATHERING";
+
+      return {
+        id: e.id,
+        type: "event" as const,
+        tag: dateTag,
+        title: e.title,
+        subtitle: e.description,
+        time: e.time || "Schedule TBA",
+        platform: e.location || (e.isOnline ? "Online Live Stream" : "Sanctuary"),
+        dateVal: hasValidDate ? dateObj.getTime() : 9999999999999,
+      };
+    })
+    .sort((a, b) => (a.dateVal || 0) - (b.dateVal || 0));
+
+  // Map dynamic announcements
+  const dynamicAnnouncementSlides: AnnouncementSlide[] = (initialAnnouncements || []).map((a) => ({
     id: a.id,
     type: "announcement" as const,
     tag: a.dateBadge || "MINISTRY UPDATE",
@@ -97,12 +109,14 @@ export default function GatheringsAnnouncementsCarousel({
     subtitle: a.body,
     time: a.time || "Notice",
     platform: "VPM Sanctuaries & Online",
-    isHighImportance: true,
   }));
 
-  const activeSlides = dynamicSlides.length > 0
-    ? [...dynamicSlides, ...CAROUSEL_SLIDES.filter((s) => s.type === "schedule")]
-    : CAROUSEL_SLIDES;
+  // Combine: Upcoming dated events first (soonest first), followed by announcements and weekly schedules
+  const activeSlides: AnnouncementSlide[] = [
+    ...dynamicEventSlides,
+    ...dynamicAnnouncementSlides,
+    ...WEEKLY_SCHEDULE_SLIDES,
+  ];
 
   useEffect(() => {
     setScheduleState(getCurrentOrNextService());
@@ -209,27 +223,14 @@ export default function GatheringsAnnouncementsCarousel({
               return (
                 <div
                   key={slide.id}
-                  className={`bg-white border rounded-[var(--radius-eight)] p-6 flex flex-col justify-between shadow-[var(--shadow-card)] transition-all ${
-                    slide.isHighImportance
-                      ? "border-[var(--color-accent)] ring-1 ring-[var(--color-accent)]"
-                      : "border-[var(--color-line)]"
-                  }`}
+                  className="bg-white border border-[var(--color-line)] hover:border-[var(--color-accent)] rounded-[var(--radius-eight)] p-6 flex flex-col justify-between shadow-[var(--shadow-card)] transition-all"
                 >
                   <div>
                     {/* Badge Pill */}
                     <div className="flex items-center justify-between mb-4">
-                      <span className={`inline-block font-sans font-bold text-[10px] uppercase px-2.5 py-0.5 rounded-full tracking-wider ${
-                        slide.isHighImportance
-                          ? "bg-[var(--color-accent)] text-[var(--color-accent-ink)]"
-                          : "bg-[var(--color-surface-alt)] text-[var(--color-terracotta)]"
-                      }`}>
+                      <span className="inline-block font-sans font-bold text-[10px] uppercase px-2.5 py-0.5 rounded-full tracking-wider bg-[var(--color-surface-alt)] text-[#1B5299] border border-[var(--color-line)]">
                         {slide.tag}
                       </span>
-                      {slide.isHighImportance && (
-                        <span className="text-[10px] font-mono text-[var(--color-terracotta)] font-bold">
-                          HIGH PRIORITY
-                        </span>
-                      )}
                     </div>
 
                     <h3 className="font-sans text-xl font-extrabold text-[var(--color-ink)] mb-2 leading-snug">
@@ -267,27 +268,14 @@ export default function GatheringsAnnouncementsCarousel({
               return (
                 <div
                   key={`${slide.id}-${offset}`}
-                  className={`bg-white border rounded-[var(--radius-eight)] p-6 flex flex-col justify-between h-full shadow-[var(--shadow-card)] transition-all ${
-                    slide.isHighImportance
-                      ? "border-[var(--color-accent)] ring-1 ring-[var(--color-accent)]"
-                      : "border-[var(--color-line)]"
-                  }`}
+                  className="bg-white border border-[var(--color-line)] hover:border-[var(--color-accent)] rounded-[var(--radius-eight)] p-6 flex flex-col justify-between h-full shadow-[var(--shadow-card)] transition-all"
                 >
                   <div>
                     {/* Badge Pill */}
                     <div className="flex items-center justify-between mb-4">
-                      <span className={`inline-block font-sans font-bold text-[10px] uppercase px-2.5 py-0.5 rounded-full tracking-wider ${
-                        slide.isHighImportance
-                          ? "bg-[var(--color-accent)] text-[var(--color-accent-ink)]"
-                          : "bg-[var(--color-surface-alt)] text-[var(--color-terracotta)]"
-                      }`}>
+                      <span className="inline-block font-sans font-bold text-[10px] uppercase px-2.5 py-0.5 rounded-full tracking-wider bg-[var(--color-surface-alt)] text-[#1B5299] border border-[var(--color-line)]">
                         {slide.tag}
                       </span>
-                      {slide.isHighImportance && (
-                        <span className="text-[10px] font-mono text-[var(--color-terracotta)] font-bold">
-                          HIGH PRIORITY
-                        </span>
-                      )}
                     </div>
 
                     <h3 className="font-sans text-xl font-extrabold text-[var(--color-ink)] mb-2 leading-snug">
@@ -318,7 +306,7 @@ export default function GatheringsAnnouncementsCarousel({
 
         {/* Carousel Dot Indicators */}
         <div className="flex items-center justify-center gap-2 pt-2">
-          {CAROUSEL_SLIDES.map((_, idx) => (
+          {activeSlides.map((_, idx) => (
             <button
               key={idx}
               type="button"

@@ -210,7 +210,7 @@ async function checkChannelLive(channelId: string): Promise<YouTubeVideo | null>
 
 export async function getLiveStatus(): Promise<YouTubeVideo | null> {
   if (!API_KEY) {
-    return MOCK_LIVE_VIDEO;
+    return null;
   }
 
   try {
@@ -224,7 +224,7 @@ export async function getLiveStatus(): Promise<YouTubeVideo | null> {
 
     return null;
   } catch (error) {
-    return MOCK_LIVE_VIDEO;
+    return null;
   }
 }
 

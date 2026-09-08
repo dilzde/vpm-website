@@ -12,13 +12,15 @@ import BranchesPreview from "@/components/home/BranchesPreview";
 import ImageGallery from "@/components/home/ImageGallery";
 import { getAnnouncements } from "@/lib/announcements.server";
 import { getLivestreamConfig } from "@/lib/livestream.server";
+import { getEvents } from "@/lib/events.server";
 
 export const revalidate = 60; // Revalidate every minute for live status / playlist updates
 
 export default async function HomePage() {
-  const [announcements, livestreamConfig] = await Promise.all([
+  const [announcements, livestreamConfig, events] = await Promise.all([
     getAnnouncements(true).catch(() => []),
     getLivestreamConfig().catch(() => null),
+    getEvents(true).catch(() => []),
   ]);
 
   return (
@@ -30,7 +32,10 @@ export default async function HomePage() {
       <QuickActionsRow />
 
       {/* 3. Gatherings & Announcements Carousel + Real-Time Next Service Banner (Directly below Quick Actions) */}
-      <GatheringsAnnouncementsCarousel initialAnnouncements={announcements} />
+      <GatheringsAnnouncementsCarousel
+        initialAnnouncements={announcements}
+        initialEvents={events}
+      />
 
       {/* 4. Live & Radio Band */}
       <LiveRadioBand initialLivestreamConfig={livestreamConfig} />
