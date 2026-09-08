@@ -8,7 +8,7 @@ export default function BookingCarousel() {
   const cards = [
     {
       title: "Book a Ministry Session",
-      body: "Schedule a dedicated prayer, mentoring, or pastoral counseling appointment with our anointed ministry team.",
+      body: "Schedule a dedicated prayer, mentoring, or spiritual counseling appointment with our anointed ministry team.",
       icon: Calendar,
       ctaLabel: "Schedule Now",
       ctaUrl: bookingFormUrl,
@@ -18,7 +18,7 @@ export default function BookingCarousel() {
       title: "Submit Prayer Needs",
       body: "Share your prayer requests and praise reports with us. Our 24/7 intercessory prayer shield will stand with you in faith.",
       icon: MessageCircle,
-      ctaLabel: "Contact Pastoral Desk",
+      ctaLabel: "Contact Us",
       ctaUrl: "/contact",
       external: false,
     },

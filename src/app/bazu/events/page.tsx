@@ -19,6 +19,7 @@ const EMPTY: Omit<SiteEvent, "id"> = {
   order: 0,
   posterUrl: null,
   posterStoragePath: null,
+  displayMode: "details",
 };
 
 export default function AdminEventsPage() {
@@ -201,6 +202,9 @@ export default function AdminEventsPage() {
                     <span className={`px-2 py-0.5 rounded text-xs font-semibold ${ev.active ? "bg-emerald-50 text-emerald-700" : "bg-slate-200 text-slate-600"}`}>
                       {ev.active ? "Active" : "Hidden"}
                     </span>
+                    <span className="px-2 py-0.5 rounded text-xs font-semibold bg-indigo-50 text-indigo-700">
+                      {ev.displayMode === "poster_only" ? "🖼️ Poster Only" : ev.displayMode === "poster_details" ? "📰 Poster + Details" : "📝 Details Only"}
+                    </span>
                     {ev.isOnline && (
                       <span className="px-2 py-0.5 rounded text-xs font-semibold bg-sky-50 text-sky-700 flex items-center gap-1">
                         <Wifi size={11} /> Online Stream
@@ -354,20 +358,73 @@ export default function AdminEventsPage() {
                 </label>
               </div>
 
+              {/* Display Mode Selection (3 provisions requested) */}
+              <div className="pt-2 border-t border-line">
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1.5">
+                  Display Mode on Public Website *
+                </label>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setEditing({ ...editing, displayMode: "details" })}
+                    className={`p-2.5 rounded-lg border text-left transition-all cursor-pointer ${
+                      (editing.displayMode || "details") === "details"
+                        ? "border-sky-500 bg-sky-50/70 text-sky-900 ring-1 ring-sky-500"
+                        : "border-line bg-white hover:bg-slate-50 text-slate-700"
+                    }`}
+                  >
+                    <p className="text-xs font-bold">1. Details Only</p>
+                    <p className="text-[11px] text-slate-500 mt-0.5">Text schedule, venue &amp; info as is</p>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setEditing({ ...editing, displayMode: "poster_only" })}
+                    className={`p-2.5 rounded-lg border text-left transition-all cursor-pointer ${
+                      editing.displayMode === "poster_only"
+                        ? "border-sky-500 bg-sky-50/70 text-sky-900 ring-1 ring-sky-500"
+                        : "border-line bg-white hover:bg-slate-50 text-slate-700"
+                    }`}
+                  >
+                    <p className="text-xs font-bold">2. Poster Only</p>
+                    <p className="text-[11px] text-slate-500 mt-0.5">Full promotional event image/flyer</p>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setEditing({ ...editing, displayMode: "poster_details" })}
+                    className={`p-2.5 rounded-lg border text-left transition-all cursor-pointer ${
+                      editing.displayMode === "poster_details"
+                        ? "border-sky-500 bg-sky-50/70 text-sky-900 ring-1 ring-sky-500"
+                        : "border-line bg-white hover:bg-slate-50 text-slate-700"
+                    }`}
+                  >
+                    <p className="text-xs font-bold">3. Image + Details</p>
+                    <p className="text-[11px] text-slate-500 mt-0.5">Flyer image plus short details</p>
+                  </button>
+                </div>
+              </div>
+
               {/* Event Poster Upload */}
               <div className="pt-2 border-t border-line">
-                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Event Poster Image</label>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  Event Poster / Flyer Image
+                  {editing.displayMode === "poster_only" && <span className="text-amber-600 font-semibold ml-1">(Required for Poster Only)</span>}
+                </label>
                 <div className="flex items-center gap-3">
                   {editing.posterUrl ? (
                     <div className="flex items-center gap-3">
                       <img src={editing.posterUrl} alt="Poster" className="w-16 h-16 object-cover rounded border border-line" />
-                      <button
-                        type="button"
-                        onClick={() => setEditing({ ...editing, posterUrl: null, posterStoragePath: null })}
-                        className="text-xs text-red-600 hover:underline"
-                      >
-                        Remove Poster
-                      </button>
+                      <div>
+                        <p className="text-xs font-medium text-slate-700">Image attached</p>
+                        <button
+                          type="button"
+                          onClick={() => setEditing({ ...editing, posterUrl: null, posterStoragePath: null })}
+                          className="text-xs text-red-600 hover:underline"
+                        >
+                          Remove Image
+                        </button>
+                      </div>
                     </div>
                   ) : (
                     <div>
@@ -385,7 +442,7 @@ export default function AdminEventsPage() {
                         className="inline-flex items-center gap-2 px-3 py-1.5 border border-line rounded-md text-xs font-semibold text-slate-700 hover:bg-slate-50 transition-colors"
                       >
                         {uploadingPoster ? <Loader2 size={13} className="animate-spin" /> : <Upload size={13} />}
-                        {uploadingPoster ? "Uploading to GitHub..." : "Upload Poster"}
+                        {uploadingPoster ? "Uploading to GitHub..." : "Upload Poster Image"}
                       </button>
                     </div>
                   )}

@@ -169,30 +169,30 @@ export default function AboutPage() {
             <div className="space-y-2">
               <div className="flex items-center gap-2 text-sm font-bold text-[var(--color-ink)]">
                 <Clock size={16} className="text-[#29A3E4]" />
-                <span>24/7 Prophetic Prayer Altar</span>
+                <span>Prophetic Deliverance &amp; Altar</span>
               </div>
               <p className="text-xs text-[var(--color-slate)] leading-relaxed">
-                Continuous intercession for families, sickness, deliverance, and spiritual empowerment.
+                Led by Prophet Dr. Samo Mtishiby, hosting regular Wednesday Prophetic Checking (11 AM – 3 PM) and Sunday Divine Services (8:30 AM – 4 PM) with transformative testimonies.
               </p>
             </div>
 
             <div className="space-y-2">
               <div className="flex items-center gap-2 text-sm font-bold text-[var(--color-ink)]">
                 <BookOpen size={16} className="text-[#29A3E4]" />
-                <span>Published Prophetic Literature</span>
+                <span>Published Literature &amp; Media</span>
               </div>
               <p className="text-xs text-[var(--color-slate)] leading-relaxed">
-                Author of acclaimed spiritual books available internationally on Amazon for deep spiritual knowledge.
+                Authored by Prophet Dr. Samo Mtishiby, revelatory spiritual books published internationally on Amazon, accompanied by 24/7 global broadcasts on Asriel Radio (asrielradio.com).
               </p>
             </div>
 
             <div className="space-y-2">
               <div className="flex items-center gap-2 text-sm font-bold text-[var(--color-ink)]">
                 <MapPin size={16} className="text-[#29A3E4]" />
-                <span>Territorial Sanctuary Network</span>
+                <span>Nairobi HQ &amp; Sanctuary Network</span>
               </div>
               <p className="text-xs text-[var(--color-slate)] leading-relaxed">
-                Physical worship centres across Nairobi, Western, Coastal, and Rift Valley regions in Kenya.
+                Headquartered at Family Bank Tower, Mlolongo (Mombasa Road, Nairobi) with the mother altar in Kisumu and fellowships across Kenya ministering to thousands weekly.
               </p>
             </div>
           </div>
@@ -227,7 +227,7 @@ export default function AboutPage() {
               href="/contact"
               className="inline-flex items-center gap-2 px-6 py-4 rounded-full bg-white/10 border border-white/20 text-white font-sans font-bold text-sm hover:bg-white/20 transition-all"
             >
-              <span>Contact Pastoral Desk</span>
+              <span>Contact Us</span>
             </Link>
           </div>
         </div>

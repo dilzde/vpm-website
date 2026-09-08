@@ -35,27 +35,31 @@ export default function HeroSection() {
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 w-full flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
         
-        {/* Left Column: Heading, Value Proposition & Actions */}
-        <div className="w-full lg:w-1/2 flex flex-col items-start text-left space-y-5 sm:space-y-6">
+        {/* Left Column: Heading, Value Proposition & Actions with warm mobile backdrop */}
+        <div className="w-full lg:w-1/2 flex flex-col items-start text-left space-y-5 sm:space-y-6 relative p-5 sm:p-0 rounded-3xl sm:rounded-none bg-gradient-to-b from-[#FFFDF9] via-[#FAF5EA]/85 to-[#F5EFE0]/60 sm:bg-transparent sm:bg-none border border-[#EBE3D0] sm:border-0 shadow-sm sm:shadow-none overflow-hidden">
           
+          {/* Warm Mobile Ambient Glows */}
+          <div className="sm:hidden absolute -top-16 -right-16 w-52 h-52 bg-gradient-to-br from-amber-400/20 via-orange-300/10 to-transparent rounded-full blur-2xl pointer-events-none" />
+          <div className="sm:hidden absolute -bottom-12 -left-12 w-44 h-44 bg-gradient-to-tr from-sky-400/15 to-transparent rounded-full blur-2xl pointer-events-none" />
+
           {/* Eyebrow Pill */}
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[var(--color-surface-alt)] border border-[var(--color-line)] text-xs font-sans font-bold text-[var(--color-anchor-olive)] uppercase tracking-wider">
+          <div className="relative z-10 inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[var(--color-surface-alt)] sm:bg-[var(--color-surface-alt)] border border-[var(--color-line)] text-xs font-sans font-bold text-[var(--color-anchor-olive)] uppercase tracking-wider shadow-2xs">
             <span className="w-2 h-2 rounded-full bg-[#29A3E4] animate-pulse" />
             <span>Voice of The Potter&apos;s Messengers</span>
           </div>
 
           {/* Main Title */}
-          <h1 className="font-sans text-3xl sm:text-5xl lg:text-6xl text-[var(--color-ink)] font-extrabold leading-[1.12] tracking-tight">
+          <h1 className="relative z-10 font-sans text-3xl sm:text-5xl lg:text-6xl text-[var(--color-ink)] font-extrabold leading-[1.14] tracking-tight">
             Where Prophecies Come to Life
           </h1>
 
           {/* Subtitle */}
-          <p className="text-sm sm:text-base md:text-lg text-[var(--color-slate)] max-w-lg leading-relaxed font-sans font-normal">
+          <p className="relative z-10 text-sm sm:text-base md:text-lg text-[var(--color-slate)] max-w-lg leading-relaxed font-sans font-normal">
             Experience the power of God&apos;s word through prophetic revelations, spiritual guidance, and an active national prayer altar led by Prophet Dr. Samo Mtishiby.
           </p>
 
           {/* Primary Action Buttons */}
-          <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 w-full sm:w-auto">
+          <div className="relative z-10 pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 w-full sm:w-auto">
             <Link
               href="/contact"
               className="inline-flex items-center justify-center gap-2 px-8 py-4 text-sm sm:text-base font-sans font-bold text-white bg-[var(--color-navy-900)] hover:bg-[#1A3A6B] hover:scale-[1.02] rounded-full transition-all shadow-md group text-center"
@@ -72,7 +76,7 @@ export default function HeroSection() {
           </div>
 
           {/* Mobile-Only Live Radio Tap-to-Listen Card */}
-          <div className="lg:hidden w-full pt-2">
+          <div className="relative z-10 lg:hidden w-full pt-2">
             <Link
               href="/radio"
               className="w-full flex items-center justify-between p-3.5 rounded-2xl bg-gradient-to-r from-[#0F2540] to-[#1A3A6B] text-white border border-[#29A3E4]/30 shadow-md hover:scale-[1.01] transition-all"
@@ -174,17 +178,20 @@ export default function HeroSection() {
             )}
           </div>
 
-          {/* Desktop floating badge */}
-          <div className="hidden sm:flex absolute -bottom-4 -left-4 bg-white border border-[var(--color-line)] rounded-2xl p-3.5 shadow-xl items-center gap-3 z-20 max-w-xs">
-            <div className="w-10 h-10 rounded-xl bg-[#29A3E4] text-white flex items-center justify-center font-bold shrink-0 shadow-sm">
-              <Radio size={20} />
+          {/* Desktop floating status badge */}
+          <div className="hidden md:flex absolute -top-3.5 -right-3.5 bg-white border border-[var(--color-line)] rounded-2xl p-3 shadow-lg items-center gap-3 z-20">
+            <div className="w-9 h-9 rounded-xl bg-[#29A3E4] text-white flex items-center justify-center font-bold shrink-0 shadow-sm">
+              <Radio size={18} />
             </div>
             <div>
-              <p className="text-xs font-sans font-bold text-[var(--color-ink)] leading-snug">
-                24/7 Live Radio
-              </p>
-              <p className="text-[11px] font-sans text-[var(--color-slate)]">
-                Continuous Faith Broadcast
+              <div className="flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                <p className="text-xs font-sans font-bold text-[var(--color-ink)] leading-none">
+                  24/7 Live Radio
+                </p>
+              </div>
+              <p className="text-[11px] font-sans text-[var(--color-slate)] mt-0.5">
+                Asriel Global Broadcast
               </p>
             </div>
           </div>

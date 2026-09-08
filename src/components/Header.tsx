@@ -216,10 +216,10 @@ export default function Header() {
             </nav>
           </div>
 
-          {/* Pastoral Desk Quick Contact Footer inside Mobile Menu */}
+          {/* Contact & Inquiries Quick Footer inside Mobile Menu */}
           <div className="pt-4 border-t border-[var(--color-line)] mt-4 space-y-2">
             <p className="text-[11px] font-sans font-bold text-[var(--color-slate)] uppercase tracking-wider">
-              Pastoral Desk &amp; Inquiry
+              Contact Us &amp; Inquiries
             </p>
             <div className="flex items-center justify-between text-xs font-sans text-[var(--color-ink)] font-bold">
               <a href="tel:+254794731831" className="flex items-center gap-1.5 hover:underline">

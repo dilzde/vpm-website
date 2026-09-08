@@ -59,7 +59,7 @@ export default function Footer() {
                 <Link href="/radio" className="hover:text-[var(--color-accent)] transition-colors">Asriel Radio Live</Link>
               </li>
               <li>
-                <Link href="/contact" className="hover:text-[var(--color-accent)] transition-colors">Contact &amp; Pastoral Desk</Link>
+                <Link href="/contact" className="hover:text-[var(--color-accent)] transition-colors">Contact Us</Link>
               </li>
               <li>
                 <Link href="/give" className="hover:text-[var(--color-accent)] transition-colors">Give / Partnership</Link>
@@ -81,7 +81,7 @@ export default function Footer() {
           {/* Col 3: Main Church Location & Contact (§O & User Instruction) (5 cols) */}
           <div className="lg:col-span-5 space-y-4 text-xs">
             <h4 className="font-bold text-white uppercase tracking-wider text-sm mb-4">
-              Ministry Headquarters &amp; Pastoral Desk
+              Ministry Headquarters &amp; Office
             </h4>
 
             <div className="p-4 rounded-[var(--radius-eight)] bg-white/5 border border-white/10 space-y-3 text-white/85">

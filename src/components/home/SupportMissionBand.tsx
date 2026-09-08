@@ -50,13 +50,6 @@ export default function SupportMissionBand() {
               </Link>
             </div>
 
-            <div className="mt-5 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 text-xs font-sans text-white/90">
-              <span>M-Pesa Till:</span>
-              <strong className="font-mono text-white tracking-wider font-bold">6981760</strong>
-              <span className="text-white/60">•</span>
-              <span className="text-[#62B4EE] font-medium">Mission &amp; Charity Work</span>
-            </div>
-
           </div>
 
         </div>

@@ -26,7 +26,7 @@ export default function QuickActionsRow() {
                 Contact Us
               </h3>
               <p className="text-xs font-sans text-[var(--color-slate)]">
-                Reach our pastoral desk & branches
+                Reach our ministry office &amp; branches
               </p>
             </div>
           </Link>

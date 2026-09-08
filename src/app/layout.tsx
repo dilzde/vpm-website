@@ -23,6 +23,11 @@ export const metadata: Metadata = {
   },
   description:
     "VPM International is a ministry rooted in prayer, the prophetic word, and the transforming power of the Gospel. Watch sermons, listen to radio, request prayer, and connect with branches across Kenya.",
+  icons: {
+    icon: "/vpm_logo.png",
+    shortcut: "/vpm_logo.png",
+    apple: "/vpm_logo.png",
+  },
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_CHURCH_WEBSITE || "https://vpminternational.org"
   ),

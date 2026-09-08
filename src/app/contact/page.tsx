@@ -4,9 +4,9 @@ import Link from "next/link";
 import { MapPin, Phone, Mail, Clock, MessageCircle, ArrowUpRight, ShieldCheck, Heart } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Contact & Pastoral Desk | VPM International",
+  title: "Contact Us | VPM International",
   description:
-    "Get in touch with Voice of the Potter's Messengers. Contact our pastoral counselling desk, inquiry desk, or visit our headquarters in Nairobi or Kisumu.",
+    "Get in touch with Voice of the Potter's Messengers. Contact our ministry office, inquiry desk, or visit our headquarters in Nairobi or Kisumu.",
 };
 
 export default function ContactPage() {
@@ -17,13 +17,13 @@ export default function ContactPage() {
         {/* Header */}
         <div className="max-w-3xl pb-6 border-b border-[var(--color-line)]">
           <span className="text-xs font-sans font-bold tracking-widest text-[#1B5299] uppercase block mb-2">
-            PASTORAL DESK &amp; INQUIRIES
+            CONTACT US &amp; INQUIRIES
           </span>
           <h1 className="font-sans text-3xl sm:text-4xl lg:text-5xl text-[var(--color-ink)] font-extrabold mb-3 tracking-tight">
             Contact &amp; Sanctuary Inquiries
           </h1>
           <p className="text-sm sm:text-base text-[var(--color-slate)] font-sans leading-relaxed">
-            Have questions about services, prophetic counselling, sanctuary branches, or radio broadcasts? Reach out directly to Prophet Dr. Samo Mtishiby&apos;s pastoral presbytery.
+            Have questions about services, prophetic counselling, sanctuary branches, or radio broadcasts? Reach out directly to Voice of the Potter&apos;s Messengers Ministry Office.
           </p>
         </div>
 
@@ -127,15 +127,15 @@ export default function ContactPage() {
             </div>
           </div>
 
-          {/* Quick WhatsApp Counselling & Pastoral Action (5 cols) */}
+          {/* Quick WhatsApp Inquiries & Ministry Care (5 cols) */}
           <div className="lg:col-span-5 space-y-6">
             <div className="bg-[var(--color-anchor-olive)] text-white rounded-[var(--radius-image)] p-6 sm:p-8 space-y-4 shadow-[var(--shadow-xl)]">
               <div className="w-11 h-11 rounded-full bg-[#29A3E4] text-white flex items-center justify-center font-bold">
                 <MessageCircle size={22} />
               </div>
-              <h3 className="font-sans text-xl font-bold text-white">Direct WhatsApp Counselling</h3>
+              <h3 className="font-sans text-xl font-bold text-white">Direct WhatsApp Inquiries</h3>
               <p className="text-xs sm:text-sm text-white/85 font-sans leading-relaxed">
-                Need prophetic counseling, guidance, or have personal matters to discuss? Message our pastoral desk directly on WhatsApp.
+                Need spiritual guidance, ministry inquiries, or have personal matters to discuss? Message our ministry team directly on WhatsApp.
               </p>
               <a
                 href="https://wa.me/254759265819"
@@ -151,7 +151,7 @@ export default function ContactPage() {
             <div className="bg-white border border-[var(--color-line)] rounded-[var(--radius-image)] p-6 space-y-3 shadow-xs">
               <div className="flex items-center gap-2 text-[var(--color-ink)] font-bold text-sm">
                 <ShieldCheck size={18} className="text-[#1B5299]" />
-                <span>Confidential Pastoral Care</span>
+                <span>Confidential Ministry Care</span>
               </div>
               <p className="text-xs text-[var(--color-slate)] leading-relaxed">
                 All inquiries and counseling appointments are kept in strict confidentiality under the leadership of Prophet Dr. Samo Mtishiby.

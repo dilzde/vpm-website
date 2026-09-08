@@ -46,9 +46,9 @@ export default async function EventsPage() {
             </Link>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {events.map((ev) => {
-              // Parse date components safely
+              const mode = ev.displayMode || (ev.posterUrl ? "poster_details" : "details");
               const dateObj = ev.date ? new Date(ev.date) : null;
               const hasValidDate = dateObj && !isNaN(dateObj.getTime());
               const monthStr = hasValidDate
@@ -58,79 +58,178 @@ export default async function EventsPage() {
                 ? dateObj.toLocaleDateString("en-US", { day: "2-digit" })
                 : "TBA";
 
-              return (
-                <div
-                  key={ev.id}
-                  className="bg-white border border-[var(--color-line)] rounded-[var(--radius-eight)] overflow-hidden shadow-[var(--shadow-card)] flex flex-col justify-between transition-all hover:border-[var(--color-accent)] hover:shadow-md group"
-                >
-                  {ev.posterUrl && (
-                    <div className="w-full h-48 bg-slate-100 overflow-hidden relative border-b border-[var(--color-line)]">
+              // 1. POSTER ONLY MODE
+              if (mode === "poster_only" && ev.posterUrl) {
+                return (
+                  <div
+                    key={ev.id}
+                    className="bg-white border border-[var(--color-line)] rounded-2xl overflow-hidden shadow-xs hover:border-[var(--color-accent)] hover:shadow-md transition-all group flex flex-col justify-between"
+                  >
+                    <div className="w-full relative overflow-hidden bg-slate-900 aspect-3/4 max-h-[480px]">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={ev.posterUrl}
+                        alt={ev.title}
+                        className="w-full h-full object-contain group-hover:scale-102 transition-transform duration-300"
+                      />
+                    </div>
+                    <div className="p-4 border-t border-[var(--color-line)] flex items-center justify-between text-xs font-sans">
+                      <span className="font-bold text-[var(--color-ink)] truncate mr-2">{ev.title}</span>
+                      <Link
+                        href="/contact"
+                        className="shrink-0 text-xs font-bold text-[#1B5299] hover:underline"
+                      >
+                        Contact Us →
+                      </Link>
+                    </div>
+                  </div>
+                );
+              }
+
+              // 2. POSTER + SHORT DETAILS MODE
+              if (mode === "poster_details" && ev.posterUrl) {
+                return (
+                  <div
+                    key={ev.id}
+                    className="bg-white border border-[var(--color-line)] rounded-2xl overflow-hidden shadow-xs hover:border-[var(--color-accent)] hover:shadow-md transition-all group flex flex-col justify-between"
+                  >
+                    <div className="w-full h-52 sm:h-56 bg-slate-100 overflow-hidden relative border-b border-[var(--color-line)]">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
                         src={ev.posterUrl}
                         alt={ev.title}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       />
-                    </div>
-                  )}
-                  
-                  <div className="p-6 flex-1 flex flex-col justify-between space-y-5">
-                    <div>
-                      <div className="flex items-center justify-between gap-3 mb-3">
-                        <div className="flex items-center gap-2">
-                          <span className="w-12 h-12 rounded-[var(--radius-eight)] bg-[var(--color-surface-alt)] border border-[var(--color-line)] text-[var(--color-ink)] flex flex-col items-center justify-center font-sans shrink-0">
-                            <span className="text-[10px] font-bold text-[#1B5299] leading-none uppercase">{monthStr}</span>
-                            <span className="text-base font-extrabold leading-none mt-0.5">{dayStr}</span>
+                      {ev.isOnline && (
+                        <div className="absolute top-3 right-3">
+                          <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-600 text-white shadow-xs">
+                            <Wifi size={10} /> Online Stream
                           </span>
-                          <div>
-                            {ev.isOnline && (
-                              <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
-                                <Wifi size={10} /> Online Stream
-                              </span>
-                            )}
-                          </div>
                         </div>
-                      </div>
-
-                      <h2 className="font-sans text-xl font-bold text-[var(--color-ink)] tracking-tight mb-2 leading-snug">
-                        {ev.title}
-                      </h2>
-                      <p className="text-xs sm:text-sm text-[var(--color-slate)] font-sans line-clamp-3 leading-relaxed">
-                        {ev.description}
-                      </p>
+                      )}
                     </div>
 
-                    <div className="pt-4 border-t border-[var(--color-line)] space-y-2 text-xs font-sans text-[var(--color-ink)]">
-                      {ev.time && (
-                        <div className="flex items-center gap-2 text-[var(--color-slate)] font-medium">
-                          <Clock size={14} className="text-[#29A3E4] shrink-0" />
-                          <span>{ev.time}</span>
+                    <div className="p-5 sm:p-6 flex-1 flex flex-col justify-between space-y-4">
+                      <div>
+                        <div className="flex items-center gap-2 mb-3">
+                          <span className="w-11 h-11 rounded-xl bg-[var(--color-surface-alt)] border border-[var(--color-line)] text-[var(--color-ink)] flex flex-col items-center justify-center font-sans shrink-0">
+                            <span className="text-[9px] font-bold text-[#1B5299] leading-none uppercase">{monthStr}</span>
+                            <span className="text-sm font-extrabold leading-none mt-0.5">{dayStr}</span>
+                          </span>
+                          <h2 className="font-sans text-lg font-bold text-[var(--color-ink)] tracking-tight line-clamp-2 leading-snug">
+                            {ev.title}
+                          </h2>
                         </div>
-                      )}
-                      {ev.location && (
-                        <div className="flex items-center gap-2 text-[var(--color-slate)] font-medium">
-                          <MapPin size={14} className="text-[#29A3E4] shrink-0" />
-                          <span className="truncate">{ev.location}</span>
-                        </div>
-                      )}
 
-                      <div className="pt-2 flex items-center justify-between">
-                        {ev.isOnline ? (
-                          <Link
-                            href="/radio"
-                            className="inline-flex items-center gap-1 text-xs font-bold text-[#1B5299] hover:underline"
-                          >
-                            <Radio size={12} />
-                            <span>Stream Live on Radio</span>
-                          </Link>
-                        ) : (
-                          <Link
-                            href="/branches"
-                            className="inline-flex items-center gap-1 text-xs font-bold text-[#1B5299] hover:underline"
-                          >
-                            <span>View Sanctuary Branch →</span>
-                          </Link>
+                        {ev.description && (
+                          <p className="text-xs text-[var(--color-slate)] font-sans line-clamp-2 leading-relaxed">
+                            {ev.description}
+                          </p>
                         )}
                       </div>
+
+                      <div className="pt-3 border-t border-[var(--color-line)] space-y-1.5 text-xs font-sans text-[var(--color-ink)]">
+                        {ev.time && (
+                          <div className="flex items-center gap-2 text-[var(--color-slate)] font-medium">
+                            <Clock size={13} className="text-[#29A3E4] shrink-0" />
+                            <span>{ev.time}</span>
+                          </div>
+                        )}
+                        {ev.location && (
+                          <div className="flex items-center gap-2 text-[var(--color-slate)] font-medium">
+                            <MapPin size={13} className="text-[#29A3E4] shrink-0" />
+                            <span className="truncate">{ev.location}</span>
+                          </div>
+                        )}
+
+                        <div className="pt-2 flex items-center justify-between">
+                          {ev.isOnline ? (
+                            <Link
+                              href="/radio"
+                              className="inline-flex items-center gap-1 text-xs font-bold text-[#1B5299] hover:underline"
+                            >
+                              <Radio size={12} />
+                              <span>Listen on Radio</span>
+                            </Link>
+                          ) : (
+                            <Link
+                              href="/branches"
+                              className="inline-flex items-center gap-1 text-xs font-bold text-[#1B5299] hover:underline"
+                            >
+                              <span>View Branches →</span>
+                            </Link>
+                          )}
+                          <Link href="/contact" className="text-xs text-[var(--color-slate)] hover:text-[#1B5299]">
+                            Contact Us
+                          </Link>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              }
+
+              // 3. DETAILS ONLY MODE (Default)
+              return (
+                <div
+                  key={ev.id}
+                  className="bg-white border border-[var(--color-line)] rounded-2xl p-6 shadow-xs hover:border-[var(--color-accent)] hover:shadow-md transition-all group flex flex-col justify-between"
+                >
+                  <div>
+                    <div className="flex items-start justify-between gap-3 mb-4">
+                      <span className="w-12 h-12 rounded-xl bg-[var(--color-surface-alt)] border border-[var(--color-line)] text-[var(--color-ink)] flex flex-col items-center justify-center font-sans shrink-0">
+                        <span className="text-[10px] font-bold text-[#1B5299] leading-none uppercase">{monthStr}</span>
+                        <span className="text-base font-extrabold leading-none mt-0.5">{dayStr}</span>
+                      </span>
+                      {ev.isOnline && (
+                        <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                          <Wifi size={10} /> Online Stream
+                        </span>
+                      )}
+                    </div>
+
+                    <h2 className="font-sans text-xl font-bold text-[var(--color-ink)] tracking-tight mb-2 leading-snug">
+                      {ev.title}
+                    </h2>
+                    <p className="text-xs sm:text-sm text-[var(--color-slate)] font-sans line-clamp-3 leading-relaxed">
+                      {ev.description}
+                    </p>
+                  </div>
+
+                  <div className="pt-4 border-t border-[var(--color-line)] mt-5 space-y-2 text-xs font-sans text-[var(--color-ink)]">
+                    {ev.time && (
+                      <div className="flex items-center gap-2 text-[var(--color-slate)] font-medium">
+                        <Clock size={14} className="text-[#29A3E4] shrink-0" />
+                        <span>{ev.time}</span>
+                      </div>
+                    )}
+                    {ev.location && (
+                      <div className="flex items-center gap-2 text-[var(--color-slate)] font-medium">
+                        <MapPin size={14} className="text-[#29A3E4] shrink-0" />
+                        <span className="truncate">{ev.location}</span>
+                      </div>
+                    )}
+
+                    <div className="pt-2 flex items-center justify-between">
+                      {ev.isOnline ? (
+                        <Link
+                          href="/radio"
+                          className="inline-flex items-center gap-1 text-xs font-bold text-[#1B5299] hover:underline"
+                        >
+                          <Radio size={12} />
+                          <span>Stream Live on Radio</span>
+                        </Link>
+                      ) : (
+                        <Link
+                          href="/branches"
+                          className="inline-flex items-center gap-1 text-xs font-bold text-[#1B5299] hover:underline"
+                        >
+                          <span>View Sanctuary Branch →</span>
+                        </Link>
+                      )}
+                      <Link href="/contact" className="text-xs text-[var(--color-slate)] hover:text-[#1B5299]">
+                        Contact Us
+                      </Link>
                     </div>
                   </div>
                 </div>
