@@ -1,24 +1,20 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import {
-  subscribeCarouselImages,
-  getAllCarouselImagesForSlot,
-  type CarouselSlot,
-  type CarouselImage,
-} from "@/lib/firestore";
+import type { SiteImage } from "@/lib/image-types";
+
+export type { SiteImage };
+
+// Keep type alias for backward compatibility with existing components
+export type CarouselImage = SiteImage;
+export type CarouselSlot = SiteImage["slot"];
 
 /**
- * useCarouselImages — real-time hook for a given carousel slot.
- *
- * Subscribes to Firestore `onSnapshot` so the component re-renders
- * the instant an image is added, deleted, or reordered in the admin.
- *
- * @param slot  - "hero" | "gallery" | "about" | "branches" | "media"
- * @param adminMode - if true, fetches ALL images (including inactive) for admin view
+ * useCarouselImages — fetches images for a given slot from GitHub-backed /api/images endpoint.
+ * Replaces Firebase Firestore subscription. No real-time — polls on mount.
  */
 export function useCarouselImages(slot: CarouselSlot, adminMode = false) {
-  const [images, setImages] = useState<CarouselImage[]>([]);
+  const [images, setImages] = useState<SiteImage[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -26,27 +22,20 @@ export function useCarouselImages(slot: CarouselSlot, adminMode = false) {
     setLoading(true);
     setError(null);
 
-    if (adminMode) {
-      // Admin: one-time fetch of all images (active + inactive)
-      getAllCarouselImagesForSlot(slot)
-        .then((imgs) => {
-          setImages(imgs);
-          setLoading(false);
-        })
-        .catch((err) => {
-          setError(err.message);
-          setLoading(false);
-        });
-      return;
-    }
-
-    // Public: real-time listener (active images only)
-    const unsubscribe = subscribeCarouselImages(slot, (imgs) => {
-      setImages(imgs);
-      setLoading(false);
-    });
-
-    return () => unsubscribe();
+    fetch(`/api/images?slot=${slot}${adminMode ? "&all=true" : ""}`)
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      })
+      .then((data: SiteImage[]) => {
+        setImages(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        setError(err.message);
+        setImages([]);
+        setLoading(false);
+      });
   }, [slot, adminMode]);
 
   return { images, loading, error };

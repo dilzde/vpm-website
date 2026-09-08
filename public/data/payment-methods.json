@@ -1,0 +1,42 @@
+[
+  {
+    "id": "pm-mpesa-send",
+    "label": "M-Pesa Send Money",
+    "type": "mpesa",
+    "value": "0794731831",
+    "instructions": "Open M-Pesa → Send Money → Enter 0794731831 → Amount → PIN",
+    "note": "",
+    "active": true,
+    "order": 0
+  },
+  {
+    "id": "pm-mpesa-till",
+    "label": "M-Pesa Till (Mission & Charity Work)",
+    "type": "till",
+    "value": "6981760",
+    "instructions": "Open M-Pesa → Lipa na M-Pesa → Buy Goods and Services → Till Number 6981760 → Amount → PIN",
+    "note": "Matthew 25:35-40",
+    "active": true,
+    "order": 1
+  },
+  {
+    "id": "pm-paypal",
+    "label": "PayPal",
+    "type": "paypal",
+    "value": "mtishiby@gmail.com",
+    "instructions": "Go to paypal.me or send to mtishiby@gmail.com — select 'Sending to a friend'",
+    "note": "",
+    "active": true,
+    "order": 2
+  },
+  {
+    "id": "pm-sendwave",
+    "label": "Sendwave",
+    "type": "sendwave",
+    "value": "+254 794 731 831",
+    "instructions": "Open Sendwave → Send to Kenya → Enter +254794731831 (VPM International)",
+    "note": "",
+    "active": true,
+    "order": 3
+  }
+]

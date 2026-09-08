@@ -1,8 +1,19 @@
-"use client";
+/**
+ * Public /give page — Server Component.
+ * Reads payment methods from GitHub via the server-side helper.
+ */
+import React from "react";
+import { Heart, ShieldCheck, ArrowUpRight, Smartphone, Globe, Send } from "lucide-react";
+import { getPaymentMethods } from "@/lib/payment-methods.server";
+import { CopyButton } from "./CopyButton";
 
-import React, { useEffect, useState } from "react";
-import { Copy, Check, Heart, ShieldCheck, ArrowUpRight, Smartphone, Globe, Send } from "lucide-react";
-import { subscribePaymentMethods, type PaymentMethod } from "@/lib/firestore";
+export const dynamic = "force-dynamic";
+
+export const metadata = {
+  title: "Give | VPM International",
+  description:
+    "Support the ministry of Voice of the Potter's Messengers Ministry International through M-Pesa, PayPal, Sendwave and more.",
+};
 
 const ICON_MAP: Record<string, React.ReactNode> = {
   mpesa:    <Smartphone size={22} />,
@@ -11,60 +22,11 @@ const ICON_MAP: Record<string, React.ReactNode> = {
   sendwave: <Send size={22} />,
 };
 
-const DEFAULT_METHODS: PaymentMethod[] = [
-  {
-    id: "mpesa-send",
-    label: "M-Pesa Send Money",
-    type: "mpesa",
-    value: "0759265819",
-    active: true,
-    order: 0,
-  },
-  {
-    id: "till",
-    label: "M-Pesa Till (Mission & Charity Work)",
-    type: "till",
-    value: process.env.NEXT_PUBLIC_MPESA_TILL_NUMBER || "6981760",
-    note: "Matthew 25:35-40",
-    active: true,
-    order: 1,
-  },
-  {
-    id: "paypal",
-    label: "PayPal",
-    type: "paypal",
-    value: "mtishiby@gmail.com",
-    active: true,
-    order: 2,
-  },
-  {
-    id: "sendwave",
-    label: "Sendwave",
-    type: "sendwave",
-    value: "+254 759 265 819",
-    active: true,
-    order: 3,
-  },
-];
-
-export default function GivePage() {
-  const [methods, setMethods] = useState<PaymentMethod[]>([]);
-  const [copied, setCopied] = useState<string | null>(null);
-
-  useEffect(() => {
-    const unsub = subscribePaymentMethods((data) => {
-      setMethods(data.length > 0 ? data : DEFAULT_METHODS);
-    });
-    return () => unsub();
-  }, []);
-
-  const copyValue = (value: string, id: string) => {
-    navigator.clipboard.writeText(value);
-    setCopied(id);
-    setTimeout(() => setCopied(null), 2000);
-  };
-
-  const displayMethods = methods.length > 0 ? methods : DEFAULT_METHODS;
+export default async function GivePage() {
+  const allMethods = await getPaymentMethods();
+  const methods = allMethods
+    .filter((m) => m.active)
+    .sort((a, b) => a.order - b.order);
 
   return (
     <div className="bg-[#FAF7F2] text-[#0D2545] min-h-screen py-12 md:py-20">
@@ -84,11 +46,15 @@ export default function GivePage() {
         </div>
 
         {/* Payment Methods Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {displayMethods.filter(m => m.active).map((method) => {
-            const isTill = method.type === "till" || Boolean(method.note);
-
-            return (
+        {methods.length === 0 ? (
+          <div className="text-center py-16 text-[#3E5571]">
+            <Heart size={40} className="mx-auto mb-4 opacity-30" />
+            <p className="font-bold text-lg">Payment methods loading…</p>
+            <p className="text-sm mt-1">Please check back shortly.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {methods.map((method) => (
               <div
                 key={method.id}
                 className="bg-white border-2 border-[#E5EDF6] rounded-3xl p-6 sm:p-8 space-y-5 shadow-[0_4px_20px_rgba(15,37,64,0.05)] hover:shadow-[0_8px_30px_rgba(27,82,153,0.12)] hover:border-[#1B5299]/50 transition-all duration-200"
@@ -103,7 +69,7 @@ export default function GivePage() {
                       {method.label}
                     </h2>
                     <p className="text-xs text-[#1B5299] font-sans font-bold capitalize mt-0.5">
-                      {method.type === "till" ? "Mission & Charity Till" : method.type.replace("-", " ")}
+                      {method.type === "till" ? "Mission & Charity Till" : method.type.replace(/-/g, " ")}
                     </p>
                   </div>
                 </div>
@@ -122,27 +88,17 @@ export default function GivePage() {
                       {method.value}
                     </span>
                   </div>
-
-                  <button
-                    type="button"
-                    onClick={() => copyValue(method.value, method.id)}
-                    className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-[#1B5299] hover:bg-[#154378] text-white font-sans font-bold text-sm shadow-md hover:scale-[1.02] active:scale-95 transition-all shrink-0 cursor-pointer"
-                  >
-                    {copied === method.id ? (
-                      <>
-                        <Check size={16} className="text-emerald-300" />
-                        <span>Copied!</span>
-                      </>
-                    ) : (
-                      <>
-                        <Copy size={16} />
-                        <span>Copy</span>
-                      </>
-                    )}
-                  </button>
+                  <CopyButton value={method.value} />
                 </div>
 
-                {/* Scripture Highlight for Missionary Work / Till */}
+                {/* Instructions */}
+                {method.instructions && (
+                  <div className="p-4 rounded-xl bg-[#F8FAFC] border border-[#E5EDF6] text-sm text-[#3E5571] font-sans leading-relaxed">
+                    {method.instructions}
+                  </div>
+                )}
+
+                {/* Scripture / Mission Note */}
                 {method.note && (
                   <div className="p-4 rounded-2xl bg-gradient-to-r from-[#0F2540] to-[#1A3A6B] text-white border border-[#29A3E4]/30 space-y-2 shadow-sm">
                     <div className="flex items-center justify-between gap-2">
@@ -168,9 +124,9 @@ export default function GivePage() {
                   </div>
                 )}
               </div>
-            );
-          })}
-        </div>
+            ))}
+          </div>
+        )}
 
         {/* Stewardship Note */}
         <div className="bg-white border border-[#D5E3F0] rounded-3xl p-6 sm:p-8 flex flex-col sm:flex-row gap-6 items-start shadow-[0_2px_12px_rgba(15,37,64,0.04)]">
