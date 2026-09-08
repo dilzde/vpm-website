@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { Clock, Calendar, ChevronLeft, ChevronRight, Sparkles, ArrowRight } from "lucide-react";
 import { getCurrentOrNextService, CurrentOrNextService, RECURRING_SCHEDULE } from "@/lib/data/schedule";
+import type { Announcement } from "@/lib/announcement-types";
 
 export interface AnnouncementSlide {
   id: string;
@@ -79,10 +80,29 @@ const CAROUSEL_SLIDES: AnnouncementSlide[] = [
   },
 ];
 
-export default function GatheringsAnnouncementsCarousel() {
+export default function GatheringsAnnouncementsCarousel({
+  initialAnnouncements,
+}: {
+  initialAnnouncements?: Announcement[];
+}) {
   const [scheduleState, setScheduleState] = useState<CurrentOrNextService | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const carouselRef = useRef<HTMLDivElement>(null);
+
+  const dynamicSlides: AnnouncementSlide[] = (initialAnnouncements || []).map((a) => ({
+    id: a.id,
+    type: "announcement" as const,
+    tag: a.dateBadge || "MINISTRY UPDATE",
+    title: a.headline,
+    subtitle: a.body,
+    time: a.time || "Notice",
+    platform: "VPM Sanctuaries & Online",
+    isHighImportance: true,
+  }));
+
+  const activeSlides = dynamicSlides.length > 0
+    ? [...dynamicSlides, ...CAROUSEL_SLIDES.filter((s) => s.type === "schedule")]
+    : CAROUSEL_SLIDES;
 
   useEffect(() => {
     setScheduleState(getCurrentOrNextService());
@@ -93,11 +113,11 @@ export default function GatheringsAnnouncementsCarousel() {
   }, []);
 
   const handleNext = () => {
-    setCurrentIndex((prev) => (prev + 1) % CAROUSEL_SLIDES.length);
+    setCurrentIndex((prev) => (prev + 1) % activeSlides.length);
   };
 
   const handlePrev = () => {
-    setCurrentIndex((prev) => (prev - 1 + CAROUSEL_SLIDES.length) % CAROUSEL_SLIDES.length);
+    setCurrentIndex((prev) => (prev - 1 + activeSlides.length) % activeSlides.length);
   };
 
   return (
@@ -184,7 +204,8 @@ export default function GatheringsAnnouncementsCarousel() {
           {/* Mobile: Single focused slide */}
           <div className="block md:hidden">
             {(() => {
-              const slide = CAROUSEL_SLIDES[currentIndex];
+              const slide = activeSlides[currentIndex % activeSlides.length];
+              if (!slide) return null;
               return (
                 <div
                   key={slide.id}
@@ -239,8 +260,9 @@ export default function GatheringsAnnouncementsCarousel() {
           {/* Desktop: 3-column carousel */}
           <div className="hidden md:grid md:grid-cols-3 gap-6 transition-all duration-300">
             {[0, 1, 2].map((offset) => {
-              const slideIndex = (currentIndex + offset) % CAROUSEL_SLIDES.length;
-              const slide = CAROUSEL_SLIDES[slideIndex];
+              const slideIndex = (currentIndex + offset) % activeSlides.length;
+              const slide = activeSlides[slideIndex];
+              if (!slide) return null;
 
               return (
                 <div

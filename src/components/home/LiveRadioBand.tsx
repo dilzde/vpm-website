@@ -4,18 +4,23 @@ import React, { useState, useEffect } from "react";
 import { Play, Pause, Radio, Calendar, Video, Volume2, ExternalLink } from "lucide-react";
 import { getLiveStatus, YouTubeVideo } from "@/lib/youtube";
 import { useRadioPlayer } from "@/lib/hooks/useRadioPlayer";
-import { subscribeRadioConfig, type RadioConfig } from "@/lib/firestore";
+import type { LivestreamConfig } from "@/lib/livestream-types";
 
-export default function LiveRadioBand() {
+export default function LiveRadioBand({
+  initialLivestreamConfig,
+}: {
+  initialLivestreamConfig?: LivestreamConfig | null;
+}) {
   const [liveVideo, setLiveVideo] = useState<YouTubeVideo | null>(null);
-  const [radioConfig, setRadioConfig] = useState<RadioConfig | null>(null);
+  const [radioConfig, setRadioConfig] = useState<LivestreamConfig | null>(initialLivestreamConfig || null);
   const { isPlaying, toggle } = useRadioPlayer();
 
   useEffect(() => {
     getLiveStatus().then(setLiveVideo).catch(console.error);
-    const unsub = subscribeRadioConfig((cfg) => setRadioConfig(cfg));
-    return () => unsub();
-  }, []);
+    if (initialLivestreamConfig) {
+      setRadioConfig(initialLivestreamConfig);
+    }
+  }, [initialLivestreamConfig]);
 
   return (
     <section

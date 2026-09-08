@@ -1,14 +1,50 @@
 "use client";
 
-import React, { useState } from "react";
-import { Send, CheckCircle, ShieldCheck, Heart } from "lucide-react";
+import React, { useState, useTransition } from "react";
+import { Send, CheckCircle, ShieldCheck, Heart, Loader2 } from "lucide-react";
+import { submitPublicPrayer } from "./actions";
 
 export default function PrayerPage() {
   const [submitted, setSubmitted] = useState(false);
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
+  const [category, setCategory] = useState("Healing & Deliverance");
+  const [request, setRequest] = useState("");
+  const [isPrivate, setIsPrivate] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [isPending, startTransition] = useTransition();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    if (!name.trim() || !request.trim()) return;
+
+    setError(null);
+    startTransition(async () => {
+      const res = await submitPublicPrayer({
+        name: name.trim(),
+        phone: phone.trim() || undefined,
+        email: email.trim() || undefined,
+        category,
+        request: request.trim(),
+        isPrivate,
+      });
+
+      if (res.ok) {
+        setSubmitted(true);
+      } else {
+        setError(res.error || "Failed to submit petition. Please try again.");
+      }
+    });
+  };
+
+  const handleReset = () => {
+    setName("");
+    setPhone("");
+    setEmail("");
+    setRequest("");
+    setSubmitted(false);
+    setError(null);
   };
 
   return (
@@ -45,8 +81,8 @@ export default function PrayerPage() {
                 </p>
                 <button
                   type="button"
-                  onClick={() => setSubmitted(false)}
-                  className="mt-4 px-6 py-2.5 rounded-full bg-[var(--color-navy-900)] text-white font-sans text-xs font-bold uppercase tracking-wider"
+                  onClick={handleReset}
+                  className="mt-4 px-6 py-2.5 rounded-full bg-[var(--color-navy-900)] text-white font-sans text-xs font-bold uppercase tracking-wider hover:opacity-90 transition-opacity cursor-pointer"
                 >
                   Submit Another Petition
                 </button>
@@ -57,6 +93,12 @@ export default function PrayerPage() {
                   Confidential Prayer Request
                 </h2>
 
+                {error && (
+                  <div className="p-3 bg-red-50 text-red-700 border border-red-200 rounded-md text-xs font-medium">
+                    {error}
+                  </div>
+                )}
+
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs font-bold text-[var(--color-ink)] uppercase mb-1">
@@ -65,17 +107,20 @@ export default function PrayerPage() {
                     <input
                       type="text"
                       required
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
                       placeholder="Your name"
                       className="w-full px-4 py-3 bg-[var(--color-surface-alt)] border border-[var(--color-line)] rounded-[var(--radius-eight)] text-sm focus:outline-none focus:border-[var(--color-ink)]"
                     />
                   </div>
                   <div>
                     <label className="block text-xs font-bold text-[var(--color-ink)] uppercase mb-1">
-                      Telephone / WhatsApp *
+                      Telephone / WhatsApp
                     </label>
                     <input
                       type="tel"
-                      required
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
                       placeholder="07XX XXX XXX"
                       className="w-full px-4 py-3 bg-[var(--color-surface-alt)] border border-[var(--color-line)] rounded-[var(--radius-eight)] text-sm focus:outline-none focus:border-[var(--color-ink)]"
                     />
@@ -88,6 +133,8 @@ export default function PrayerPage() {
                   </label>
                   <input
                     type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     placeholder="you@example.com"
                     className="w-full px-4 py-3 bg-[var(--color-surface-alt)] border border-[var(--color-line)] rounded-[var(--radius-eight)] text-sm focus:outline-none focus:border-[var(--color-ink)]"
                   />
@@ -97,7 +144,11 @@ export default function PrayerPage() {
                   <label className="block text-xs font-bold text-[var(--color-ink)] uppercase mb-1">
                     Prayer Category
                   </label>
-                  <select className="w-full px-4 py-3 bg-[var(--color-surface-alt)] border border-[var(--color-line)] rounded-[var(--radius-eight)] text-sm focus:outline-none focus:border-[var(--color-ink)]">
+                  <select
+                    value={category}
+                    onChange={(e) => setCategory(e.target.value)}
+                    className="w-full px-4 py-3 bg-[var(--color-surface-alt)] border border-[var(--color-line)] rounded-[var(--radius-eight)] text-sm focus:outline-none focus:border-[var(--color-ink)]"
+                  >
                     <option>Healing & Deliverance</option>
                     <option>Family & Marriage</option>
                     <option>Financial Breakthrough</option>
@@ -113,17 +164,32 @@ export default function PrayerPage() {
                   <textarea
                     rows={4}
                     required
+                    value={request}
+                    onChange={(e) => setRequest(e.target.value)}
                     placeholder="Share your prayer needs or burdens..."
                     className="w-full px-4 py-3 bg-[var(--color-surface-alt)] border border-[var(--color-line)] rounded-[var(--radius-eight)] text-sm focus:outline-none focus:border-[var(--color-ink)]"
                   />
                 </div>
 
+                <div className="pt-1">
+                  <label className="flex items-center gap-2 cursor-pointer text-xs text-[var(--color-slate)]">
+                    <input
+                      type="checkbox"
+                      checked={isPrivate}
+                      onChange={(e) => setIsPrivate(e.target.checked)}
+                      className="rounded border-[var(--color-line)] text-sky-600 focus:ring-0"
+                    />
+                    <span>Keep strictly confidential between me and the pastoral team</span>
+                  </label>
+                </div>
+
                 <button
                   type="submit"
-                  className="inline-flex items-center justify-center gap-2 w-full py-4 rounded-full bg-[var(--color-accent)] text-[var(--color-accent-ink)] font-sans font-bold text-sm hover:scale-105 transition-all shadow-xs cursor-pointer"
+                  disabled={isPending}
+                  className="inline-flex items-center justify-center gap-2 w-full py-4 rounded-full bg-[var(--color-accent)] text-[var(--color-accent-ink)] font-sans font-bold text-sm hover:scale-102 disabled:opacity-50 transition-all shadow-xs cursor-pointer"
                 >
-                  <Send size={16} />
-                  <span>Submit Confidential Petition</span>
+                  {isPending ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />}
+                  <span>{isPending ? "Submitting Petition..." : "Submit Confidential Petition"}</span>
                 </button>
               </form>
             )}
@@ -143,20 +209,16 @@ export default function PrayerPage() {
 
             <div className="bg-white border border-[var(--color-line)] rounded-[var(--radius-eight)] p-6 space-y-4 shadow-[var(--shadow-card)]">
               <div className="flex items-center gap-3 border-b border-[var(--color-line)] pb-3">
-                <Heart size={20} className="text-[var(--color-ink)]" />
-                <h3 className="font-sans font-bold text-base text-[var(--color-ink)]">Direct Pastoral Line</h3>
+                <Heart size={20} className="text-[var(--color-accent)]" />
+                <h3 className="font-sans font-bold text-base text-[var(--color-ink)]">Daily Altar Covering</h3>
               </div>
               <p className="text-xs text-[var(--color-slate)] font-sans leading-relaxed">
-                For urgent counselling or emergency prayer, call our Githurai main line directly:
-              </p>
-              <p className="font-mono font-bold text-sm text-[var(--color-ink)]">
-                0759265819 / 0722000000
+                Our 24/7 prayer warriors lift every petition continuously before the Throne of Grace at our main sanctuary altar.
               </p>
             </div>
           </div>
 
         </div>
-
       </div>
     </div>
   );

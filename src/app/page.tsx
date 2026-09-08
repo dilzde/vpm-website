@@ -10,10 +10,17 @@ import RecentSermons from "@/components/home/RecentSermons";
 import SupportMissionBand from "@/components/home/SupportMissionBand";
 import BranchesPreview from "@/components/home/BranchesPreview";
 import ImageGallery from "@/components/home/ImageGallery";
+import { getAnnouncements } from "@/lib/announcements.server";
+import { getLivestreamConfig } from "@/lib/livestream.server";
 
 export const revalidate = 60; // Revalidate every minute for live status / playlist updates
 
-export default function HomePage() {
+export default async function HomePage() {
+  const [announcements, livestreamConfig] = await Promise.all([
+    getAnnouncements(true).catch(() => []),
+    getLivestreamConfig().catch(() => null),
+  ]);
+
   return (
     <main className="w-full">
       {/* 1. Hero Section (§C) */}
@@ -23,10 +30,10 @@ export default function HomePage() {
       <QuickActionsRow />
 
       {/* 3. Gatherings & Announcements Carousel + Real-Time Next Service Banner (Directly below Quick Actions) */}
-      <GatheringsAnnouncementsCarousel />
+      <GatheringsAnnouncementsCarousel initialAnnouncements={announcements} />
 
       {/* 4. Live & Radio Band */}
-      <LiveRadioBand />
+      <LiveRadioBand initialLivestreamConfig={livestreamConfig} />
 
       {/* 5. "Our Heartbeat" Statement Band (§L Copy) */}
       <HeartbeatBand />

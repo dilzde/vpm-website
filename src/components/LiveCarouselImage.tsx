@@ -2,8 +2,7 @@
 
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useCarouselImages } from "@/lib/hooks/useCarouselImages";
-import type { CarouselSlot } from "@/lib/firestore";
+import { useCarouselImages, type CarouselSlot } from "@/lib/hooks/useCarouselImages";
 
 interface LiveCarouselImageProps {
   slot: CarouselSlot;

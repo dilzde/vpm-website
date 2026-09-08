@@ -1,263 +1,417 @@
 "use client";
 
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useTransition } from "react";
 import {
   Plus, Trash2, Pencil, CheckCircle, X, Loader2, Calendar,
-  Clock, MapPin, Wifi, WifiOff, ImageIcon, Upload, Eye, EyeOff, Sparkles,
+  Clock, MapPin, Wifi, WifiOff, ImageIcon, Upload, Eye, EyeOff, RotateCcw,
 } from "lucide-react";
-import {
-  subscribeAllEventsFirestore,
-  addFirestoreEvent,
-  updateFirestoreEvent,
-  deleteFirestoreEvent,
-  type FirestoreEvent,
-} from "@/lib/firestore";
-import { uploadCarouselImage } from "@/lib/uploadImage";
-import { deleteObject, ref as storageRef } from "firebase/storage";
-import { storage } from "@/lib/firebase";
+import { fetchAllEvents, saveEvent, removeEvent, uploadPosterFile } from "./actions";
+import type { SiteEvent } from "@/lib/event-types";
 
-const EMPTY: Omit<FirestoreEvent, "id" | "createdAt"> = {
-  title: "", description: "", date: "", time: "", location: "",
-  isOnline: false, active: true, order: 0,
-  posterUrl: undefined, posterStoragePath: undefined,
+const EMPTY: Omit<SiteEvent, "id"> = {
+  title: "",
+  description: "",
+  date: "",
+  time: "",
+  location: "",
+  isOnline: false,
+  active: true,
+  order: 0,
+  posterUrl: null,
+  posterStoragePath: null,
 };
 
 export default function AdminEventsPage() {
-  const [events, setEvents] = useState<FirestoreEvent[]>([]);
-  const [editing, setEditing] = useState<Partial<FirestoreEvent> | null>(null);
+  const [events, setEvents] = useState<SiteEvent[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [editing, setEditing] = useState<SiteEvent | null>(null);
   const [isNew, setIsNew] = useState(false);
-  const [saving, setSaving] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState<number | null>(null);
+  const [isPending, startTransition] = useTransition();
+  const [uploadingPoster, setUploadingPoster] = useState(false);
+  const [statusMsg, setStatusMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const load = async () => {
+    try {
+      setLoading(true);
+      const data = await fetchAllEvents();
+      setEvents(data);
+    } catch {
+      setStatusMsg({ type: "error", text: "Failed to load events from GitHub." });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const unsub = subscribeAllEventsFirestore(setEvents);
-    return () => unsub();
+    load();
   }, []);
 
   const openNew = () => {
-    setEditing({ ...EMPTY });
+    setEditing({
+      id: "",
+      ...EMPTY,
+      order: events.length,
+    });
     setIsNew(true);
   };
 
-  const openEdit = (ev: FirestoreEvent) => {
+  const openEdit = (ev: SiteEvent) => {
     setEditing({ ...ev });
     setIsNew(false);
   };
 
-  const handlePosterUpload = async (file: File) => {
-    setUploadProgress(0);
+  const handlePosterUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !editing) return;
+    setUploadingPoster(true);
+    setStatusMsg(null);
     try {
-      const { url, storagePath } = await uploadCarouselImage("gallery", file, setUploadProgress);
-      setEditing((prev) => prev ? { ...prev, posterUrl: url, posterStoragePath: storagePath } : prev);
-    } catch {
-      alert("Poster upload failed. Please try again.");
-    } finally {
-      setUploadProgress(null);
-    }
-  };
-
-  const removePoster = async () => {
-    if (editing?.posterStoragePath) {
-      try { await deleteObject(storageRef(storage, editing.posterStoragePath)); } catch { /* already gone */ }
-    }
-    setEditing((prev) => prev ? { ...prev, posterUrl: undefined, posterStoragePath: undefined } : prev);
-  };
-
-  const handleSave = async () => {
-    if (!editing?.title || !editing.date) return alert("Title and date are required.");
-    setSaving(true);
-    try {
-      const data = {
-        title: editing.title ?? "",
-        description: editing.description ?? "",
-        date: editing.date ?? "",
-        time: editing.time ?? "",
-        location: editing.location ?? "",
-        isOnline: editing.isOnline ?? false,
-        active: editing.active ?? true,
-        order: editing.order ?? events.length,
-        posterUrl: editing.posterUrl ?? null,
-        posterStoragePath: editing.posterStoragePath ?? null,
+      const reader = new FileReader();
+      reader.onload = async () => {
+        const base64 = (reader.result as string).split(",")[1];
+        const res = await uploadPosterFile(base64, file.name);
+        if (res.ok) {
+          setEditing((prev) => (prev ? { ...prev, posterUrl: res.url, posterStoragePath: res.storagePath } : prev));
+          setStatusMsg({ type: "success", text: "Poster uploaded to GitHub." });
+        } else {
+          setStatusMsg({ type: "error", text: res.error });
+        }
+        setUploadingPoster(false);
       };
-      if (isNew) {
-        await addFirestoreEvent(data as Omit<FirestoreEvent, "id">);
+      reader.readAsDataURL(file);
+    } catch (err) {
+      setStatusMsg({ type: "error", text: "Failed to process image file." });
+      setUploadingPoster(false);
+    }
+  };
+
+  const handleSave = () => {
+    if (!editing) return;
+    if (!editing.title.trim()) {
+      setStatusMsg({ type: "error", text: "Event title is required." });
+      return;
+    }
+    startTransition(async () => {
+      const idToSave = isNew ? null : editing.id;
+      const { id: _, ...payload } = editing;
+      const res = await saveEvent(idToSave, payload);
+      if (res.ok) {
+        setStatusMsg({ type: "success", text: isNew ? "Event added successfully!" : "Event updated!" });
+        setEditing(null);
+        await load();
       } else {
-        await updateFirestoreEvent(editing.id!, data);
+        setStatusMsg({ type: "error", text: res.error });
       }
-      setEditing(null);
-    } finally {
-      setSaving(false);
-    }
+    });
   };
 
-  const handleDelete = async (ev: FirestoreEvent) => {
-    if (!confirm(`Delete "${ev.title}"?`)) return;
-    if (ev.posterStoragePath) {
-      try { await deleteObject(storageRef(storage, ev.posterStoragePath)); } catch { /* gone */ }
-    }
-    await deleteFirestoreEvent(ev.id);
+  const handleDelete = (id: string, title: string) => {
+    if (!confirm(`Are you sure you want to delete "${title}"?`)) return;
+    startTransition(async () => {
+      const res = await removeEvent(id);
+      if (res.ok) {
+        setStatusMsg({ type: "success", text: "Event deleted." });
+        await load();
+      } else {
+        setStatusMsg({ type: "error", text: res.error });
+      }
+    });
   };
 
-  const toggleActive = (ev: FirestoreEvent) =>
-    updateFirestoreEvent(ev.id, { active: !ev.active });
+  const handleToggleActive = (ev: SiteEvent) => {
+    startTransition(async () => {
+      const { id, ...rest } = ev;
+      const res = await saveEvent(id, { ...rest, active: !ev.active });
+      if (res.ok) {
+        await load();
+      }
+    });
+  };
 
   return (
-    <div className="space-y-8 font-sans">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-[var(--color-navy-950)] text-white p-6 rounded-[var(--radius-lg)] border border-white/10 shadow-xl">
+    <div className="space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-line">
         <div>
-          <p className="text-[var(--color-accent)] text-xs font-bold uppercase tracking-widest mb-1 flex items-center gap-2">
-            <Sparkles size={14} /> Events Management
+          <h1 className="text-2xl font-bold text-slate-800">Events Management</h1>
+          <p className="text-sm text-slate-500">
+            Manage church gatherings, vigils, conferences, and revival schedules.
           </p>
-          <h1 className="text-2xl font-extrabold text-white">Gatherings &amp; Events</h1>
-          <p className="text-xs text-slate-300 mt-1">Add, edit, or remove events. Changes appear on the site instantly.</p>
         </div>
-        <button
-          onClick={openNew}
-          className="inline-flex items-center gap-2 px-5 py-3 bg-[var(--color-accent)] text-[var(--color-accent-ink)] font-bold text-sm rounded-full hover:scale-105 transition-all shrink-0"
-        >
-          <Plus size={16} /> Add Event
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={load}
+            disabled={loading}
+            className="p-2 text-slate-600 hover:bg-slate-100 rounded-md border border-line transition-colors"
+            title="Reload from GitHub"
+          >
+            <RotateCcw size={16} className={loading ? "animate-spin" : ""} />
+          </button>
+          <button
+            onClick={openNew}
+            className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold bg-sky-500 text-white rounded-md hover:bg-sky-600 transition-colors shadow-sm"
+          >
+            <Plus size={16} />
+            Add Event
+          </button>
+        </div>
       </div>
 
-      {/* Edit / Add Form */}
-      {editing && (
-        <div className="bg-white border border-[var(--color-line)] rounded-[var(--radius-lg)] p-6 space-y-5 shadow-[var(--shadow-xl)]">
-          <div className="flex items-center justify-between">
-            <h2 className="font-bold text-lg text-[var(--color-ink)]">{isNew ? "New Event" : "Edit Event"}</h2>
-            <button onClick={() => setEditing(null)} className="text-[var(--color-slate)] hover:text-[var(--color-ink)]"><X size={18} /></button>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="sm:col-span-2">
-              <label className="block text-xs font-bold text-[var(--color-slate)] mb-1">Title *</label>
-              <input value={editing.title ?? ""} onChange={(e) => setEditing((p) => ({ ...p!, title: e.target.value }))}
-                className="w-full border border-[var(--color-line)] rounded-[var(--radius-eight)] px-3 py-2 text-sm font-sans focus:outline-none focus:border-[var(--color-accent)]" placeholder="Event name" />
-            </div>
-            <div className="sm:col-span-2">
-              <label className="block text-xs font-bold text-[var(--color-slate)] mb-1">Description</label>
-              <textarea value={editing.description ?? ""} onChange={(e) => setEditing((p) => ({ ...p!, description: e.target.value }))} rows={3}
-                className="w-full border border-[var(--color-line)] rounded-[var(--radius-eight)] px-3 py-2 text-sm font-sans focus:outline-none focus:border-[var(--color-accent)] resize-none" placeholder="Event details..." />
-            </div>
-            <div>
-              <label className="block text-xs font-bold text-[var(--color-slate)] mb-1">Date *</label>
-              <input type="date" value={editing.date ?? ""} onChange={(e) => setEditing((p) => ({ ...p!, date: e.target.value }))}
-                className="w-full border border-[var(--color-line)] rounded-[var(--radius-eight)] px-3 py-2 text-sm font-sans focus:outline-none focus:border-[var(--color-accent)]" />
-            </div>
-            <div>
-              <label className="block text-xs font-bold text-[var(--color-slate)] mb-1">Time</label>
-              <input value={editing.time ?? ""} onChange={(e) => setEditing((p) => ({ ...p!, time: e.target.value }))}
-                className="w-full border border-[var(--color-line)] rounded-[var(--radius-eight)] px-3 py-2 text-sm font-sans focus:outline-none focus:border-[var(--color-accent)]" placeholder="e.g. 9:00 AM – 12:00 PM" />
-            </div>
-            <div>
-              <label className="block text-xs font-bold text-[var(--color-slate)] mb-1">Location</label>
-              <input value={editing.location ?? ""} onChange={(e) => setEditing((p) => ({ ...p!, location: e.target.value }))}
-                className="w-full border border-[var(--color-line)] rounded-[var(--radius-eight)] px-3 py-2 text-sm font-sans focus:outline-none focus:border-[var(--color-accent)]" placeholder="Venue / Online" />
-            </div>
-            <div className="flex items-center gap-4 pt-4">
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input type="checkbox" checked={editing.isOnline ?? false} onChange={(e) => setEditing((p) => ({ ...p!, isOnline: e.target.checked }))} className="w-4 h-4 accent-[var(--color-accent)]" />
-                <span className="text-sm font-sans text-[var(--color-ink)]">Online / Streaming</span>
-              </label>
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input type="checkbox" checked={editing.active ?? true} onChange={(e) => setEditing((p) => ({ ...p!, active: e.target.checked }))} className="w-4 h-4 accent-[var(--color-accent)]" />
-                <span className="text-sm font-sans text-[var(--color-ink)]">Active (visible)</span>
-              </label>
-            </div>
-          </div>
-
-          {/* Poster upload */}
-          <div>
-            <label className="block text-xs font-bold text-[var(--color-slate)] mb-2">Event Poster (optional)</label>
-            {editing.posterUrl ? (
-              <div className="relative w-40 h-40 rounded-[var(--radius-eight)] overflow-hidden border border-[var(--color-line)] group">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={editing.posterUrl} alt="poster" className="w-full h-full object-cover" />
-                <button onClick={removePoster} className="absolute top-2 right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                  <X size={12} />
-                </button>
-              </div>
-            ) : (
-              <div
-                onClick={() => fileInputRef.current?.click()}
-                className="w-40 h-40 rounded-[var(--radius-eight)] border-2 border-dashed border-[var(--color-line)] flex flex-col items-center justify-center gap-2 cursor-pointer hover:border-[var(--color-accent)] transition-colors text-[var(--color-slate)]"
-              >
-                {uploadProgress !== null ? (
-                  <>
-                    <Loader2 size={24} className="animate-spin" />
-                    <span className="text-xs">{uploadProgress}%</span>
-                  </>
-                ) : (
-                  <>
-                    <ImageIcon size={24} />
-                    <span className="text-xs font-bold">Upload Poster</span>
-                  </>
-                )}
-              </div>
-            )}
-            <input ref={fileInputRef} type="file" accept="image/*" className="hidden"
-              onChange={(e) => e.target.files?.[0] && handlePosterUpload(e.target.files[0])} />
-          </div>
-
-          <div className="flex gap-3 pt-2">
-            <button onClick={handleSave} disabled={saving}
-              className="inline-flex items-center gap-2 px-5 py-2.5 bg-[var(--color-accent)] text-[var(--color-accent-ink)] font-bold text-sm rounded-full hover:scale-105 transition-all disabled:opacity-50">
-              {saving ? <Loader2 size={14} className="animate-spin" /> : <CheckCircle size={14} />}
-              {saving ? "Saving…" : "Save Event"}
-            </button>
-            <button onClick={() => setEditing(null)} className="px-5 py-2.5 border border-[var(--color-line)] rounded-full text-sm font-bold text-[var(--color-slate)] hover:border-[var(--color-ink)] transition-colors">
-              Cancel
-            </button>
-          </div>
+      {statusMsg && (
+        <div
+          className={`p-3 rounded-md text-sm font-medium flex items-center justify-between ${
+            statusMsg.type === "success" ? "bg-emerald-50 text-emerald-800 border border-emerald-200" : "bg-red-50 text-red-800 border border-red-200"
+          }`}
+        >
+          <span>{statusMsg.text}</span>
+          <button onClick={() => setStatusMsg(null)} className="text-xs underline ml-4">Dismiss</button>
         </div>
       )}
 
-      {/* Events list */}
-      {events.length === 0 ? (
-        <div className="text-center py-20 text-[var(--color-slate)]">
-          <Calendar size={40} className="mx-auto mb-4 opacity-30" />
-          <p className="font-bold">No events yet</p>
-          <p className="text-sm mt-1">Click "Add Event" to create your first gathering.</p>
+      {loading ? (
+        <div className="text-center py-16">
+          <Loader2 size={32} className="animate-spin text-sky-500 mx-auto mb-2" />
+          <p className="text-sm text-slate-500">Loading events from GitHub...</p>
+        </div>
+      ) : events.length === 0 ? (
+        <div className="text-center py-16 bg-cloud border border-line rounded-lg">
+          <Calendar size={40} className="text-slate-400 mx-auto mb-3" />
+          <h3 className="text-base font-semibold text-slate-700">No events found</h3>
+          <p className="text-sm text-slate-500 mt-1 mb-4">Add your first gathering to display on the public website.</p>
+          <button
+            onClick={openNew}
+            className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold bg-sky-500 text-white rounded-md hover:bg-sky-600"
+          >
+            <Plus size={16} />
+            Add Event
+          </button>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {events.map((ev) => (
-            <div key={ev.id} className={`bg-white border rounded-[var(--radius-image)] overflow-hidden shadow-[var(--shadow-card)] flex ${!ev.active ? "opacity-50" : ""} border-[var(--color-line)]`}>
-              {/* Poster thumb */}
-              <div className="w-24 h-auto bg-[var(--color-navy-900)] shrink-0 relative">
-                {ev.posterUrl ? (
-                  /* eslint-disable-next-line @next/next/no-img-element */
-                  <img src={ev.posterUrl} alt="" className="w-full h-full object-cover" />
-                ) : (
-                  <div className="w-full h-full min-h-[80px] flex items-center justify-center">
-                    <ImageIcon size={20} className="text-white/30" />
+            <div
+              key={ev.id}
+              className={`border rounded-lg p-5 bg-white transition-all shadow-xs flex flex-col justify-between ${
+                ev.active ? "border-line" : "border-line/60 bg-slate-50/50 opacity-75"
+              }`}
+            >
+              <div>
+                <div className="flex items-start justify-between gap-3 mb-2">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className={`px-2 py-0.5 rounded text-xs font-semibold ${ev.active ? "bg-emerald-50 text-emerald-700" : "bg-slate-200 text-slate-600"}`}>
+                      {ev.active ? "Active" : "Hidden"}
+                    </span>
+                    {ev.isOnline && (
+                      <span className="px-2 py-0.5 rounded text-xs font-semibold bg-sky-50 text-sky-700 flex items-center gap-1">
+                        <Wifi size={11} /> Online Stream
+                      </span>
+                    )}
                   </div>
-                )}
-              </div>
-              {/* Info */}
-              <div className="flex-1 p-4 flex flex-col justify-between min-w-0">
-                <div>
-                  <p className="font-bold text-sm text-[var(--color-ink)] truncate">{ev.title}</p>
-                  <div className="flex items-center gap-3 mt-1 text-xs text-[var(--color-slate)]">
-                    <span className="flex items-center gap-1"><Calendar size={11} />{ev.date}</span>
-                    <span className="flex items-center gap-1"><Clock size={11} />{ev.time}</span>
-                  </div>
-                  <div className="flex items-center gap-1 mt-0.5 text-xs text-[var(--color-slate)]">
-                    <MapPin size={11} />{ev.location}
-                    {ev.isOnline && <span className="ml-1 text-[var(--color-live)] font-bold flex items-center gap-0.5"><Wifi size={10} /> Online</span>}
+                  <div className="flex items-center gap-1">
+                    <button
+                      onClick={() => handleToggleActive(ev)}
+                      disabled={isPending}
+                      className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors"
+                      title={ev.active ? "Hide event" : "Show event"}
+                    >
+                      {ev.active ? <Eye size={15} /> : <EyeOff size={15} />}
+                    </button>
+                    <button
+                      onClick={() => openEdit(ev)}
+                      className="p-1.5 text-slate-600 hover:text-sky-600 hover:bg-sky-50 rounded transition-colors"
+                      title="Edit event"
+                    >
+                      <Pencil size={15} />
+                    </button>
+                    <button
+                      onClick={() => handleDelete(ev.id, ev.title)}
+                      disabled={isPending}
+                      className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
+                      title="Delete event"
+                    >
+                      <Trash2 size={15} />
+                    </button>
                   </div>
                 </div>
-                <div className="flex items-center gap-1.5 mt-3">
-                  <button onClick={() => openEdit(ev)} className="p-1.5 rounded-md text-[var(--color-slate)] hover:bg-[var(--color-surface-alt)] transition-colors"><Pencil size={13} /></button>
-                  <button onClick={() => toggleActive(ev)} className={`p-1.5 rounded-md transition-colors ${ev.active ? "text-[var(--color-accent)]" : "text-[var(--color-slate)]"}`} title={ev.active ? "Hide" : "Show"}>
-                    {ev.active ? <Eye size={13} /> : <EyeOff size={13} />}
-                  </button>
-                  <button onClick={() => handleDelete(ev)} className="p-1.5 rounded-md text-[var(--color-slate)] hover:bg-red-50 hover:text-red-500 transition-colors"><Trash2 size={13} /></button>
+
+                <h3 className="font-bold text-slate-800 text-base mb-1">{ev.title}</h3>
+                <p className="text-xs text-slate-500 line-clamp-2 mb-3">{ev.description}</p>
+
+                <div className="space-y-1 text-xs text-slate-600 font-medium">
+                  <div className="flex items-center gap-2">
+                    <Calendar size={13} className="text-slate-400" />
+                    <span>{ev.date || "Date TBA"}</span>
+                    {ev.time && <span className="text-slate-400">• {ev.time}</span>}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <MapPin size={13} className="text-slate-400" />
+                    <span className="truncate">{ev.location || "Location TBA"}</span>
+                  </div>
+                </div>
+              </div>
+
+              {ev.posterUrl && (
+                <div className="mt-4 pt-3 border-t border-line flex items-center gap-3">
+                  <img src={ev.posterUrl} alt="Poster preview" className="w-12 h-12 object-cover rounded border border-line" />
+                  <span className="text-xs text-slate-400">Custom poster attached</span>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Edit / Create Modal */}
+      {editing && (
+        <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white rounded-lg border border-line shadow-xl max-w-lg w-full p-6 space-y-4 my-8">
+            <div className="flex items-center justify-between pb-3 border-b border-line">
+              <h2 className="text-lg font-bold text-slate-800">
+                {isNew ? "Add New Event" : "Edit Event"}
+              </h2>
+              <button
+                onClick={() => setEditing(null)}
+                className="p-1 text-slate-400 hover:text-slate-600 rounded"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className="space-y-3 text-sm">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Title *</label>
+                <input
+                  type="text"
+                  value={editing.title}
+                  onChange={(e) => setEditing({ ...editing, title: e.target.value })}
+                  placeholder="e.g. Sunday Worship Service"
+                  className="w-full px-3 py-2 border border-line rounded-md focus:outline-none focus:border-sky-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Description</label>
+                <textarea
+                  rows={3}
+                  value={editing.description}
+                  onChange={(e) => setEditing({ ...editing, description: e.target.value })}
+                  placeholder="Details about the gathering..."
+                  className="w-full px-3 py-2 border border-line rounded-md focus:outline-none focus:border-sky-500 resize-none"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Date</label>
+                  <input
+                    type="date"
+                    value={editing.date}
+                    onChange={(e) => setEditing({ ...editing, date: e.target.value })}
+                    className="w-full px-3 py-2 border border-line rounded-md focus:outline-none focus:border-sky-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Time</label>
+                  <input
+                    type="text"
+                    value={editing.time}
+                    onChange={(e) => setEditing({ ...editing, time: e.target.value })}
+                    placeholder="e.g. 9:00 AM – 1:00 PM"
+                    className="w-full px-3 py-2 border border-line rounded-md focus:outline-none focus:border-sky-500"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Location</label>
+                <input
+                  type="text"
+                  value={editing.location}
+                  onChange={(e) => setEditing({ ...editing, location: e.target.value })}
+                  placeholder="e.g. VPM Githurai Main Altar"
+                  className="w-full px-3 py-2 border border-line rounded-md focus:outline-none focus:border-sky-500"
+                />
+              </div>
+
+              <div className="flex items-center gap-6 pt-1">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={editing.isOnline}
+                    onChange={(e) => setEditing({ ...editing, isOnline: e.target.checked })}
+                    className="rounded text-sky-500 focus:ring-sky-400"
+                  />
+                  <span className="text-xs font-medium text-slate-700">Online Live Stream Available</span>
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={editing.active}
+                    onChange={(e) => setEditing({ ...editing, active: e.target.checked })}
+                    className="rounded text-sky-500 focus:ring-sky-400"
+                  />
+                  <span className="text-xs font-medium text-slate-700">Active (Visible on Website)</span>
+                </label>
+              </div>
+
+              {/* Event Poster Upload */}
+              <div className="pt-2 border-t border-line">
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Event Poster Image</label>
+                <div className="flex items-center gap-3">
+                  {editing.posterUrl ? (
+                    <div className="flex items-center gap-3">
+                      <img src={editing.posterUrl} alt="Poster" className="w-16 h-16 object-cover rounded border border-line" />
+                      <button
+                        type="button"
+                        onClick={() => setEditing({ ...editing, posterUrl: null, posterStoragePath: null })}
+                        className="text-xs text-red-600 hover:underline"
+                      >
+                        Remove Poster
+                      </button>
+                    </div>
+                  ) : (
+                    <div>
+                      <input
+                        type="file"
+                        ref={fileInputRef}
+                        accept="image/*"
+                        onChange={handlePosterUpload}
+                        className="hidden"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => fileInputRef.current?.click()}
+                        disabled={uploadingPoster}
+                        className="inline-flex items-center gap-2 px-3 py-1.5 border border-line rounded-md text-xs font-semibold text-slate-700 hover:bg-slate-50 transition-colors"
+                      >
+                        {uploadingPoster ? <Loader2 size={13} className="animate-spin" /> : <Upload size={13} />}
+                        {uploadingPoster ? "Uploading to GitHub..." : "Upload Poster"}
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
-          ))}
+
+            <div className="flex items-center justify-end gap-3 pt-3 border-t border-line">
+              <button
+                type="button"
+                onClick={() => setEditing(null)}
+                className="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-md transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleSave}
+                disabled={isPending || uploadingPoster}
+                className="inline-flex items-center gap-2 px-5 py-2 text-xs font-bold bg-sky-500 text-white rounded-md hover:bg-sky-600 disabled:opacity-50 transition-colors shadow-sm"
+              >
+                {isPending && <Loader2 size={13} className="animate-spin" />}
+                {isNew ? "Create Event" : "Save Changes"}
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

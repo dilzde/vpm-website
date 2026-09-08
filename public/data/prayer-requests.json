@@ -1,0 +1,22 @@
+[
+  {
+    "id": "pr-1",
+    "name": "Mary K.",
+    "category": "Healing",
+    "request": "Please pray for my mother who is undergoing surgery.",
+    "isPrivate": false,
+    "source": "web",
+    "status": "pending",
+    "submittedAt": "2026-09-07T10:30:00.000Z"
+  },
+  {
+    "id": "pr-2",
+    "name": "John O.",
+    "category": "Financial Breakthrough",
+    "request": "Praying for open doors and divine favor in job opportunities.",
+    "isPrivate": false,
+    "source": "web",
+    "status": "prayed",
+    "submittedAt": "2026-09-06T15:20:00.000Z"
+  }
+]

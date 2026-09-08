@@ -1,0 +1,50 @@
+[
+  {
+    "id": "br-nairobi-hq",
+    "name": "VPM Nairobi (HQ)",
+    "region": "Nairobi",
+    "location": "Family Bank Tower, Mlolongo, Nairobi",
+    "phone": "+254 794 731 831",
+    "mapsUrl": "https://maps.google.com/?q=Family+Bank+Tower+Mlolongo+Nairobi",
+    "badge": "Ministry Headquarters",
+    "isFeatured": true,
+    "active": true,
+    "order": 0
+  },
+  {
+    "id": "br-kisumu",
+    "name": "VPM Kisumu",
+    "region": "Western Kenya",
+    "location": "Kisumu Mother Church, Kisumu",
+    "phone": "+254 794 731 831",
+    "mapsUrl": "https://maps.google.com/?q=Kisumu+Kenya",
+    "badge": "Mother Church",
+    "isFeatured": false,
+    "active": true,
+    "order": 1
+  },
+  {
+    "id": "br-mombasa",
+    "name": "VPM Mombasa",
+    "region": "Coast",
+    "location": "Mombasa, Kenya",
+    "phone": "+254 794 731 831",
+    "mapsUrl": "https://maps.google.com/?q=Mombasa+Kenya",
+    "badge": "",
+    "isFeatured": false,
+    "active": true,
+    "order": 2
+  },
+  {
+    "id": "br-nakuru",
+    "name": "VPM Nakuru",
+    "region": "Rift Valley",
+    "location": "Nakuru, Kenya",
+    "phone": "+254 794 731 831",
+    "mapsUrl": "https://maps.google.com/?q=Nakuru+Kenya",
+    "badge": "",
+    "isFeatured": false,
+    "active": true,
+    "order": 3
+  }
+]

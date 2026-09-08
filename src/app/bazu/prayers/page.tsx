@@ -1,95 +1,230 @@
 "use client";
 
-import React, { useState } from "react";
-import { Heart, Clock, Globe, Smartphone, CheckCircle } from "lucide-react";
-
-type PrayerItem = {
-  id: string; name: string; category: string; request: string;
-  source: "web" | "app"; status: "pending" | "prayed" | "answered";
-  submittedAt: string;
-};
-
-const SAMPLE_PRAYERS: PrayerItem[] = [
-  { id: "1", name: "Mary K.", category: "Healing", request: "Please pray for my mother who is in hospital.", source: "web", status: "pending", submittedAt: "2024-12-20" },
-  { id: "2", name: "John O.", category: "Financial Breakthrough", request: "Praying for a job opportunity.", source: "app", status: "pending", submittedAt: "2024-12-19" },
-  { id: "3", name: "Grace W.", category: "Family", request: "Pray for restoration in my marriage.", source: "web", status: "prayed", submittedAt: "2024-12-18" },
-  { id: "4", name: "Peter M.", category: "Guidance", request: "Seeking direction for ministry.", source: "app", status: "pending", submittedAt: "2024-12-17" },
-];
+import React, { useEffect, useState, useTransition } from "react";
+import {
+  Heart, Clock, Globe, Smartphone, CheckCircle, Trash2,
+  ShieldCheck, Loader2, RotateCcw, AlertCircle, Sparkles,
+} from "lucide-react";
+import { fetchAllPrayers, changePrayerStatus, removePrayer } from "./actions";
+import type { PrayerRequest } from "@/lib/prayer-types";
 
 export default function AdminPrayersPage() {
-  const [items, setItems] = useState(SAMPLE_PRAYERS);
-  const [filter, setFilter] = useState<"all" | "pending" | "prayed">("all");
+  const [prayers, setPrayers] = useState<PrayerRequest[]>([]);
+  const [filter, setFilter] = useState<"all" | "pending" | "prayed" | "answered">("all");
+  const [loading, setLoading] = useState(true);
+  const [isPending, startTransition] = useTransition();
+  const [statusMsg, setStatusMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
-  const filtered = items.filter(i => filter === "all" || i.status === filter);
-
-  const markPrayed = (id: string) => {
-    setItems(items.map(i => i.id === id ? { ...i, status: "prayed" as const } : i));
+  const load = async () => {
+    try {
+      setLoading(true);
+      const data = await fetchAllPrayers();
+      setPrayers(data);
+    } catch {
+      setStatusMsg({ type: "error", text: "Failed to load prayer requests from GitHub." });
+    } finally {
+      setLoading(false);
+    }
   };
 
+  useEffect(() => {
+    load();
+  }, []);
+
+  const handleStatusChange = (id: string, newStatus: PrayerRequest["status"]) => {
+    startTransition(async () => {
+      const res = await changePrayerStatus(id, newStatus);
+      if (res.ok) {
+        setStatusMsg({ type: "success", text: `Prayer request marked as ${newStatus}.` });
+        await load();
+      } else {
+        setStatusMsg({ type: "error", text: res.error });
+      }
+    });
+  };
+
+  const handleDelete = (id: string, name: string) => {
+    if (!confirm(`Delete prayer petition from "${name}"?`)) return;
+    startTransition(async () => {
+      const res = await removePrayer(id);
+      if (res.ok) {
+        setStatusMsg({ type: "success", text: "Petition removed." });
+        await load();
+      } else {
+        setStatusMsg({ type: "error", text: res.error });
+      }
+    });
+  };
+
+  const items = prayers.filter((p) => filter === "all" || p.status === filter);
+  const pendingCount = prayers.filter((p) => p.status === "pending").length;
+
   return (
-    <div>
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-xl font-bold text-slate-800">Prayer Inbox</h1>
-        <span className="text-xs text-slate-600">
-          {items.filter(i => i.status === "pending").length} pending
-        </span>
+    <div className="space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-line">
+        <div>
+          <div className="flex items-center gap-3">
+            <h1 className="text-2xl font-bold text-slate-800">Prayer Altar Inbox</h1>
+            {pendingCount > 0 && (
+              <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-100 text-amber-800">
+                {pendingCount} Pending
+              </span>
+            )}
+          </div>
+          <p className="text-sm text-slate-500">
+            Incoming prayer petitions and counselling requests submitted by believers worldwide.
+          </p>
+        </div>
+        <button
+          onClick={load}
+          disabled={loading}
+          className="p-2 text-slate-600 hover:bg-slate-100 rounded-md border border-line transition-colors self-start sm:self-auto"
+          title="Reload from GitHub"
+        >
+          <RotateCcw size={16} className={loading ? "animate-spin" : ""} />
+        </button>
       </div>
 
-      {/* Filter */}
-      <div className="flex items-center gap-2 mb-4">
-        {(["all", "pending", "prayed"] as const).map((f) => (
+      {statusMsg && (
+        <div
+          className={`p-3 rounded-md text-sm font-medium flex items-center justify-between ${
+            statusMsg.type === "success" ? "bg-emerald-50 text-emerald-800 border border-emerald-200" : "bg-red-50 text-red-800 border border-red-200"
+          }`}
+        >
+          <span>{statusMsg.text}</span>
+          <button onClick={() => setStatusMsg(null)} className="text-xs underline ml-4">Dismiss</button>
+        </div>
+      )}
+
+      {/* Filter Tabs */}
+      <div className="flex items-center gap-2 flex-wrap">
+        {(["all", "pending", "prayed", "answered"] as const).map((f) => (
           <button
             key={f}
             onClick={() => setFilter(f)}
-            className={`px-3 py-1.5 text-xs font-medium rounded-md border transition-colors ${
-              filter === f ? "bg-sky-500 text-white border-sky-500" : "bg-cloud text-slate-600 border-line hover:border-sky-200"
+            className={`px-3 py-1.5 text-xs font-semibold rounded-md border transition-colors ${
+              filter === f
+                ? "bg-sky-500 text-white border-sky-500 shadow-xs"
+                : "bg-cloud text-slate-600 border-line hover:border-sky-300"
             }`}
           >
-            {f.charAt(0).toUpperCase() + f.slice(1)}
+            {f === "all" ? "All Requests" : f.charAt(0).toUpperCase() + f.slice(1)}
+            {f === "pending" && pendingCount > 0 && ` (${pendingCount})`}
           </button>
         ))}
       </div>
 
-      <div className="space-y-3">
-        {filtered.map((item) => (
-          <div key={item.id} className="bg-cloud border border-line rounded-md p-4">
-            <div className="flex items-start justify-between gap-4">
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-1">
-                  <p className="text-sm font-medium text-slate-800">{item.name}</p>
-                  <span className="text-xs px-1.5 py-0.5 rounded bg-sky-50 text-sky-500">{item.category}</span>
-                  <span className="flex items-center gap-1 text-xs text-slate-600/50">
-                    {item.source === "web" ? <Globe size={10} strokeWidth={1.75} /> : <Smartphone size={10} strokeWidth={1.75} />}
-                    {item.source}
-                  </span>
+      {loading ? (
+        <div className="text-center py-16">
+          <Loader2 size={32} className="animate-spin text-sky-500 mx-auto mb-2" />
+          <p className="text-sm text-slate-500">Loading prayer inbox from GitHub...</p>
+        </div>
+      ) : items.length === 0 ? (
+        <div className="text-center py-16 bg-cloud border border-line rounded-lg">
+          <Heart size={40} className="text-slate-400 mx-auto mb-3" />
+          <h3 className="text-base font-semibold text-slate-700">No prayer petitions in this category</h3>
+          <p className="text-sm text-slate-500 mt-1">Petitions sent from the public website will appear here.</p>
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {items.map((item) => (
+            <div
+              key={item.id}
+              className={`border rounded-lg p-5 bg-white transition-all shadow-xs flex flex-col justify-between ${
+                item.status === "pending" ? "border-amber-300 ring-1 ring-amber-200" : "border-line"
+              }`}
+            >
+              <div className="space-y-3">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="font-bold text-slate-800 text-sm">{item.name}</span>
+                    <span className="px-2 py-0.5 rounded text-xs font-semibold bg-sky-50 text-sky-700">
+                      {item.category}
+                    </span>
+                    {item.isPrivate && (
+                      <span className="px-2 py-0.5 rounded text-xs font-semibold bg-slate-100 text-slate-600 flex items-center gap-1">
+                        <ShieldCheck size={11} /> Confidential
+                      </span>
+                    )}
+                    <span className={`px-2 py-0.5 rounded text-xs font-semibold ${
+                      item.status === "pending"
+                        ? "bg-amber-100 text-amber-800"
+                        : item.status === "prayed"
+                        ? "bg-sky-100 text-sky-800"
+                        : "bg-emerald-100 text-emerald-800"
+                    }`}>
+                      {item.status.toUpperCase()}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-3 text-xs text-slate-400">
+                    <span className="flex items-center gap-1">
+                      <Clock size={12} />
+                      {new Date(item.submittedAt).toLocaleDateString()}
+                    </span>
+                    <span className="flex items-center gap-1 uppercase">
+                      {item.source === "app" ? <Smartphone size={12} /> : <Globe size={12} />}
+                      {item.source}
+                    </span>
+                  </div>
                 </div>
-                <p className="text-xs text-slate-600 leading-relaxed">{item.request}</p>
-                <p className="text-xs text-slate-600/50 mt-2 flex items-center gap-1">
-                  <Clock size={10} strokeWidth={1.75} />
-                  {new Date(item.submittedAt).toLocaleDateString()}
+
+                <p className="text-sm text-slate-700 leading-relaxed bg-slate-50/70 p-3.5 rounded border border-slate-100">
+                  &ldquo;{item.request}&rdquo;
                 </p>
-              </div>
-              <div className="shrink-0">
-                {item.status === "pending" ? (
-                  <button
-                    onClick={() => markPrayed(item.id)}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium
-                               bg-sky-500 text-white rounded-md hover:bg-sky-400 transition-colors"
-                  >
-                    <Heart size={12} strokeWidth={1.75} />
-                    Mark Prayed
-                  </button>
-                ) : (
-                  <span className="inline-flex items-center gap-1 text-xs text-success font-medium">
-                    <CheckCircle size={12} strokeWidth={1.75} />
-                    Prayed for
-                  </span>
+
+                {(item.email || item.phone) && (
+                  <div className="text-xs text-slate-500 flex items-center gap-4">
+                    {item.email && <span>Email: {item.email}</span>}
+                    {item.phone && <span>Phone: {item.phone}</span>}
+                  </div>
                 )}
               </div>
+
+              <div className="mt-4 pt-3 border-t border-line flex items-center justify-between flex-wrap gap-2">
+                <div className="flex items-center gap-2">
+                  {item.status === "pending" && (
+                    <button
+                      onClick={() => handleStatusChange(item.id, "prayed")}
+                      disabled={isPending}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-bold bg-sky-50 text-sky-700 border border-sky-200 hover:bg-sky-100 transition-colors"
+                    >
+                      <CheckCircle size={13} /> Mark as Prayed
+                    </button>
+                  )}
+                  {item.status !== "answered" && (
+                    <button
+                      onClick={() => handleStatusChange(item.id, "answered")}
+                      disabled={isPending}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 transition-colors"
+                    >
+                      <Sparkles size={13} /> Mark as Answered / Testimony
+                    </button>
+                  )}
+                  {item.status !== "pending" && (
+                    <button
+                      onClick={() => handleStatusChange(item.id, "pending")}
+                      disabled={isPending}
+                      className="px-2.5 py-1.5 rounded text-xs font-semibold text-slate-500 hover:bg-slate-100 transition-colors"
+                    >
+                      Revert to Pending
+                    </button>
+                  )}
+                </div>
+
+                <button
+                  onClick={() => handleDelete(item.id, item.name)}
+                  disabled={isPending}
+                  className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
+                  title="Delete petition"
+                >
+                  <Trash2 size={15} />
+                </button>
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

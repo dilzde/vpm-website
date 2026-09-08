@@ -1,0 +1,42 @@
+[
+  {
+    "id": "slide-s1",
+    "slot": "support",
+    "title": "Support the Mission",
+    "body": "Give via M-Pesa or Bank transfer to support the preaching of the Gospel.",
+    "ctaLabel": "Give Now",
+    "ctaLink": "/give",
+    "active": true,
+    "order": 0
+  },
+  {
+    "id": "slide-s2",
+    "slot": "support",
+    "title": "Why It Matters",
+    "body": "Fund nationwide evangelism outreaches, crusades, and media broadcasts.",
+    "ctaLabel": "Learn More",
+    "ctaLink": "/about",
+    "active": true,
+    "order": 1
+  },
+  {
+    "id": "slide-b1",
+    "slot": "booking",
+    "title": "Book a Pastoral Session",
+    "body": "Schedule a one-on-one pastoral counselling or deliverance appointment.",
+    "ctaLabel": "Book Now",
+    "ctaLink": "/contact",
+    "active": true,
+    "order": 0
+  },
+  {
+    "id": "slide-b2",
+    "slot": "booking",
+    "title": "Request Prayer",
+    "body": "Share your prayer request confidentially with our intercessory altar.",
+    "ctaLabel": "Submit Request",
+    "ctaLink": "/prayer",
+    "active": true,
+    "order": 1
+  }
+]

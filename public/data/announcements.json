@@ -1,0 +1,29 @@
+[
+  {
+    "id": "ann-1",
+    "headline": "Prophetic Service & Deliverance",
+    "body": "Join us for morning worship, foundational teaching, and powerful intercession at our main altar.",
+    "dateBadge": "THIS SUNDAY",
+    "time": "9:00 AM – 1:00 PM",
+    "active": true,
+    "order": 0
+  },
+  {
+    "id": "ann-2",
+    "headline": "Wednesday Teaching & Prayer",
+    "body": "Deep dive into scripture and territorial prayer at our Githurai sanctuary.",
+    "dateBadge": "MIDWEEK",
+    "time": "5:30 PM – 7:30 PM",
+    "active": true,
+    "order": 1
+  },
+  {
+    "id": "ann-3",
+    "headline": "Night of Deliverance & Healing",
+    "body": "Overnight prayer vigil seeking God's supernatural breakthrough.",
+    "dateBadge": "MONTHLY",
+    "time": "9:00 PM – 4:00 AM",
+    "active": true,
+    "order": 2
+  }
+]

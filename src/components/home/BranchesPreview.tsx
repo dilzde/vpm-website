@@ -1,6 +1,8 @@
 import React from "react";
 import Link from "next/link";
 import { Phone, ArrowUpRight } from "lucide-react";
+import { getBranches } from "@/lib/branches.server";
+import type { Branch } from "@/lib/branch-types";
 
 export interface BranchRecord {
   id: string;
@@ -49,7 +51,16 @@ export const FOUR_BRANCHES: BranchRecord[] = [
   },
 ];
 
-export default function BranchesPreview() {
+export default async function BranchesPreview() {
+  let displayBranches: Branch[] = [];
+  try {
+    displayBranches = await getBranches(true);
+  } catch {
+    // fallback
+  }
+
+  const items = displayBranches.length > 0 ? displayBranches.slice(0, 4) : FOUR_BRANCHES;
+
   return (
     <section
       className="bg-[var(--color-surface)] text-[var(--color-ink)] section-gap border-b border-[var(--color-line)]"
@@ -75,9 +86,9 @@ export default function BranchesPreview() {
           </Link>
         </div>
 
-        {/* 4 Clean Branch Cards Grid — No Image Placeholders, ONLY Name, Location, Phone & See Location */}
+        {/* 4 Clean Branch Cards Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {FOUR_BRANCHES.map((branch) => (
+          {items.map((branch) => (
             <div
               key={branch.id}
               className={`bg-white border rounded-[var(--radius-eight)] p-6 flex flex-col justify-between h-full shadow-[var(--shadow-card)] transition-all ${
