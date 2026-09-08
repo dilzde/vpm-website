@@ -23,6 +23,7 @@ export const metadata = {
 const ICON_STYLES: Record<string, string> = {
   website: "bg-[#0F2540] text-white",
   radio: "bg-[#6B21A8] text-white",
+  amazon: "bg-[#FF9900] text-black",
   youtube: "bg-[#DC2626] text-white",
   tiktok: "bg-[#09090B] text-white",
   instagram:

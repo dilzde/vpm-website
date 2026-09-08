@@ -31,6 +31,7 @@ import { renderSocialIcon } from "@/components/common/SocialIcons";
 const ICON_OPTIONS = [
   { value: "website", label: "Website", style: "bg-[#0F2540] text-white" },
   { value: "radio", label: "Radio Stream", style: "bg-[#6B21A8] text-white" },
+  { value: "amazon", label: "Amazon Books", style: "bg-[#FF9900] text-black" },
   { value: "youtube", label: "YouTube", style: "bg-[#DC2626] text-white" },
   { value: "tiktok", label: "TikTok", style: "bg-[#09090B] text-white" },
   {

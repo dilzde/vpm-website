@@ -7,7 +7,7 @@ export interface SocialLink {
   id: string;
   label: string;
   url: string;
-  icon: string; // "website" | "radio" | "youtube" | "tiktok" | "instagram" | "facebook" | "x" | "whatsapp" | "default"
+  icon: string; // "website" | "radio" | "amazon" | "youtube" | "tiktok" | "instagram" | "facebook" | "x" | "whatsapp" | "default"
   description?: string;
   active: boolean;
   order: number;
@@ -33,13 +33,22 @@ export const DEFAULT_LINKS: SocialLink[] = [
     order: 1,
   },
   {
+    id: "amazon-books",
+    label: "Prophet Dr. Samo Mtishiby Books",
+    url: "https://www.amazon.com/s?i=digital-text&rh=p_27%3AProphet%2BDr%2BSamo%2BMtishiby&s=relevancerank&text=Prophet+Dr+Samo+Mtishiby&ref=dp_byline_sr_ebooks_1",
+    icon: "amazon",
+    description: "Deep spiritual knowledge & teachings on Amazon",
+    active: true,
+    order: 2,
+  },
+  {
     id: "youtube-channel",
     label: "YouTube Channel",
     url: "https://youtube.com/@vpminternational",
     icon: "youtube",
     description: "Sermons, revivals & live broadcasts",
     active: true,
-    order: 2,
+    order: 3,
   },
   {
     id: "tiktok",
@@ -48,7 +57,7 @@ export const DEFAULT_LINKS: SocialLink[] = [
     icon: "tiktok",
     description: "Short prophetic clips & highlights",
     active: true,
-    order: 3,
+    order: 4,
   },
   {
     id: "instagram",
@@ -57,7 +66,7 @@ export const DEFAULT_LINKS: SocialLink[] = [
     icon: "instagram",
     description: "Ministry moments & announcements",
     active: true,
-    order: 4,
+    order: 5,
   },
   {
     id: "x-twitter",
@@ -66,7 +75,7 @@ export const DEFAULT_LINKS: SocialLink[] = [
     icon: "x",
     description: "",
     active: true,
-    order: 5,
+    order: 6,
   },
   {
     id: "whatsapp",
@@ -75,6 +84,6 @@ export const DEFAULT_LINKS: SocialLink[] = [
     icon: "whatsapp",
     description: "Join our community",
     active: true,
-    order: 6,
+    order: 7,
   },
 ];

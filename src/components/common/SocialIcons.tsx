@@ -51,12 +51,22 @@ export function FacebookIcon({ size = 22, className }: { size?: number; classNam
   );
 }
 
+export function AmazonIcon({ size = 22, className }: { size?: number; className?: string }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" className={className}>
+      <path d="M13.918 17.653c-2.35 1.73-5.748 2.658-8.685 2.658-4.133 0-7.852-1.533-10.669-4.103-.22-.202-.024-.479.239-.324 3.036 1.776 6.786 2.844 10.638 2.844 2.607 0 5.485-.625 8.121-1.921.396-.195.733.275.356.846zm1.328-1.517c-.3-.385-1.986-.184-2.744-.093-.23.028-.266-.17-.058-.316 1.348-.944 3.557-.672 3.818-.348.261.325-.069 2.544-1.341 3.59-.196.16-.383.074-.298-.138.277-.696.923-2.31.623-2.695zm-3.08-5.32c-.089-1.222-.843-1.848-2.028-1.848-1.468 0-2.316.92-2.316 2.392 0 1.25.753 2.052 1.956 2.052 1.392 0 2.299-.958 2.388-2.596zm2.146 5.467c-.161.161-.397.175-.589.066l-1.373-.787c-.07-.04-.124-.099-.148-.175a4.708 4.708 0 0 1-2.906 1.054c-2.457 0-4.237-1.583-4.237-4.048 0-1.996 1.258-3.527 3.064-4.015 1.186-.321 2.894-.375 4.095-.512v-.235c0-.665.044-1.49-.364-2.054-.356-.492-1.028-.718-1.706-.718-1.18 0-2.253.585-2.529 1.837-.046.21-.205.352-.416.347l-1.636-.123c-.22-.016-.36-.217-.306-.43.557-2.186 2.515-3.321 4.887-3.321 1.272 0 2.946.368 3.963 1.408 1.303 1.309 1.187 3.056 1.187 4.908v3.486c0 1.05.452 1.517.88 2.087.148.198.118.423-.058.552l-1.808 1.454z"/>
+    </svg>
+  );
+}
+
 export function renderSocialIcon(iconKey: string, size = 22, className?: string) {
   switch (iconKey) {
     case "website":
       return <Globe size={size} className={className} />;
     case "radio":
       return <Radio size={size} className={className} />;
+    case "amazon":
+      return <AmazonIcon size={size} className={className} />;
     case "youtube":
       return <YoutubeIcon size={size} className={className} />;
     case "tiktok":

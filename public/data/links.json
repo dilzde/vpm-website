@@ -18,49 +18,22 @@
     "order": 1
   },
   {
+    "id": "amazon-books",
+    "label": "Prophet Dr. Samo Mtishiby Books",
+    "url": "https://www.amazon.com/s?i=digital-text&rh=p_27%3AProphet%2BDr%2BSamo%2BMtishiby&s=relevancerank&text=Prophet+Dr+Samo+Mtishiby&ref=dp_byline_sr_ebooks_1",
+    "icon": "amazon",
+    "description": "Deep spiritual knowledge & teachings on Amazon",
+    "active": true,
+    "order": 2
+  },
+  {
     "id": "youtube-channel",
     "label": "Asriel TV",
     "url": "https://youtube.com/@asrieltv?si=g4pykHoylbN_A5-C",
     "icon": "youtube",
     "description": "Sermons & live broadcasts",
     "active": true,
-    "order": 2
-  },
-  {
-    "id": "tiktok",
-    "label": "TikTok",
-    "url": "https://www.tiktok.com/@asriel_tv01?_r=1&_t=ZS-99WsIEVqngK",
-    "icon": "tiktok",
-    "description": "Short prophetic clips & highlights",
-    "active": true,
     "order": 3
-  },
-  {
-    "id": "instagram",
-    "label": "Instagram",
-    "url": "https://www.instagram.com/vpmintl?stkn=dmhlcGdmamJmaG9l",
-    "icon": "instagram",
-    "description": "Ministry moments & announcements",
-    "active": true,
-    "order": 4
-  },
-  {
-    "id": "x-twitter",
-    "label": "X (Twitter)",
-    "url": "https://x.com/vpmintl?t=91u9LfmTd-SmqFpTDgBG7A&s=09",
-    "icon": "x",
-    "description": "",
-    "active": true,
-    "order": 5
-  },
-  {
-    "id": "whatsapp",
-    "label": "WhatsApp",
-    "url": "https://wa.me/254794731831",
-    "icon": "whatsapp",
-    "description": "Join our community",
-    "active": true,
-    "order": 6
   },
   {
     "id": "link-1788791854524-sa3q",
@@ -69,6 +42,42 @@
     "icon": "youtube",
     "description": "Your 24/7 Non-Stop Stream",
     "active": true,
+    "order": 4
+  },
+  {
+    "id": "tiktok",
+    "label": "TikTok",
+    "url": "https://www.tiktok.com/@asriel_tv01?_r=1&_t=ZS-99WsIEVqngK",
+    "icon": "tiktok",
+    "description": "Short prophetic clips & highlights",
+    "active": true,
+    "order": 5
+  },
+  {
+    "id": "instagram",
+    "label": "Instagram",
+    "url": "https://www.instagram.com/vpmintl?stkn=dmhlcGdmamJmaG9l",
+    "icon": "instagram",
+    "description": "Ministry moments & announcements",
+    "active": true,
+    "order": 6
+  },
+  {
+    "id": "x-twitter",
+    "label": "X (Twitter)",
+    "url": "https://x.com/vpmintl?t=91u9LfmTd-SmqFpTDgBG7A&s=09",
+    "icon": "x",
+    "description": "",
+    "active": true,
     "order": 7
+  },
+  {
+    "id": "whatsapp",
+    "label": "WhatsApp",
+    "url": "https://wa.me/254794731831",
+    "icon": "whatsapp",
+    "description": "Join our community",
+    "active": true,
+    "order": 8
   }
 ]
